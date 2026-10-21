@@ -1,0 +1,49 @@
+---
+# run on only items staged in git:  pre-commit
+# automatically run on commit:      pre-commit install
+# check all files in repo:          pre-commit run --all-files
+# check all files manual stage:     pre-commit run --all-files --hook-stage manual
+# update all checks to latest:      pre-commit autoupdate --freeze
+# https://github.com/pre-commit/pre-commit-hooks
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0
+    hooks:
+      # check-case-conflict ensures no case conflicts in filenames.
+      - id: check-case-conflict
+      # the root server may clone the site on Windows:
+      - id: check-illegal-windows-names
+      # check-merge-conflict ensures no unresolved merge conflicts exist in files.
+      - id: check-merge-conflict
+      # check-xml ensures XML files are well-formed.
+      - id: check-xml
+
+  # https://github.com/jgstew/pre-commit-bigfix
+  # bes-schema-validate also covers the site's own site.xml, siteConfig.xml,
+  # Fixlets/digest.xml and Signatures/*.xml (since v1.12.0), and .ojo dashboards.
+  - repo: https://github.com/jgstew/pre-commit-bigfix
+    rev: e2be9a8e47a2e9862c1f34a63b9a9467d6e79516  # frozen: v1.13.0
+    hooks:
+      # ---- MANDATORY CHECKS FOR BES REPO SITE:
+      # (bes-siterepo-validate-layout is also mandatory; it is at the end.)
+      # Validate BES schema and related files.
+      - id: bes-schema-validate
+      # GroupRelevance makes a repo site sync fail unless converted:
+      - id: bes-relevance-convert-group
+      # ---- OPTIONAL CHECKS FOR BES REPO SITE:
+      # Check BES files for some things that would break a repo site and more.
+      - id: bes-conventions-check
+      # the following are optional additional checks:
+      # # Lint BES relevance expressions for potential issues.
+      # - id: bes-relevance-lint
+      # # Lint BES actionscripts for potential issues.
+      # - id: bes-actionscript-lint-schclass
+      # # Validate BES actionscripts for correctness.
+      # - id: bes-actionscript-validate-script
+      # # Validate BES actionscripts for prefetch correctness.
+      # - id: bes-actionscript-validate-prefetch
+      #   # args: [--auto-fix-network, "yes"]
+      # ---- MANDATORY, AND LAST: it can rename .bes files, which hooks
+      # after it in the same run would no longer find.
+      # Check the site layout, numeric-ID file names and path length.
+      - id: bes-siterepo-validate-layout
