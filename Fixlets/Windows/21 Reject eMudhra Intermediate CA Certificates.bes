@@ -2,10 +2,13 @@
 <BES xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="BES.xsd">
 	<Task>
 		<Title>Reject eMudhra Intermediate CA Certificates - Windows</Title>
-		<Description><![CDATA[<P>Rejects eMudhra Intermediate CA Certificates on this computer.</P>]]></Description>
+		<Description><![CDATA[<P>Rejects eMudhra Intermediate CA Certificates on this computer by explicitly adding them to the Disallowed Certificates store.<br>
+		This is helpful if the Windows system is unable to retrieve updated Certificate Revocation Lists (CRLs) that would otherwise remove these Intermediate Certificates from trust.<br>
+		</P>]]></Description>
 		<Relevance><![CDATA[windows of operating system]]></Relevance>
 		<Relevance><![CDATA[version of operating system >= "10.0"]]></Relevance>
 		<Relevance><![CDATA[not in proxy agent context]]></Relevance>
+		<Relevance><![CDATA[set of ("A99B289464F3B44343270A7A1E910F02370483FE"; "1396BE1372BC93DFA2A433CA964DBA91548A6E57"; "5F014E0DB3BB8F950E0598AB280846D383FC57BE"; "5DFA19197D1C1CF629AF7C0CD865543C5050227C"; "F33ACD1F5D31AA81AC18C72C928446226D3D5914"; "19069BD6533BFF93FB67C71FB3376B4EA7402C3B"; "8AD23BC78845D6FAAE1D534BAC89F0E36BA55A11"; "4B0944C14F8C2CCBA4E4F32104AD920FA15EE331"; "7FCC31AAB874CE6C8EE8584F54CFD08646B54117"; "305FC1E253DCAB71B95D4995DAE3CB09D562F22A"; "C988F3D0CC1629FFC43165D6464C9B6EF73D6E48"; "8588708E875A1F8AA83524F3559080F7E17068C7"; "D33195A244046A3263FB5E0E83C6803A5B2E7BC3"; "EE26D7AE3CC71718F6E07D7D0095076F0C158F63"; "1F4A5D178F8B6A8EF0F6784155BD5FEA91158B12"; "7FDE64753A957B98F172FD2AB0D922551909C7BA") is not contained by set of (names of keys of keys "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\SystemCertificates\Disallowed\Certificates" of native registry)]]></Relevance>
 		<Category></Category>
 		<DownloadSize>0</DownloadSize>
 		<Source>Internal</Source>
@@ -16,7 +19,7 @@
 		<SANSID></SANSID>
 		<MIMEField>
 			<Name>x-fixlet-modification-time</Name>
-			<Value>Wed, 21 Oct 2026 14:58:28 +0000</Value>
+			<Value>Wed, 21 Oct 2026 20:46:21 +0000</Value>
 		</MIMEField>
 		<Domain>BESC</Domain>
 		<DefaultAction ID="Action1">
