@@ -15,11 +15,11 @@
 		<SourceID>jwalker107</SourceID>
 		<SourceReleaseDate>2026-10-21</SourceReleaseDate>
 		<SourceSeverity></SourceSeverity>
-		<CVENames> CVE-2026-109618;CVE-2026-109619</CVENames>
+		<CVENames></CVENames>
 		<SANSID></SANSID>
 		<MIMEField>
 			<Name>x-fixlet-modification-time</Name>
-			<Value>Wed, 21 Oct 2026 20:46:21 +0000</Value>
+			<Value>Thu, 22 Oct 2026 12:09:36 +0000</Value>
 		</MIMEField>
 		<Domain>BESC</Domain>
 		<DefaultAction ID="Action1">
