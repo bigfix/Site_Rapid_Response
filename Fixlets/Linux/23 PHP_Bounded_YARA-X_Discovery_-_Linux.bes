@@ -2,7 +2,7 @@
 <BES xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="BES.xsd">
   <Task>
     <Title>PHP - Bounded YARA-X Discovery - Linux</Title>
-    <Description>&lt;P&gt;The standard-name default is faster but can miss renamed PHP found by the original scanner. Enable renamed/nonstandard-name detection for broader coverage.&lt;/P&gt;
+    <Description>&lt;p&gt;Linux scope: x86-64 and ARM64 (aarch64), without a distribution-name restriction, matching the original Linux Task. This includes Debian, SUSE/openSUSE, Oracle Linux, Amazon Linux and Fedora alongside RHEL, Rocky, Alma and Ubuntu. Requires Bash 4 or later, GNU find/coreutils, awk, tar/gzip and flock. Missing prerequisites fail clearly; nothing is installed automatically. Use a BigFix client supported on the target OS and architecture; the 9.5.7 command floor does not establish ARM64 client support. Affected vendor-package versions remain unverified until checked against the vendor advisory. Other package managers may leave ownership unverified.&lt;/p&gt;&lt;P&gt;The standard-name default is faster but can miss renamed PHP found by the original scanner. Enable renamed/nonstandard-name detection for broader coverage.&lt;/P&gt;
 &lt;P&gt;Finds PHP runtime versions in local application folders without executing PHP. The default checks standard PHP executable/module names: php, php-cgi, php-fpm, phpdbg, lsphp, frankenphp, libphp and mod_php, including version suffixes, Windows .exe/.dll and Linux .so/.so.N files. PHP DLLs are retained because the PHP core and Apache module can reside there. Ordinary .php scripts, documents, archives, media and unrelated binary names are outside the default runtime scan. Enable renamed/nonstandard binaries to inspect other native binaries; enable build text for optional source/build evidence.&lt;/P&gt;
 &lt;P&gt;Application folders in user profiles remain included, including Herd, Scoop and AppData programs. OS/recovery trees, known caches, backups and personal media are skipped by default; the broader-locations option restores these soft exclusions. Network storage, cloud placeholders, symlinks, containers, snapshots and BigFix scanner/cache files remain excluded. Archives/images are not unpacked. Files at or above 512 MiB are skipped by default. Limits or meaningful read failures produce a partial scan, preserving positive findings. BigFix reports success when the scan produces a new result, including partial coverage or no PHP found. Failed means the attempt could not produce a new usable scan result.&lt;/P&gt;
 &lt;P&gt;The Analysis has four properties. TRUE means an upstream-affected PHP runtime was detected for CVE-2026-109618 and CVE-2026-109619. FALSE means none detected in a completed scan within the selected scope. UNKNOWN means results are unavailable, coverage is incomplete, or PHP evidence needs verification. Affected-version vendor builds are labeled "Vendor patch status unverified"; check the package advisory. Build text alone does not set TRUE. Partial findings remain usable and do not fail the action. While a scan runs, properties retain the previous finished result.&lt;/P&gt;
@@ -75,7 +75,7 @@ var PhpScan = (function () {
 }());
 document.body.ontakeaction = function () { return PhpScan.prepare(); };
 &lt;/script&gt;</Description>
-    <Relevance>if (version of client &gt;= "9.5.7") then (if (name of operating system starts with "Linux") then (architecture of operating system = "x86_64" and (((exists lines whose (it = regex "ID=(rhel|%22(rhel)%22)") of files "/etc/os-release") and (exists lines whose (it = regex "VERSION_ID=((7|8|9|10)(\.[0-9]+)*|%22((7|8|9|10)(\.[0-9]+)*)%22)") of files "/etc/os-release")) or ((exists lines whose (it = regex "ID=(rocky|almalinux|%22(rocky|almalinux)%22)") of files "/etc/os-release") and (exists lines whose (it = regex "VERSION_ID=((8|9|10)(\.[0-9]+)*|%22((8|9|10)(\.[0-9]+)*)%22)") of files "/etc/os-release")) or (exists lines whose (it = regex "ID=(ubuntu|%22(ubuntu)%22)") of files "/etc/os-release")) and exists file "/bin/bash") else false) else false</Relevance>
+    <Relevance>if (version of client &gt;= "9.5.7") then (if (name of operating system as lowercase starts with "linux") then ((architecture of operating system = "x86_64" or architecture of operating system = "aarch64") and exists file "/bin/bash") else false) else false</Relevance>
     <Category>PHP Security Discovery</Category>
     <DefaultAction ID="Action1">
       <Description>
@@ -84,9 +84,24 @@ document.body.ontakeaction = function () { return PhpScan.prepare(); };
         <PostLink> to run bounded local PHP discovery.</PostLink>
       </Description>
       <ActionScript MIMEType="application/x-Fixlet-Windows-Shell">begin prefetch block
+if {architecture of operating system = "aarch64"}
+add prefetch item name=yara-x-v1.22.0-aarch64-unknown-linux-gnu.tar.gz sha1=fde88001e579387275f731387963dd220f7a6fbd sha256=b1b90f0686ae3e9f607c07b743fd96d6283d9ea5e2fd764919b8505de8b63d4e size=9252173 url=https://github.com/VirusTotal/yara-x/releases/download/v1.22.0/yara-x-v1.22.0-aarch64-unknown-linux-gnu.tar.gz
+elseif {architecture of operating system = "x86_64"}
 add prefetch item name=yara-x-v1.22.0-x86_64-unknown-linux-gnu.tar.gz sha1=f6e1f286242753e0e621c43da7f0c753c8ffc1f4 sha256=7f470770b2c1a0d97f02298fc194978d999074d147d003d33dd62775761439db size=10347394 url=https://github.com/VirusTotal/yara-x/releases/download/v1.22.0/yara-x-v1.22.0-x86_64-unknown-linux-gnu.tar.gz
+endif
 end prefetch block
 action uses file encoding UTF-8 NoBOM
+if {architecture of operating system = "aarch64"}
+parameter "PHPYaraArchive" = "yara-x-v1.22.0-aarch64-unknown-linux-gnu.tar.gz"
+parameter "PHPYaraArchiveSha256" = "b1b90f0686ae3e9f607c07b743fd96d6283d9ea5e2fd764919b8505de8b63d4e"
+parameter "PHPYaraEngineSha256" = "9839f9b12c45a5ce2b2f0a1672ec06647e604a98738ccbe86c6d43f42a579a0f"
+elseif {architecture of operating system = "x86_64"}
+parameter "PHPYaraArchive" = "yara-x-v1.22.0-x86_64-unknown-linux-gnu.tar.gz"
+parameter "PHPYaraArchiveSha256" = "7f470770b2c1a0d97f02298fc194978d999074d147d003d33dd62775761439db"
+parameter "PHPYaraEngineSha256" = "73656c1f7b48326ddad393166a3ed14479412246bd3fe804abe6bf8ff1e6b43f"
+else
+continue if {false}
+endif
 if {not exists parameter "PHPExcludeDirectoriesHex"}
 parameter "PHPExcludeDirectoriesHex" = "x"
 endif
@@ -621,7 +636,7 @@ if ((${{#reasons[@]})); then exit 10; fi
 END_PHP_YARA_e212c38df9f756c7
 delete "{parameter "work"}/scan-linux.sh"
 move __createfile "{parameter "work"}/scan-linux.sh"
-wait /bin/bash "{parameter "work"}/scan-linux.sh" --engine "{parameter "work"}/yr" --engine-sha256 73656c1f7b48326ddad393166a3ed14479412246bd3fe804abe6bf8ff1e6b43f --rules "{parameter "work"}/php-detect.yar" --output "{parameter "output"}" --archive "{pathname of download file "yara-x-v1.22.0-x86_64-unknown-linux-gnu.tar.gz"}" --archive-sha256 7f470770b2c1a0d97f02298fc194978d999074d147d003d33dd62775761439db --enumeration-seconds {parameter "PHPEnumerationSeconds"} --scan-seconds {parameter "PHPScanSeconds"} --max-files {parameter "PHPMaxFiles"} --candidate-gb {parameter "PHPCandidateGB"} --max-file-mb {parameter "PHPMaxFileMB"} --cpu-limit {parameter "PHPCpuLimit"} --exclude-directories-hex "{parameter "PHPExcludeDirectoriesHex"}" --include-build-text {parameter "PHPIncludeBuildText"} --include-broader-locations {parameter "PHPIncludeBroaderLocations"} --include-nonstandard-names {parameter "PHPIncludeNonstandardNames"}
+wait /bin/bash "{parameter "work"}/scan-linux.sh" --engine "{parameter "work"}/yr" --engine-sha256 {parameter "PHPYaraEngineSha256"} --rules "{parameter "work"}/php-detect.yar" --output "{parameter "output"}" --archive "{pathname of download file (parameter "PHPYaraArchive")}" --archive-sha256 {parameter "PHPYaraArchiveSha256"} --enumeration-seconds {parameter "PHPEnumerationSeconds"} --scan-seconds {parameter "PHPScanSeconds"} --max-files {parameter "PHPMaxFiles"} --candidate-gb {parameter "PHPCandidateGB"} --max-file-mb {parameter "PHPMaxFileMB"} --cpu-limit {parameter "PHPCpuLimit"} --exclude-directories-hex "{parameter "PHPExcludeDirectoriesHex"}" --include-build-text {parameter "PHPIncludeBuildText"} --include-broader-locations {parameter "PHPIncludeBroaderLocations"} --include-nonstandard-names {parameter "PHPIncludeNonstandardNames"}
 parameter "scanExit" = "{exit code of action}"
 folder delete "{parameter "work"}"
 continue if {parameter "scanExit" = "0" or parameter "scanExit" = "10"}
