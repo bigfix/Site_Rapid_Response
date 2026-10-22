@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<BES>
+  <Analysis>
+    <Title>PHP - Bounded YARA-X Scan Results - Windows and Linux</Title>
+    <Description>Four compact properties from the latest finished YARA scan. TRUE means an upstream-affected runtime version was detected; FALSE means none detected, including when NO SCAN is displayed. Partial coverage is qualified beside the completion time. Vendor backports require verification. One vulnerable path/version per result, up to 100; all findings and coverage details are in YARA_PHP/scan.log under the BigFix client state root. Does not run scans.</Description>
+    <Relevance>if (version of client &gt;= "9.5.7") then windows of operating system or (name of operating system starts with "Linux") else false</Relevance>
+    <Category>PHP Security Discovery</Category>
+    <Delay>PT1S</Delay>
+    <Property Name="Yara-Vulnerable PHP detected" ID="11" EvaluationPeriod="PT5M">if exists lines whose (it starts with "DETECTED=") of files "summary.txt" whose (size of it &lt;= 131072) of folders "YARA_PHP" of parent folders of data folders of client then following texts of firsts "DETECTED=" of lines whose (it starts with "DETECTED=") of files "summary.txt" whose (size of it &lt;= 131072) of folders "YARA_PHP" of parent folders of data folders of client else "FALSE"</Property>
+    <Property Name="YARA Vulnerable PHP Path and Version" ID="12" EvaluationPeriod="PT5M">if exists lines whose (it starts with "VULNERABLE=") of files "summary.txt" whose (size of it &lt;= 131072) of folders "YARA_PHP" of parent folders of data folders of client then following texts of firsts "VULNERABLE=" of lines whose (it starts with "VULNERABLE=") of files "summary.txt" whose (size of it &lt;= 131072) of folders "YARA_PHP" of parent folders of data folders of client else "None detected"</Property>
+    <Property Name="YARA PHP Last Scan" ID="13" EvaluationPeriod="PT5M">if exists lines whose (it starts with "LAST_SCAN=") of files "summary.txt" whose (size of it &lt;= 131072) of folders "YARA_PHP" of parent folders of data folders of client then following texts of firsts "LAST_SCAN=" of lines whose (it starts with "LAST_SCAN=") of files "summary.txt" whose (size of it &lt;= 131072) of folders "YARA_PHP" of parent folders of data folders of client else "NO SCAN"</Property>
+    <Property Name="YARA Last Scan Length" ID="14" EvaluationPeriod="PT5M">if exists lines whose (it starts with "DURATION=") of files "summary.txt" whose (size of it &lt;= 131072) of folders "YARA_PHP" of parent folders of data folders of client then following texts of firsts "DURATION=" of lines whose (it starts with "DURATION=") of files "summary.txt" whose (size of it &lt;= 131072) of folders "YARA_PHP" of parent folders of data folders of client else "NO SCAN"</Property>
+  </Analysis>
+</BES>

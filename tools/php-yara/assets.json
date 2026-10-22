@@ -1,0 +1,16 @@
+{
+  "yara-x-v1.22.0-x86_64-pc-windows-msvc.zip": {
+    "url": "https://github.com/VirusTotal/yara-x/releases/download/v1.22.0/yara-x-v1.22.0-x86_64-pc-windows-msvc.zip",
+    "size": 9081400,
+    "sha256": "eac36a58699b94d3732a7fe1d8453fe89e0077bb18ac2c99b4c2ee102a431f2e",
+    "sha1": "344da50ce1693edd32b92c7d32eaf26d99c97f17",
+    "engine_sha256": "e2e431175174158fc74c8709896c6d4a6667592bbb65a8132dea624ba125d76f"
+  },
+  "yara-x-v1.22.0-x86_64-unknown-linux-gnu.tar.gz": {
+    "url": "https://github.com/VirusTotal/yara-x/releases/download/v1.22.0/yara-x-v1.22.0-x86_64-unknown-linux-gnu.tar.gz",
+    "size": 10347394,
+    "sha256": "7f470770b2c1a0d97f02298fc194978d999074d147d003d33dd62775761439db",
+    "sha1": "f6e1f286242753e0e621c43da7f0c753c8ffc1f4",
+    "engine_sha256": "73656c1f7b48326ddad393166a3ed14479412246bd3fe804abe6bf8ff1e6b43f"
+  }
+}

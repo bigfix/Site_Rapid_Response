@@ -1,0 +1,522 @@
+<?xml version='1.0' encoding='utf-8'?>
+<BES xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="BES.xsd">
+  <Task>
+    <Title>PHP - Bounded YARA-X Discovery - Linux</Title>
+    <Description>&lt;P&gt;Finds PHP runtime versions in local application folders without executing PHP. The default checks standard PHP executable/module names: php, php-cgi, php-fpm, phpdbg, lsphp, frankenphp, libphp and mod_php, including version suffixes, Windows .exe/.dll and Linux .so/.so.N files. PHP DLLs are retained because the PHP core and Apache module can reside there. Ordinary .php scripts, documents, archives, media and unrelated binary names are outside the default runtime scan. Enable renamed/nonstandard binaries to inspect other native binaries; enable build text for optional source/build evidence.&lt;/P&gt;
+&lt;P&gt;Application folders in user profiles remain included, including Herd, Scoop and AppData programs. OS/recovery trees, known caches, backups and personal media are skipped by default; the broader-locations option restores these soft exclusions. Network storage, cloud placeholders, symlinks, containers, snapshots and BigFix scanner/cache files remain excluded. Archives/images are not unpacked. Files at or above 512 MiB are skipped by default. Limits or meaningful read failures produce a partial scan, preserving positive findings. BigFix reports success when the scan produces a new result, including partial coverage or no PHP found. Failed means the attempt could not produce a new usable scan result.&lt;/P&gt;
+&lt;P&gt;The Analysis has four properties. TRUE means an upstream-affected PHP runtime version was detected for CVE-2026-109618/109619 (fixed upstream: 8.2.35, 8.3.36, 8.4.27, 8.5.12). FALSE means none detected in the checked scope, not proof of absence or lack of web exposure. Vendor backports can retain an older version and require vendor/package verification. Build text alone does not set TRUE. Partial results are identified beside the last scan time; while a scan runs the properties retain the previous finished scan.&lt;/P&gt;
+&lt;P&gt;&lt;STRONG&gt;Detailed scan log:&lt;/STRONG&gt; YARA_PHP/scan.log under the BigFix client state root: normally C:\Program Files (x86)\BigFix Enterprise\BES Client\YARA_PHP on Windows and /var/opt/BESClient/YARA_PHP on Linux. summary.txt supplies the four Analysis properties; scan.lock prevents overlapping scans. Temporary work files are removed after the action.&lt;/P&gt;
+&lt;P&gt;&lt;STRONG&gt;Minimum BigFix Client:&lt;/STRONG&gt; 9.5.7. Use a client release that supports your operating system.&lt;/P&gt;
+&lt;P&gt;Linux uses Bash 4+, GNU find/coreutils, awk, tar/gzip and flock (util-linux), with a prerequisite check; it does not need Python, jq, PHP or a compiler and installs no runtime. Windows uses PowerShell 5.1/.NET already supplied by supported Windows versions. Both use the pinned YARA-X engine delivered by BigFix. The action waits for completion. Rule source: https://github.com/bigfix/Site_Rapid_Response (Apache-2.0), an unofficial community utility rather than HCL-supported patch content.&lt;/P&gt;
+&lt;h3&gt;Scan settings&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Recommended: leave the defaults unchanged.&lt;/strong&gt; Defaults cover typical workstations and servers while using low resource priority. Large developer or file servers may need higher limits. Increasing a limit can increase disk activity and run time.&lt;/p&gt;&lt;table&gt;&lt;tr&gt;&lt;th&gt;Setting&lt;/th&gt;&lt;th&gt;Value&lt;/th&gt;&lt;th&gt;What this setting does&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPExcludeDirectoriesHex"&gt;Additional directory exclusions (comma-separated)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPExcludeDirectoriesHex" value="" size="48" maxlength="4096" /&gt;&lt;/td&gt;&lt;td&gt;Skip your chosen folders; leave blank for no additional exclusions. See the examples below.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPIncludeNonstandardNames"&gt;Include renamed or nonstandard PHP binaries (slower)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input type="checkbox" id="PHPIncludeNonstandardNames"  /&gt;&lt;/td&gt;&lt;td&gt;Scans other native binary names; leaving this off can miss renamed or custom embedded PHP.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPIncludeBroaderLocations"&gt;Include OS, recovery, cache and data locations (slower)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input type="checkbox" id="PHPIncludeBroaderLocations"  /&gt;&lt;/td&gt;&lt;td&gt;Restores OS, recovery, cache and data locations normally excluded, while retaining scan limits.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPIncludeBuildText"&gt;Include PHP source/build text (slower)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input type="checkbox" id="PHPIncludeBuildText"  /&gt;&lt;/td&gt;&lt;td&gt;Includes PHP build/header evidence without treating it as an installed runtime.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPEnumerationSeconds"&gt;File search time (minutes)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPEnumerationSeconds" value="20" size="12" /&gt;&lt;/td&gt;&lt;td&gt;Stops searching after this many minutes and marks unfinished coverage as partial. (Allowed: 1 to 60.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPScanSeconds"&gt;Content scan time (minutes)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPScanSeconds" value="15" size="12" /&gt;&lt;/td&gt;&lt;td&gt;Limits YARA content scanning to this many minutes and reports partial results if it times out. (Allowed: 1 to 60.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPMaxFiles"&gt;Maximum files checked&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPMaxFiles" value="5000000" size="12" /&gt;&lt;/td&gt;&lt;td&gt;Caps files considered during discovery to bound work on unusually large filesystems. (Allowed: 1000 to 5000000.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPCandidateGB"&gt;Maximum candidate input (GiB)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPCandidateGB" value="30" size="12" /&gt;&lt;/td&gt;&lt;td&gt;Caps the combined size of files sent to YARA; exceeding this reports a partial scan. (Allowed: 1 to 100.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPMaxFileMB"&gt;Maximum individual file size (MiB)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPMaxFileMB" value="512" size="12" /&gt;&lt;/td&gt;&lt;td&gt;Skips individual files at or above this size; 512 MiB covers normal PHP and large embedded builds. (Allowed: 16 to 2048.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPCpuLimit"&gt;YARA CPU setting (%)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPCpuLimit" value="10" size="12" /&gt;&lt;/td&gt;&lt;td&gt;Sets the YARA engine CPU target; this is not a total system CPU guarantee. (Allowed: 1 to 50.)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p&gt;&lt;strong&gt;Exclusion examples:&lt;/strong&gt; Linux: &lt;code&gt;/data/*&lt;/code&gt; skips /data and every subfolder; &lt;code&gt;/data/&lt;/code&gt; skips only files directly in /data and still searches its subfolders; &lt;code&gt;*/data/*&lt;/code&gt; skips every folder named data and its subfolders. Windows equivalents: &lt;code&gt;C:\folder\*&lt;/code&gt;, &lt;code&gt;C:\folder\&lt;/code&gt;, &lt;code&gt;*\folder\*&lt;/code&gt;. Use absolute paths or a leading */; * matches any characters, including separators. Other characters are literal. Windows matching ignores case; Linux matching is case-sensitive. Separate entries with commas, without quotes. Spaces inside paths are supported; commas inside folder names are not. Maximum 32 entries and 4096 UTF-8 bytes. These exclusions also apply when broader locations are enabled and can hide PHP in the excluded scope; the scan log records them. Intentional exclusions do not mark a scan partial.&lt;/p&gt;&lt;p&gt;&lt;button onclick="return PhpScan.prepare();"&gt;Configure and Take Action&lt;/button&gt;&lt;/p&gt;&lt;p&gt;This passes only the selected settings to this Task's native Action1 and opens the standard Console Take Action dialog. Select computers there. The controls apply to this action only; the scanner script is stored in the Actions tab. API/WebUI actions without parameters use the defaults; API integrations can supply the same action parameters. CPU is a YARA engine setting, not a total-host CPU guarantee.&lt;/p&gt;&lt;script type="text/javascript"&gt;var phpScanFields = [{"key": "PHPExcludeDirectoriesHex", "label": "Additional directory exclusions (comma-separated)", "default": "x", "text": true, "help": "Skip your chosen folders; leave blank for no additional exclusions. See the examples below."}, {"key": "PHPIncludeNonstandardNames", "label": "Include renamed or nonstandard PHP binaries (slower)", "default": 0, "min": 0, "max": 1, "checkbox": true, "help": "Scans other native binary names; leaving this off can miss renamed or custom embedded PHP."}, {"key": "PHPIncludeBroaderLocations", "label": "Include OS, recovery, cache and data locations (slower)", "default": 0, "min": 0, "max": 1, "checkbox": true, "help": "Restores OS, recovery, cache and data locations normally excluded, while retaining scan limits."}, {"key": "PHPIncludeBuildText", "label": "Include PHP source/build text (slower)", "default": 0, "min": 0, "max": 1, "checkbox": true, "help": "Includes PHP build/header evidence without treating it as an installed runtime."}, {"key": "PHPEnumerationSeconds", "label": "File search time (minutes)", "default": 1200, "min": 30, "max": 3600, "multiplier": 60, "help": "Stops searching after this many minutes and marks unfinished coverage as partial."}, {"key": "PHPScanSeconds", "label": "Content scan time (minutes)", "default": 900, "min": 30, "max": 3600, "multiplier": 60, "help": "Limits YARA content scanning to this many minutes and reports partial results if it times out."}, {"key": "PHPMaxFiles", "label": "Maximum files checked", "default": 5000000, "min": 1000, "max": 5000000, "help": "Caps files considered during discovery to bound work on unusually large filesystems."}, {"key": "PHPCandidateGB", "label": "Maximum candidate input (GiB)", "default": 30, "min": 1, "max": 100, "help": "Caps the combined size of files sent to YARA; exceeding this reports a partial scan."}, {"key": "PHPMaxFileMB", "label": "Maximum individual file size (MiB)", "default": 512, "min": 16, "max": 2048, "help": "Skips individual files at or above this size; 512 MiB covers normal PHP and large embedded builds."}, {"key": "PHPCpuLimit", "label": "YARA CPU setting (%)", "default": 10, "min": 1, "max": 50, "help": "Sets the YARA engine CPU target; this is not a total system CPU guarantee."}];
+var phpScanWindows = false;
+/* Console JScript compatible: no JSON dependency, eval, credentials or target selection. */
+var PhpScan = (function () {
+    function parameters(values) {
+        var fields = phpScanFields, selected = {}, index, field, text, number, multiplier, minimum, maximum;
+        for (index = 0; index &lt; fields.length; index++) {
+            field = fields[index];
+            text = String(values[field.key]);
+            if (field.text) {
+                // Encode UTF-8 bytes, never interpolate a directory into script code.
+                if (/[\x00-\x1f\x7f]/.test(text)) { throw new Error('Exclusions cannot contain control characters.'); }
+                var entries = text.split(','), clean = [], j, entry, encoded, hex = 'x', k, byte;
+                for (j = 0; j &lt; entries.length; j++) {
+                    entry = entries[j].replace(/^\s+|\s+$/g, '');
+                    if (!entry) { continue; }
+                    var prefix = phpScanWindows ? /^([A-Za-z]:[\\\/]|\*[\\\/])/ : /^(\/|\*\/)/;
+                    var relative = phpScanWindows ? /(^|[\\\/])\.{1,2}([\\\/]|$)/ : /(^|\/)\.{1,2}(\/|$)/;
+                    if (!prefix.test(entry) || relative.test(entry)) {
+                        throw new Error('Use absolute exclusion paths or a leading */; . and .. segments are not allowed.');
+                    }
+                    clean.push(entry);
+                }
+                if (clean.length &gt; 32) { throw new Error('Use at most 32 directory exclusions.'); }
+                encoded = encodeURIComponent(clean.join(','));
+                for (k = 0; k &lt; encoded.length; k++) {
+                    if (encoded.charAt(k) === '%') { byte = encoded.substr(k + 1, 2); k += 2; }
+                    else { byte = encoded.charCodeAt(k).toString(16); if (byte.length &lt; 2) { byte = '0' + byte; } }
+                    hex += byte.toLowerCase();
+                }
+                if (hex.length &gt; 8193) { throw new Error('Directory exclusions must fit within 4096 UTF-8 bytes.'); }
+                selected[field.key] = hex;
+                continue;
+            }
+            if (!/^[0-9]{1,9}$/.test(text)) { throw new Error(field.label + ': enter a whole number.'); }
+            number = Number(text);
+            multiplier = field.multiplier || 1;
+            minimum = Math.ceil(field.min / multiplier);
+            maximum = Math.floor(field.max / multiplier);
+            if (number &lt; minimum || number &gt; maximum) { throw new Error(field.label + ': use ' + minimum + ' to ' + maximum + '.'); }
+            number = number * multiplier;
+            selected[field.key] = String(number);
+        }
+        return selected;
+    }
+    function prepare() {
+        try {
+            var values = {}, index, field;
+            for (index = 0; index &lt; phpScanFields.length; index++) {
+                field = phpScanFields[index];
+                values[field.key] = field.checkbox ? (document.getElementById(field.key).checked ? '1' : '0') : document.getElementById(field.key).value;
+            }
+            var selected = parameters(values);
+            if (typeof TakeSecureFixletAction === 'undefined' || typeof Relevance === 'undefined') {
+                throw new Error('Open this content in the BigFix Console to use this settings form. API/WebUI launches use defaults unless action parameters are supplied.');
+            }
+            // These are ordinary, nonsecret action parameters. The Console
+            // obtains the current Task's Action1; no XML or script is rebuilt.
+            TakeSecureFixletAction(Relevance('id of current fixlet'), Relevance('id of current bes site'), 'Action1', selected, {});
+        } catch (error) { alert('Cannot prepare scan. ' + error.message); }
+        return false;
+    }
+    return {parameters: parameters, prepare: prepare};
+}());
+document.body.ontakeaction = function () { return PhpScan.prepare(); };
+&lt;/script&gt;</Description>
+    <Relevance>if (version of client &gt;= "9.5.7") then (if (name of operating system starts with "Linux") then ((name of operating system starts with "Linux") and architecture of operating system = "x86_64" and (((exists lines whose (it = regex "ID=(rhel|%22(rhel)%22)") of files "/etc/os-release") and (exists lines whose (it = regex "VERSION_ID=((7|8|9|10)(\.[0-9]+)*|%22((7|8|9|10)(\.[0-9]+)*)%22)") of files "/etc/os-release")) or ((exists lines whose (it = regex "ID=(rocky|almalinux|%22(rocky|almalinux)%22)") of files "/etc/os-release") and (exists lines whose (it = regex "VERSION_ID=((8|9|10)(\.[0-9]+)*|%22((8|9|10)(\.[0-9]+)*)%22)") of files "/etc/os-release")) or (exists lines whose (it = regex "ID=(ubuntu|%22(ubuntu)%22)") of files "/etc/os-release")) and exists file "/bin/bash") else false) else false</Relevance>
+    <Category>PHP Security Discovery</Category>
+    <DefaultAction ID="Action1">
+      <Description>
+        <PreLink>Click </PreLink>
+        <Link>here</Link>
+        <PostLink> to run bounded local PHP discovery.</PostLink>
+      </Description>
+      <ActionScript MIMEType="application/x-Fixlet-Windows-Shell">begin prefetch block
+add prefetch item name=yara-x-v1.22.0-x86_64-unknown-linux-gnu.tar.gz sha1=f6e1f286242753e0e621c43da7f0c753c8ffc1f4 sha256=7f470770b2c1a0d97f02298fc194978d999074d147d003d33dd62775761439db size=10347394 url=https://github.com/VirusTotal/yara-x/releases/download/v1.22.0/yara-x-v1.22.0-x86_64-unknown-linux-gnu.tar.gz
+end prefetch block
+action uses file encoding UTF-8 NoBOM
+if {not exists parameter "PHPExcludeDirectoriesHex"}
+parameter "PHPExcludeDirectoriesHex" = "x"
+endif
+continue if {length of parameter "PHPExcludeDirectoriesHex" &lt;= 8193 and parameter "PHPExcludeDirectoriesHex" = regex "x([0-9A-Fa-f][0-9A-Fa-f])*"}
+if {not exists parameter "PHPIncludeNonstandardNames"}
+parameter "PHPIncludeNonstandardNames" = "0"
+endif
+continue if {parameter "PHPIncludeNonstandardNames" = regex "[0-9]+" and length of parameter "PHPIncludeNonstandardNames" &lt;= 9}
+continue if {(parameter "PHPIncludeNonstandardNames" as integer) &gt;= 0 and (parameter "PHPIncludeNonstandardNames" as integer) &lt;= 1}
+if {not exists parameter "PHPIncludeBroaderLocations"}
+parameter "PHPIncludeBroaderLocations" = "0"
+endif
+continue if {parameter "PHPIncludeBroaderLocations" = regex "[0-9]+" and length of parameter "PHPIncludeBroaderLocations" &lt;= 9}
+continue if {(parameter "PHPIncludeBroaderLocations" as integer) &gt;= 0 and (parameter "PHPIncludeBroaderLocations" as integer) &lt;= 1}
+if {not exists parameter "PHPIncludeBuildText"}
+parameter "PHPIncludeBuildText" = "0"
+endif
+continue if {parameter "PHPIncludeBuildText" = regex "[0-9]+" and length of parameter "PHPIncludeBuildText" &lt;= 9}
+continue if {(parameter "PHPIncludeBuildText" as integer) &gt;= 0 and (parameter "PHPIncludeBuildText" as integer) &lt;= 1}
+if {not exists parameter "PHPEnumerationSeconds"}
+parameter "PHPEnumerationSeconds" = "1200"
+endif
+continue if {parameter "PHPEnumerationSeconds" = regex "[0-9]+" and length of parameter "PHPEnumerationSeconds" &lt;= 9}
+continue if {(parameter "PHPEnumerationSeconds" as integer) &gt;= 30 and (parameter "PHPEnumerationSeconds" as integer) &lt;= 3600}
+if {not exists parameter "PHPScanSeconds"}
+parameter "PHPScanSeconds" = "900"
+endif
+continue if {parameter "PHPScanSeconds" = regex "[0-9]+" and length of parameter "PHPScanSeconds" &lt;= 9}
+continue if {(parameter "PHPScanSeconds" as integer) &gt;= 30 and (parameter "PHPScanSeconds" as integer) &lt;= 3600}
+if {not exists parameter "PHPMaxFiles"}
+parameter "PHPMaxFiles" = "5000000"
+endif
+continue if {parameter "PHPMaxFiles" = regex "[0-9]+" and length of parameter "PHPMaxFiles" &lt;= 9}
+continue if {(parameter "PHPMaxFiles" as integer) &gt;= 1000 and (parameter "PHPMaxFiles" as integer) &lt;= 5000000}
+if {not exists parameter "PHPCandidateGB"}
+parameter "PHPCandidateGB" = "30"
+endif
+continue if {parameter "PHPCandidateGB" = regex "[0-9]+" and length of parameter "PHPCandidateGB" &lt;= 9}
+continue if {(parameter "PHPCandidateGB" as integer) &gt;= 1 and (parameter "PHPCandidateGB" as integer) &lt;= 100}
+if {not exists parameter "PHPMaxFileMB"}
+parameter "PHPMaxFileMB" = "512"
+endif
+continue if {parameter "PHPMaxFileMB" = regex "[0-9]+" and length of parameter "PHPMaxFileMB" &lt;= 9}
+continue if {(parameter "PHPMaxFileMB" as integer) &gt;= 16 and (parameter "PHPMaxFileMB" as integer) &lt;= 2048}
+if {not exists parameter "PHPCpuLimit"}
+parameter "PHPCpuLimit" = "10"
+endif
+continue if {parameter "PHPCpuLimit" = regex "[0-9]+" and length of parameter "PHPCpuLimit" &lt;= 9}
+continue if {(parameter "PHPCpuLimit" as integer) &gt;= 1 and (parameter "PHPCpuLimit" as integer) &lt;= 50}
+parameter "output" = "{pathname of parent folder of data folder of client}/YARA_PHP"
+parameter "work" = "{parameter "output"}/work-{id of action}"
+folder create "{parameter "output"}"
+folder create "{parameter "work"}"
+delete __createfile
+createfile until END_PHP_YARA_0f68f1276f3d50db
+/*
+  PHP install detection + version, all OSes (Linux ELF, Windows PE, macOS Mach-O).
+
+  Deliberately broad: PHP_Binary_Broad flags anything that looks PHP-related so
+  nothing is missed; the other rules carry the exact version string. Run with
+  `yara -s` (or `yr scan -s`) to print the matched version text.
+
+  Rules:
+    PHP_Runtime_Version     - PHP core runtime; $ver holds the exact version,
+                              incl. distro suffix (e.g. 8.1.2-1ubuntu2.27)
+    PHP_Windows_VersionInfo - any PE whose version resource says ProductName=PHP
+                              (php.exe, php-cgi.exe, php8ts.dll, ext\php_*.dll);
+                              $pv holds ProductVersion
+    PHP_Binary_Broad        - catch-all: any executable with any PHP marker
+    PHP_Build_Artifact      - php-config / php_version.h left by source installs
+
+  No modules are imported so the rules also work in embedded YARA engines
+  (osquery, EDRs) that are built without the pe/elf/macho modules.
+
+  See README.md for tested samples and the API number -&gt; branch table.
+*/
+
+private rule PHP_Detect_IsExecutable
+{{
+  condition:
+    uint32(0) == 0x464C457F                                 // ELF
+    or uint16(0) == 0x5A4D                                  // PE (MZ)
+    or uint32(0) == 0xFEEDFACE or uint32(0) == 0xFEEDFACF   // Mach-O 32/64
+    or uint32(0) == 0xCEFAEDFE or uint32(0) == 0xCFFAEDFE   // Mach-O 32/64, byte-swapped
+    or uint32(0) == 0xBEBAFECA                              // Mach-O universal (CAFEBABE)
+}
+
+rule PHP_Runtime_Version
+{{
+  meta:
+    description = "PHP core runtime (CLI/CGI/FPM/mod_php/libphp/php*ts.dll/php8.dll/embedded); $ver = exact version"
+    confidence = "high"
+  strings:
+    // Compile-time literal "X-Powered-By: PHP/" PHP_VERSION in main/SAPI.c.
+    // Present regardless of expose_php. Suffix covers distro builds (8.1.2-1ubuntu2.27)
+    // and pre-releases (8.5.0RC1).
+    $ver = /X-Powered-By: PHP\/[0-9]{{1,2}\.[0-9]{{1,2}\.[0-9]{{1,3}[0-9A-Za-z.+~_-]{{0,40}/
+  condition:
+    PHP_Detect_IsExecutable and $ver
+}
+
+rule PHP_Windows_VersionInfo
+{{
+  meta:
+    description = "Windows PE with PHP version resource; $pv = ProductVersion (exact version)"
+    confidence = "high"
+  strings:
+    // UTF-16LE "ProductName" &lt;NUL + 0-2 bytes alignment pad&gt; "PHP\0"
+    $pname = {{ 50 00 72 00 6F 00 64 00 75 00 63 00 74 00 4E 00 61 00 6D 00 65 00 [2-4] 50 00 48 00 50 00 00 00 }
+    $pv = /ProductVersion\x00[0-9]{{1,2}\.[0-9]{{1,2}\.[0-9]{{1,3}[0-9A-Za-z.\-]{{0,20}/ wide
+  condition:
+    // #pv &gt;= 0 is always true: $pv is only there so -s prints the version
+    uint16(0) == 0x5A4D and $pname and #pv &gt;= 0
+}
+
+rule PHP_Binary_Broad
+{{
+  meta:
+    description = "Broad catch-all: executable containing any PHP runtime/extension marker"
+    confidence = "medium"
+  strings:
+    $xpb    = "X-Powered-By: PHP/"
+    $zend   = "Zend Engine v"
+    // ZEND_MODULE_BUILD_ID, e.g. API20220829,NTS / API20250925,TS - also in extensions
+    $api    = /API20[0-9]{{6},N?TS/
+    $pname  = {{ 50 00 72 00 6F 00 64 00 75 00 63 00 74 00 4E 00 61 00 6D 00 65 00 [2-4] 50 00 48 00 50 00 00 00 }
+    $grp    = "The PHP Group" ascii wide
+    $ini    = "php.ini"
+    $fmt    = "PHP %s (%s)"
+  condition:
+    PHP_Detect_IsExecutable and
+    (
+      $xpb or $zend or $api or $pname
+      or ($grp and ($ini or $fmt))
+    )
+}
+
+rule PHP_Build_Artifact
+{{
+  meta:
+    description = "php-config script or php_version.h header from a PHP build/install; $v* = version"
+    confidence = "medium"
+  strings:
+    // php-config (installed next to the php binary by `make install` and -dev packages)
+    $cfg_ver   = /version="[0-9]{{1,2}\.[0-9]{{1,2}\.[0-9]{{1,3}[0-9A-Za-z.+~_-]{{0,40}"/
+    $cfg_a     = "php_cli_binary="
+    $cfg_b     = "--php-binary"
+    // main/php_version.h
+    $hdr_ver   = /#define PHP_VERSION "[0-9]{{1,2}\.[0-9]{{1,2}\.[0-9]{{1,3}[0-9A-Za-z.+~_-]{{0,40}"/
+    $hdr_a     = "#define PHP_MAJOR_VERSION"
+  condition:
+    filesize &lt; 64KB and
+    (
+      ($cfg_ver and $cfg_a and $cfg_b)
+      or ($hdr_ver and $hdr_a)
+    )
+}
+END_PHP_YARA_0f68f1276f3d50db
+delete "{parameter "work"}/php-detect.yar"
+move __createfile "{parameter "work"}/php-detect.yar"
+delete __createfile
+createfile until END_PHP_YARA_370003068abc2bde
+#!/bin/bash
+# Bounded, dependency-light PHP discovery. Bash 4+, GNU find/coreutils, awk,
+# tar/gzip and flock (util-linux); no Python, jq, compiler or PHP execution.
+# YARA text parsing follows the Apache-2.0 Rapid Response scanner approach.
+set -euo pipefail
+export LC_ALL=C
+umask 077
+engine= rules= output= archive= engine_sha256= archive_sha256=
+enumeration_seconds=1200 scan_seconds=900 max_files=5000000 candidate_gb=30
+max_file_mb=512 cpu_limit=10 include_build_text=0 include_broader_locations=0 include_nonstandard_names=0
+roots=()
+exclude_directories_hex=x
+while (($#)); do
+    (($# &gt;= 2)) || {{ echo 'Missing argument' &gt;&amp;2; exit 2; }
+    case "$1" in
+        --engine) engine=$2;; --engine-sha256) engine_sha256=$2;; --rules) rules=$2;; --output) output=$2;;
+        --archive) archive=$2;; --archive-sha256) archive_sha256=$2;; --root) roots+=("$2");;
+        --enumeration-seconds) enumeration_seconds=$2;; --scan-seconds) scan_seconds=$2;;
+        --max-files) max_files=$2;; --candidate-gb) candidate_gb=$2;; --max-file-mb) max_file_mb=$2;;
+        --cpu-limit) cpu_limit=$2;; --include-build-text) include_build_text=$2;;
+        --include-broader-locations) include_broader_locations=$2;; --include-nonstandard-names) include_nonstandard_names=$2;;
+        --exclude-directories-hex) exclude_directories_hex=$2;;
+        *) echo 'Unknown argument' &gt;&amp;2; exit 2;;
+    esac
+    shift 2
+done
+for name in enumeration_seconds scan_seconds max_files candidate_gb max_file_mb cpu_limit include_build_text include_broader_locations include_nonstandard_names; do
+    [[ ${{!name} =~ ^[0-9]{{1,9}$ ]] || {{ echo "Invalid $name" &gt;&amp;2; exit 2; }
+done
+((enumeration_seconds&gt;=1 &amp;&amp; enumeration_seconds&lt;=3600 &amp;&amp; scan_seconds&gt;=1 &amp;&amp; scan_seconds&lt;=3600 &amp;&amp; max_files&gt;=1 &amp;&amp; max_files&lt;=5000000 &amp;&amp; candidate_gb&gt;=1 &amp;&amp; candidate_gb&lt;=100 &amp;&amp; max_file_mb&gt;=1 &amp;&amp; max_file_mb&lt;=2048 &amp;&amp; cpu_limit&gt;=1 &amp;&amp; cpu_limit&lt;=99 &amp;&amp; include_build_text&lt;=1 &amp;&amp; include_broader_locations&lt;=1 &amp;&amp; include_nonstandard_names&lt;=1)) || exit 2
+[[ $output = /* &amp;&amp; $engine = /* &amp;&amp; $rules = /* ]] || exit 2
+missing=()
+for command in find timeout stat od awk sort sha256sum tar gzip flock date mkdir mv chmod dirname mkfifo cp nice cat head tr; do
+    command -v "$command" &gt;/dev/null 2&gt;&amp;1 || missing+=("$command")
+done
+((${{#missing[@]}==0)) || {{ printf 'Missing required utilities: %s\n' "${{missing[*]}" &gt;&amp;2; exit 2; }
+# Reject symlink output ancestors and insecure output ownership. Never change
+# permissions on an unrelated directory and never follow an output redirect.
+current=$output
+while [[ $current != / ]]; do [[ ! -L $current ]] || exit 2; current=${{current%/*}; [[ -n $current ]] || current=/; done
+mkdir -p -- "$output"
+[[ $(stat -c %u -- "$output") = "$EUID" ]] || exit 2
+mode=$(stat -c %a -- "$output"); (( (8#$mode &amp; 0022)==0 )) || {{ echo 'Output directory is writable by another account' &gt;&amp;2; exit 2; }
+for leaf in scan.lock scan.log scan.log.new summary.txt summary.txt.new; do [[ ! -L $output/$leaf ]] || exit 2; done
+exec 9&gt;"$output/scan.lock"
+flock -n 9 || exit 75
+work=$(dirname -- "$engine")
+[[ -d $work &amp;&amp; ! -L $work ]] || exit 2
+started=$(date -u '+%Y-%m-%d %H:%M:%S UTC'); start_seconds=$SECONDS
+finished=0 find_pid= scan_pid=
+failure() {{
+    result=$?
+    trap - EXIT
+    if [[ -n $find_pid ]]; then kill "$find_pid" 2&gt;/dev/null || :; wait "$find_pid" 2&gt;/dev/null || :; fi
+    if [[ -n $scan_pid ]]; then kill "$scan_pid" 2&gt;/dev/null || :; wait "$scan_pid" 2&gt;/dev/null || :; fi
+    if (( !finished )); then
+        printf '\nScan failed (exit %s); previous finished results retained.\n' "$result" &gt;&gt;"$output/scan.log"
+        if [[ -f $output/summary.txt ]]; then
+            awk '/^LAST_SCAN=/{{sub(/ \(Last attempt failed.*/, ""); print $0 " (Last attempt failed; see scan.log)"; next} {{print}' "$output/summary.txt" &gt;"$output/summary.txt.new"
+        else printf 'DETECTED=FALSE\nLAST_SCAN=NO SCAN (Last attempt failed; see scan.log)\nDURATION=NO SCAN\n' &gt;"$output/summary.txt.new"; fi
+        mv -f -- "$output/summary.txt.new" "$output/summary.txt"
+    fi
+    exit "$result"
+}
+trap failure EXIT
+trap 'exit 130' INT TERM
+printf 'PHP scan started: %s\nStandard names: %s; build text: %s; broader locations: %s\n' "$started" "$((1-include_nonstandard_names))" "$include_build_text" "$include_broader_locations" &gt;"$output/scan.log"
+exec 2&gt;&gt;"$output/scan.log"
+# Decode only validated byte pairs. Paths are never shell code, printf formats or
+# evaluated expressions. GNU find gets quoted regex arguments with literal syntax
+# escaped; only '*' is a wildcard. Directory pruning happens before any file read.
+[[ ${{#exclude_directories_hex} -le 8193 &amp;&amp; $exclude_directories_hex =~ ^x([0-9a-fA-F]{{2})*$ ]] || {{ echo 'Invalid encoded exclusions' &gt;&amp;2; exit 2; }
+exclusion_text=
+for ((i=1;i&lt;${{#exclude_directories_hex};i+=2)); do
+    pair=${{exclude_directories_hex:i:2}
+    [[ $pair != 00 ]] || {{ echo 'NUL in exclusions' &gt;&amp;2; exit 2; }
+    printf -v character '%b' "\\x$pair"; exclusion_text+=$character
+done
+[[ $exclusion_text != *[[:cntrl:]]* ]] || {{ echo 'Control character in exclusions' &gt;&amp;2; exit 2; }
+custom_trees=(); custom_direct=(); custom_patterns=()
+IFS=',' read -r -a exclusion_entries &lt;&lt;&lt;"$exclusion_text"
+for pattern in "${{exclusion_entries[@]}"; do
+    pattern="${{pattern#"${{pattern%%[![:space:]]*}"}"; pattern="${{pattern%"${{pattern##*[![:space:]]}"}"
+    [[ -n $pattern ]] || continue
+    ((${{#custom_patterns[@]}&lt;32)) || {{ echo 'At most 32 exclusions allowed' &gt;&amp;2; exit 2; }
+    [[ $pattern = /* || $pattern = \*/* ]] || {{ echo 'Linux exclusions need an absolute path or leading */' &gt;&amp;2; exit 2; }
+    [[ ! /$pattern/ =~ /\.\.?/ ]] || {{ echo 'Relative path segments are not allowed' &gt;&amp;2; exit 2; }
+    while [[ $pattern = *//* ]]; do pattern=${{pattern//\/\//\/}; done
+    while [[ $pattern = *\*\** ]]; do pattern=${{pattern//\*\*/\*}; done
+    custom_patterns+=("$pattern")
+    recursive=0; basis=$pattern
+    if [[ $basis = */\* ]]; then recursive=1; basis=${{basis%/\*}; fi
+    while [[ $basis = */ ]]; do basis=${{basis%/}; done
+    expression=
+    for ((i=0;i&lt;${{#basis};i++)); do
+        character=${{basis:i:1}
+        case "$character" in
+            '*') expression+='.*';;
+            '.'|'['|']'|'('|')'|'{{'|'}'|'+'|'?'|'^'|'$'|'|'|'\') expression+="\\$character";;
+            *) expression+=$character;;
+        esac
+    done
+    if ((recursive)); then custom_trees+=("$expression(/.*)?"); else custom_direct+=("$expression/[^/]+"); fi
+    printf 'Custom directory exclusion: %s\n' "$pattern" &gt;&gt;"$output/scan.log"
+done
+hash() {{ sha256sum -- "$1" | awk '{{print $1}'; }
+[[ $(hash "$rules") = 0f68f1276f3d50db3dcba06fd1d8089e157fbc8e60bcca49ac1e7b2dde664615 ]] || {{ echo 'Rule hash mismatch' &gt;&amp;2; exit 2; }
+if [[ ! -f $engine ]]; then
+    [[ -f $archive &amp;&amp; $(hash "$archive") = "$archive_sha256" ]] || {{ echo 'Archive hash mismatch' &gt;&amp;2; exit 2; }
+    # Extract only the pinned executable to a controlled filename; no archive paths.
+    tar -xOzf "$archive" yr &gt;"$engine"
+    chmod 700 -- "$engine"
+fi
+[[ $(hash "$engine") = "$engine_sha256" ]] || {{ echo 'Engine hash mismatch' &gt;&amp;2; exit 2; }
+prune=(/proc /sys /dev /run /var/lib/docker /var/lib/containers /var/lib/containerd /var/lib/rancher /var/lib/lxc /var/lib/lxd /var/snap/lxd /.snapshots /timeshift "$output")
+if [[ ${{output##*/} = YARA_PHP ]]; then prune+=("${{output%/*}/__BESData"); fi
+if (( !include_broader_locations )); then prune+=(/boot /lost+found /var/log /var/cache /var/backups /var/crash); fi
+if ((${{#roots[@]}==0)); then
+    # Enumerate only local filesystems and deduplicate bind mounts by device/root.
+    # Octal-escaped mount paths are decoded by printf, never by eval.
+    while IFS= read -r mount; do
+        printf -v mount '%b' "$mount"
+        case "$mount" in *$'\n'*|*$'\r'*|*$'\t'*) echo 'Unusual mount path excluded' &gt;&amp;2; continue;; esac
+        roots+=("$mount")
+    done &lt; &lt;(awk '{{for(i=7;i&lt;=NF;i++)if($i=="-"){{fs=$(i+1);break} if(fs ~ /^(ext[234]|xfs|btrfs|zfs|f2fs|jfs|reiserfs|bcachefs|vfat|exfat|ntfs3)$/ || (fs=="tmpfs" &amp;&amp; ($5=="/tmp" || $5=="/var/tmp"))) {{key=$3 ":" $4; if(!seen[key]++)print $5}}' /proc/self/mountinfo)
+fi
+((${{#roots[@]})) || {{ echo 'No supported local filesystem found' &gt;&amp;2; exit 2; }
+name_expression=( '(' -iname 'php*' -o -iname 'libphp*' -o -iname 'mod_php*' -o -iname 'lsphp*' -o -iname 'frankenphp*' ')' )
+((include_nonstandard_names)) &amp;&amp; name_expression=()
+prune_expression=( '(' -false )
+for directory in "${{prune[@]}"; do prune_expression+=( -o -path "$directory" ); done
+prune_expression+=( -o -path '*/.local/share/containers' -o -name '.snapshots' )
+for expression in "${{custom_trees[@]}"; do prune_expression+=( -o '(' -type d -regex "$expression" ')' ); done
+if ((!include_broader_locations)); then prune_expression+=( -o -path '*/.cache' -o -path '*/.npm/_cacache' -o -path '*/.nuget/packages' ); fi
+prune_expression+=( ')' -prune -o )
+direct_expression=()
+for expression in "${{custom_direct[@]}"; do direct_expression+=( '!' -regex "$expression" ); done
+list=$work/candidates.txt; raw=$work/results.txt; errors=$work/engine.stderr; fifo=$work/find.pipe
+: &gt;"$list"; : &gt;"$raw"; : &gt;"$errors"
+[[ ! -e $fifo &amp;&amp; ! -L $fifo ]] || exit 2
+mkfifo -- "$fifo"
+mkdir -- "$work/staged"
+declare -A original_paths
+reasons=(); files=0; candidates=0; bytes=0; size_skipped=0; structural_skipped=0; read_errors=0
+deadline=$((SECONDS+enumeration_seconds))
+# A timeout covers blocked directory reads. Streaming NUL records preserves path
+# bytes and avoids a huge on-disk inventory; the FIFO provides backpressure.
+timeout -k 5 "$enumeration_seconds" find "${{roots[@]}" -regextype posix-extended -xdev -ignore_readdir_race "${{prune_expression[@]}" -type f "${{name_expression[@]}" "${{direct_expression[@]}" -printf '%s\0%p\0' &gt;"$fifo" 2&gt;"$work/find.stderr" &amp;
+find_pid=$!
+while IFS= read -r -d '' -t "$enumeration_seconds" size &amp;&amp; IFS= read -r -d '' -t 5 path; do
+    if ((SECONDS&gt;=deadline || files&gt;=max_files)); then reasons+=('file search limit'); break; fi
+    files=$((files+1)); leaf=${{path##*/}; lower=${{leaf,,}
+    if ((!include_nonstandard_names)); then
+        [[ $lower =~ ^(php|phpdbg|libphp|mod_php|lsphp|frankenphp)([0-9][0-9.]*([-_][a-z0-9_.-]+)?|[-_][a-z0-9_.-]+)?(ts|nts|apache[0-9_]*)?(\.exe|\.dll|\.so(\.[0-9]+)*)?$ ]] || continue
+        case "$lower" in
+            php-config|php_version.h) ((include_build_text)) || continue;;
+            *.*) extension=${{lower##*.}; [[ $extension = exe || $extension = dll || $extension = so || $extension =~ ^[0-9][a-z0-9_-]*$ ]] || continue;;
+        esac
+    fi
+    if [[ $lower = php-config || $lower = php_version.h ]]; then ((include_build_text)) || continue; fi
+    if ((!include_broader_locations)); then case "$lower" in *.db|*.sqlite|*.sqlite3|*.bak|*.dump|*.dmp|*.iso|*.vhd|*.vhdx|*.vmdk|*.wim|*.esd) continue;; esac; fi
+    if ((size&gt;=max_file_mb*1048576)); then size_skipped=$((size_skipped+1)); continue; fi
+    # Stat/find never opens devices or FIFOs. Recheck after enumeration before
+    # reading, because an application can replace its file during a scan.
+    [[ -f $path &amp;&amp; ! -L $path ]] || continue
+    if ! header=$(timeout -k 1 2 od -An -tx1 -N20 -- "$path" 2&gt;/dev/null | tr -d ' \n'); then
+        [[ -e $path ]] &amp;&amp; read_errors=$((read_errors+1)); continue
+    fi
+    binary=0
+    case "$header" in
+        7f454c46*)
+            # ELF ET_REL/ET_CORE cannot be a live PHP executable/shared runtime.
+            elf_type=${{header:32:4}
+            if [[ $elf_type = 0100 || $elf_type = 0001 || $elf_type = 0400 || $elf_type = 0004 ]]; then structural_skipped=$((structural_skipped+1)); continue; fi
+            binary=1;;
+        4d5a*|cefaedfe*|cffaedfe*|feedface*|feedfacf*|cafebabe*) binary=1;;
+    esac
+    if ((!binary)); then ((include_build_text &amp;&amp; size&lt;65536)) || continue; fi
+    if ((bytes+size&gt;candidate_gb*1073741824)); then reasons+=('total candidate size limit'); break; fi
+    # YARA scan lists are UTF-8 and newline-separated. Stage unusual raw-byte
+    # paths to ASCII names; preserve a reversible Bash-quoted path for reporting.
+    scan_path=$path
+    if [[ $path = *[!\ -\~]* ]]; then
+        scan_path=$work/staged/$candidates
+        if ! timeout -k 2 "$((deadline-SECONDS&gt;0 ? deadline-SECONDS : 1))" cp --reflink=auto -- "$path" "$scan_path"; then read_errors=$((read_errors+1)); continue; fi
+        printf -v quoted '%q' "$path"; original_paths["$scan_path"]=$quoted
+    fi
+    printf '%s\n' "$scan_path" &gt;&gt;"$list"
+    candidates=$((candidates+1)); bytes=$((bytes+size))
+done &lt;"$fifo"
+if ((${{#reasons[@]})); then kill "$find_pid" 2&gt;/dev/null || :; fi
+find_rc=0; wait "$find_pid" || find_rc=$?; find_pid=
+if ((find_rc!=0)); then reasons+=('file search incomplete'); fi
+if [[ -s $work/find.stderr ]]; then reasons+=('unreadable locations'); fi
+((size_skipped==0)) || reasons+=('file size limit')
+((read_errors==0)) || reasons+=('unreadable files')
+scan_start=$SECONDS
+if ((candidates)); then
+    runner=(nice -n 10)
+    # Idle I/O is optional, never a prerequisite that can suppress detection.
+    if command -v ionice &gt;/dev/null 2&gt;&amp;1 &amp;&amp; ionice -c 3 true 2&gt;/dev/null; then runner+=(ionice -c 3); fi
+    (ulimit -f 65536; exec timeout -k 5 "$((scan_seconds+15))" "${{runner[@]}" "$engine" scan --scan-list --print-strings --output-format text --threads 2 --cpu-limit "$cpu_limit" --timeout "$scan_seconds" --max-matches-per-pattern 64 "$rules" "$list") &gt;"$raw" 2&gt;"$errors" &amp;
+    scan_pid=$!; scan_rc=0; wait "$scan_pid" || scan_rc=$?; scan_pid=
+    ((scan_rc==0)) || reasons+=('YARA time/output/error limit')
+    [[ ! -s $errors ]] || reasons+=('YARA warnings or unreadable files')
+fi
+# Parse the engine's documented text output, not shell code or executable PHP.
+awk '
+ /^PHP_/ {{rule=$1; file=$0; sub(/^[^ ]+ /,"",file); seen[file]=1; if(rule=="PHP_Runtime_Version")core[file]=1; if(rule=="PHP_Build_Artifact")build[file]=1; next}
+ /:\$(ver|pv|cfg_ver|hdr_ver): / {{v=$0; gsub(/\\x00/,"",v); sub(/^[^ ]+ /,"",v); if(match(v,/[0-9]+\.[0-9]+\.[0-9]+[0-9A-Za-z.+~_-]*/)) {{v=substr(v,RSTART,RLENGTH); if(rule=="PHP_Runtime_Version")runtime[file SUBSEP v]=1; else evidence[file SUBSEP v]=1}}
+ END {{for(k in runtime){{split(k,a,SUBSEP);print a[1] "\truntime\t" a[2]} for(k in evidence){{split(k,a,SUBSEP);if(!core[a[1]])print a[1] "\tevidence\t" a[2]} for(f in seen)if(!core[f] &amp;&amp; !build[f]) print f "\tunconfirmed\tunknown"}
+' "$raw" | sort -u &gt;"$work/versions.tsv"
+vulnerable=0; unknown=0; findings=0
+: &gt;"$work/vulnerable.txt"
+while IFS=$'\t' read -r path kind version; do
+    [[ -n $path ]] || continue
+    findings=$((findings+1))
+    display=${{original_paths[$path]-$path}
+    printf 'Finding: %s | %s | PHP %s\n' "$display" "$kind" "$version" &gt;&gt;"$output/scan.log"
+    if [[ $kind != runtime ]]; then
+        # Build evidence is expected only in the opt-in mode. Unknown runtime
+        # versions remain a visible qualification in the last-scan property.
+        [[ $kind != unconfirmed ]] || unknown=$((unknown+1))
+        continue
+    fi
+    [[ $version =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)(.*)$ ]] || {{ unknown=$((unknown+1)); continue; }
+    major=${{BASH_REMATCH[1]}; minor=${{BASH_REMATCH[2]}; patch=${{BASH_REMATCH[3]}; suffix=${{BASH_REMATCH[4]}
+    fixed=0 affected=0
+    case "$major.$minor" in 8.2) fixed=35;; 8.3) fixed=36;; 8.4) fixed=27;; 8.5) fixed=12;; esac
+    if ((fixed)); then
+        if ((patch&lt;fixed)) || {{ ((patch==fixed)) &amp;&amp; [[ $suffix =~ ^(alpha|beta|RC|dev) ]]; }; then affected=1; fi
+    elif (( (major==5 &amp;&amp; minor&gt;=4) || major==7 || (major==8 &amp;&amp; minor&lt;2) )); then affected=1
+    else unknown=$((unknown+1)); fi
+    if ((affected)); then
+        vulnerable=$((vulnerable+1))
+        printf '%s | PHP %s\n' "$display" "$version" &gt;&gt;"$work/vulnerable.txt"
+    fi
+done &lt;"$work/versions.tsv"
+((unknown==0)) || reasons+=('unconfirmed PHP version/runtime')
+elapsed=$((SECONDS-start_seconds))
+printf -v duration '%s hours, %s minutes, %s seconds' "$((elapsed/3600))" "$((elapsed%3600/60))" "$((elapsed%60))"
+completed=$(date -u '+%Y-%m-%d %H:%M:%S UTC'); last_scan=$completed
+if ((${{#reasons[@]})); then last_scan+=" (Partial: $(IFS=', '; echo "${{reasons[*]}"); see scan.log)"; fi
+if ((vulnerable&gt;100)); then last_scan+=' (first 100 paths shown; all paths in scan.log)'; fi
+{{
+    printf '\nCompleted: %s\nDuration: %s\nFiles considered: %s\nCandidates: %s\nCandidate bytes: %s\nOver size limit: %s\nRead errors: %s\nStructural skips: %s\nFindings: %s\nUpstream-affected runtime paths: %s\n' "$completed" "$duration" "$files" "$candidates" "$bytes" "$size_skipped" "$read_errors" "$structural_skipped" "$findings" "$vulnerable"
+    printf 'Limits: search %ss; YARA %ss; files %s; individual file %s MiB; candidate input %s GiB; CPU %s%%\n' "$enumeration_seconds" "$scan_seconds" "$max_files" "$max_file_mb" "$candidate_gb" "$cpu_limit"
+    printf 'Result: %s\n' "$last_scan"
+    printf 'TRUE means upstream-affected runtime detected; vendor backports and web exposure require verification. FALSE means none detected within this scope.\n'
+    head -c 32768 -- "$work/find.stderr" "$errors"
+} &gt;&gt;"$output/scan.log"
+{{
+    if ((vulnerable)); then echo DETECTED=TRUE; else echo DETECTED=FALSE; fi
+    printf 'LAST_SCAN=%s\nDURATION=%s\n' "$last_scan" "$duration"
+    awk 'NR&lt;=100 {{if(length($0)&gt;900)$0=substr($0,1,870) "...[full path in scan.log]"; print "VULNERABLE=" $0}' "$work/vulnerable.txt"
+} &gt;"$output/summary.txt.new"
+mv -f -- "$output/summary.txt.new" "$output/summary.txt"
+finished=1
+if ((${{#reasons[@]})); then exit 10; fi
+END_PHP_YARA_370003068abc2bde
+delete "{parameter "work"}/scan-linux.sh"
+move __createfile "{parameter "work"}/scan-linux.sh"
+wait /bin/bash "{parameter "work"}/scan-linux.sh" --engine "{parameter "work"}/yr" --engine-sha256 73656c1f7b48326ddad393166a3ed14479412246bd3fe804abe6bf8ff1e6b43f --rules "{parameter "work"}/php-detect.yar" --output "{parameter "output"}" --archive "{pathname of download file "yara-x-v1.22.0-x86_64-unknown-linux-gnu.tar.gz"}" --archive-sha256 7f470770b2c1a0d97f02298fc194978d999074d147d003d33dd62775761439db --enumeration-seconds {parameter "PHPEnumerationSeconds"} --scan-seconds {parameter "PHPScanSeconds"} --max-files {parameter "PHPMaxFiles"} --candidate-gb {parameter "PHPCandidateGB"} --max-file-mb {parameter "PHPMaxFileMB"} --cpu-limit {parameter "PHPCpuLimit"} --exclude-directories-hex "{parameter "PHPExcludeDirectoriesHex"}" --include-build-text {parameter "PHPIncludeBuildText"} --include-broader-locations {parameter "PHPIncludeBroaderLocations"} --include-nonstandard-names {parameter "PHPIncludeNonstandardNames"}
+parameter "scanExit" = "{exit code of action}"
+folder delete "{parameter "work"}"
+continue if {parameter "scanExit" = "0" or parameter "scanExit" = "10"}
+exit 0
+</ActionScript>
+      <SuccessCriteria Option="RunToCompletion" />
+    </DefaultAction>
+  </Task>
+</BES>

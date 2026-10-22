@@ -1,0 +1,10 @@
+Bounded PHP YARA-X discovery contribution
+
+This bundle builds on the PHP detection work in bigfix/Site_Rapid_Response.
+The php-detect.yar rules are copied unchanged from that project's original PHP
+discovery content. Existing rule comments and attribution are preserved.
+
+The bounded scanner implementations, parameter-only Console form, compact
+reporting Analysis and maintenance helpers are additions to that work.
+
+License and terms: see the repository-root LICENSE and TERMS files.

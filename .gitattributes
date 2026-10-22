@@ -1,0 +1,5 @@
+# Keep source and embedded-payload comparisons deterministic on Windows/Linux.
+tools/php-yara/* text eol=lf
+Fixlets/Windows/22* text eol=lf
+Fixlets/Linux/23* text eol=lf
+Fixlets/Universal/24* text eol=lf

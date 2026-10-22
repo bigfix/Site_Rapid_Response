@@ -1,0 +1,17 @@
+{
+  "upstream": "https://github.com/bigfix/Site_Rapid_Response",
+  "rule_sha256": "0f68f1276f3d50db3dcba06fd1d8089e157fbc8e60bcca49ac1e7b2dde664615",
+  "content": {
+    "Windows": "Fixlets/Windows/22 PHP_Bounded_YARA-X_Discovery_-_Windows.bes",
+    "Linux": "Fixlets/Linux/23 PHP_Bounded_YARA-X_Discovery_-_Linux.bes",
+    "Results": "Fixlets/Universal/24 PHP_Bounded_YARA-X_Scan_Results.bes"
+  },
+  "payloads": [
+    "php-detect.yar",
+    "scan-windows.ps1",
+    "PhpCandidateFilter.cs",
+    "extract-engine.ps1",
+    "scan-linux.sh",
+    "scan-controls.js"
+  ]
+}
