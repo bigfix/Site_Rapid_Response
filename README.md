@@ -2,6 +2,13 @@
 
 beta site for rapid response BigFix content.
 
+## Enhanced PHP vulnerability scanner
+
+The [Windows/Linux PHP scanner](docs/PHP-Scanner.md) adds
+configurable runtime discovery and a compact companion Analysis. The original
+Tasks and macOS content remain available. Review the bundle's scope, defaults,
+version/backport caveats and validation coverage before deployment.
+
 # Use at your own risk
 
 This site is not subject to the full series of testing and regression that one might expect from Published content from the BigFix Team.  In particular, coverage by Operating System or specific application configurations may not have been tested, nor may workload testing have been considered.
