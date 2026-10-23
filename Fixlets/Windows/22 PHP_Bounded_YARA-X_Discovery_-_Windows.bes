@@ -318,7 +318,7 @@ END_PHP_YARA_318980fafe61de1e
 delete "{parameter "work"}/extract-engine.ps1"
 move __createfile "{parameter "work"}/extract-engine.ps1"
 delete __createfile
-createfile until END_PHP_YARA_f3f3367b0c01315f
+createfile until END_PHP_YARA_05336401dc9d2255
 #Requires -Version 5.1
 &lt;# Bounded PHP signature discovery. Never executes discovered PHP binaries.
    PhpCandidateFilter.cs and the pinned rules ship beside this script. #&gt;
@@ -348,6 +348,20 @@ $ErrorActionPreference = 'Stop'
 Import-Module (Join-Path $PSHOME 'Modules\Microsoft.PowerShell.Utility\Microsoft.PowerShell.Utility.psd1') -ErrorAction Stop
 $ruleSha256 = '0f68f1276f3d50db3dcba06fd1d8089e157fbc8e60bcca49ac1e7b2dde664615'
 $utf8 = New-Object Text.UTF8Encoding($false)
+
+# Bound the Analysis reason by UTF-8 bytes and preserve surrogate pairs.
+# Full reasons remain in scan.log. This runs at most once per completed scan.
+function Limit-PhpUnknownReason([string]$Text) {{
+    if ($utf8.GetByteCount($Text) -le 800) {{ return $Text }
+    $low = 0; $high = [Math]::Min(800, $Text.Length)
+    while ($low -lt $high) {{
+        $middle = [int][Math]::Ceiling(($low + $high) / 2.0)
+        if ($utf8.GetByteCount($Text.Substring(0, $middle)) -le 800) {{ $low = $middle }
+        else {{ $high = $middle - 1 }
+    }
+    if ($low -gt 0 -and [char]::IsHighSurrogate($Text[$low - 1])) {{ $low-- }
+    return $Text.Substring(0, $low)
+}
 
 function Assert-NoReparsePath([string]$Path) {{
     $current = [IO.Path]::GetFullPath($Path)
@@ -578,7 +592,7 @@ try {{
         $details = @($why)
         if (@($unverified | Where-Object {{ $_.EndsWith('Vendor patch status unverified') }).Count) {{ $details += 'Vendor patch status unverified' }
         if (-not $details.Count) {{ $details = @('Incomplete or unverified results; see scan.log') }
-        $summary += 'UNKNOWN_REASON=' + ($details -join '; ')
+        $summary += 'UNKNOWN_REASON=' + (Limit-PhpUnknownReason ($details -join '; '))
     }
     if ($env:PHP_BACKGROUND_RUN_ID) {{ $summary += 'RUN_ID=' + $env:PHP_BACKGROUND_RUN_ID }
     $summary += $pathRows.ToArray()
@@ -595,7 +609,7 @@ catch {{
     throw
 }
 finally {{ if ($lock) {{ $lock.Dispose() } }
-END_PHP_YARA_f3f3367b0c01315f
+END_PHP_YARA_05336401dc9d2255
 delete "{parameter "work"}/scan-windows.ps1"
 move __createfile "{parameter "work"}/scan-windows.ps1"
 delete __createfile

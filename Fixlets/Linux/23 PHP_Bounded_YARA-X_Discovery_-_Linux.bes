@@ -307,7 +307,7 @@ END_PHP_YARA_0f68f1276f3d50db
 delete "{parameter "work"}/php-detect.yar"
 move __createfile "{parameter "work"}/php-detect.yar"
 delete __createfile
-createfile until END_PHP_YARA_ad850551204111e3
+createfile until END_PHP_YARA_bbc3f5920c545595
 #!/bin/bash
 # Bounded, dependency-light PHP discovery. Bash 4+, GNU find/coreutils, awk,
 # tar/gzip and flock (util-linux); no Python, jq, compiler or PHP execution.
@@ -411,7 +411,7 @@ done
 ((enumeration_seconds&gt;=1 &amp;&amp; enumeration_seconds&lt;=3600 &amp;&amp; scan_seconds&gt;=1 &amp;&amp; scan_seconds&lt;=3600 &amp;&amp; max_files&gt;=1 &amp;&amp; max_files&lt;=10000000 &amp;&amp; candidate_gb&gt;=1 &amp;&amp; candidate_gb&lt;=100 &amp;&amp; max_file_mb&gt;=1 &amp;&amp; max_file_mb&lt;=2048 &amp;&amp; cpu_limit&gt;=1 &amp;&amp; cpu_limit&lt;=99 &amp;&amp; include_build_text&lt;=1 &amp;&amp; include_broader_locations&lt;=1 &amp;&amp; include_nonstandard_names&lt;=1)) || {{ echo 'Scan setting outside its allowed range' &gt;&amp;2; exit 2; }
 [[ $output = /* &amp;&amp; $engine = /* &amp;&amp; $rules = /* ]] || {{ echo 'Engine, rule and output paths must be absolute' &gt;&amp;2; exit 2; }
 missing=()
-for command in df find timeout stat od awk sort sha256sum tar gzip flock date mkdir mv chmod dirname mkfifo cp nice cat head tr rm; do
+for command in df find timeout stat awk sort sha256sum tar gzip flock date mkdir mv chmod dirname mkfifo cp nice cat head rm; do
     command -v "$command" &gt;/dev/null 2&gt;&amp;1 || missing+=("$command")
 done
 ((${{#missing[@]}==0)) || {{ printf 'Missing required utilities: %s\n' "${{missing[*]}" &gt;&amp;2; exit 2; }
@@ -430,10 +430,50 @@ work=$(dirname -- "$engine")
 mode=$(stat -c %a -- "$work"); (( (8#$mode &amp; 0022)==0 )) || {{ echo 'Scan workspace is writable by another account' &gt;&amp;2; exit 2; }
 if [[ -n ${{PHP_BACKGROUND_RUN_ID:-} ]]; then printf "%s\n" "$PHP_BACKGROUND_RUN_ID" &gt;"$work/attempt.admitted"; fi
 started=$(date -u '+%Y-%m-%d %H:%M:%S UTC'); start_seconds=$SECONDS
+# Persistent header worker: one process per scan instead of several per file.
+# The request/response FIFOs are private attempt-owned objects. Opening both
+# ends in the parent avoids startup/EOF races; read -t applies to the FIFO.
+header_pid=
+stop_header_worker() {{
+    if [[ -n $header_pid ]]; then
+        kill -KILL "$header_pid" 2&gt;/dev/null || :
+        wait "$header_pid" 2&gt;/dev/null || :
+        header_pid=
+    fi
+    exec 6&gt;&amp;- 7&gt;&amp;-
+}
+start_header_worker() {{
+    local leaf
+    for leaf in header-request.pipe header-response.pipe; do
+        [[ ! -L $work/$leaf ]] || return 1
+        if [[ -e $work/$leaf ]]; then [[ -p $work/$leaf ]] || return 1; rm -f -- "$work/$leaf"; fi
+        mkfifo -- "$work/$leaf" || return 1
+    done
+    exec 7&lt;&gt;"$work/header-request.pipe" 6&lt;&gt;"$work/header-response.pipe"
+    /bin/bash "$work/linux-read-header.sh" "$work/header-request.pipe" "$work/header-response.pipe" &amp;
+    header_pid=$!
+}
+read_header() {{
+    local reply expected_size=$2 hexadecimal_pattern='^[0-9a-f]+$'
+    local expected_length=$(( (expected_size&lt;20 ? expected_size : 20)*2 ))
+    header=
+    if [[ -z $header_pid ]]; then start_header_worker || return 1; fi
+    if printf '%s\0' "$1" &gt;&amp;7 &amp;&amp; IFS= read -r -d '' -t 2 reply &lt;&amp;6; then
+        if [[ $reply = OK:* ]]; then
+            header=${{reply#OK:}
+            if [[ $header =~ $hexadecimal_pattern ]] &amp;&amp; ((${{#header}==expected_length)); then return 0; fi
+        fi
+    fi
+    # Only this read-only attempt-owned worker is terminated, never an app.
+    stop_header_worker
+    return 1
+}
+
 finished=0 find_pid= scan_pid=
 failure() {{
     result=$?
     trap - EXIT
+    stop_header_worker
     if [[ -n $find_pid ]]; then kill "$find_pid" 2&gt;/dev/null || :; wait "$find_pid" 2&gt;/dev/null || :; fi
     if [[ -n $scan_pid ]]; then kill "$scan_pid" 2&gt;/dev/null || :; wait "$scan_pid" 2&gt;/dev/null || :; fi
     if (( !finished )); then
@@ -565,7 +605,7 @@ files=0; candidates=0; bytes=0; size_skipped=0; structural_skipped=0; read_error
 deadline=$((SECONDS+enumeration_seconds))
 # A timeout covers blocked directory reads. Streaming NUL records preserves path
 # bytes and avoids a huge on-disk inventory; the FIFO provides backpressure.
-timeout -k 5 "$enumeration_seconds" find "${{roots[@]}" -regextype posix-extended -xdev -ignore_readdir_race "${{prune_expression[@]}" -type f "${{name_expression[@]}" "${{file_scope_expression[@]}" "${{direct_expression[@]}" -printf '%s\0%p\0' &gt;"$fifo" 2&gt;"$work/find.stderr" &amp;
+timeout -k 5 "$enumeration_seconds" find "${{roots[@]}" -regextype posix-extended -xdev -ignore_readdir_race "${{prune_expression[@]}" -type f -size +0c "${{name_expression[@]}" "${{file_scope_expression[@]}" "${{direct_expression[@]}" -printf '%s\0%p\0' &gt;"$fifo" 2&gt;"$work/find.stderr" &amp;
 find_pid=$!
 while IFS= read -r -d '' -t "$enumeration_seconds" size &amp;&amp; IFS= read -r -d '' -t 5 path; do
     if ((SECONDS&gt;=deadline)); then reasons+=('file search time limit reached'); discovery_stopped=1; break; fi
@@ -583,7 +623,7 @@ while IFS= read -r -d '' -t "$enumeration_seconds" size &amp;&amp; IFS= read -r 
     # Stat/find never opens devices or FIFOs. Recheck after enumeration before
     # reading, because an application can replace its file during a scan.
     [[ -f $path &amp;&amp; ! -L $path ]] || continue
-    if ! header=$(timeout -k 1 2 od -An -tx1 -N20 -- "$path" 2&gt;/dev/null | tr -d ' \n'); then
+    if ! read_header "$path" "$size"; then
         [[ -e $path ]] &amp;&amp; read_errors=$((read_errors+1)); continue
     fi
     binary=0
@@ -618,6 +658,7 @@ while IFS= read -r -d '' -t "$enumeration_seconds" size &amp;&amp; IFS= read -r 
     printf '%s\n' "$scan_path" &gt;&gt;"$list"
     candidates=$((candidates+1)); bytes=$((bytes+size))
 done &lt;"$fifo"
+stop_header_worker
 if ((discovery_stopped)); then kill "$find_pid" 2&gt;/dev/null || :; fi
 find_rc=0; wait "$find_pid" || find_rc=$?; find_pid=
 if ((find_rc!=0 &amp;&amp; !discovery_stopped)); then
@@ -781,7 +822,7 @@ if ((vulnerable+vendor_unverified+unknown&gt;100)); then last_scan+=' (first 100
 mv -f -- "$output/summary.txt.new" "$output/summary.txt"
 finished=1
 if ((${{#reasons[@]})); then exit 10; fi
-END_PHP_YARA_ad850551204111e3
+END_PHP_YARA_bbc3f5920c545595
 delete "{parameter "work"}/scan-linux.sh"
 move __createfile "{parameter "work"}/scan-linux.sh"
 delete __createfile
@@ -909,6 +950,40 @@ delete "{parameter "work"}/background-unix.sh"
 move __createfile "{parameter "work"}/background-unix.sh"
 continue if {sha256 of file "background-unix.sh" of folder (parameter "work") = "b1df4995dcf3fb786a6ba89c2b816751f7efcafe73d308141bb3ccbdf2bb348e"}
 copy "{pathname of download file (parameter "PHPYaraArchive")}" "{parameter "work"}/engine.tar.gz"
+delete __createfile
+createfile until END_BACKGROUND_49f6302bed220249
+#!/bin/bash
+# One read-only worker serves all header requests. Bash builtins preserve every
+# byte, including NUL/newline/high bytes, without starting od for every file.
+# The parent bounds each FIFO response and kills/restarts a stalled worker.
+set -eo pipefail
+export LC_ALL=C PATH=/usr/bin:/bin:/usr/sbin:/sbin
+umask 077
+(($#==2)) || exit 2
+[[ $1 = /* &amp;&amp; $2 = /* &amp;&amp; -p $1 &amp;&amp; -p $2 &amp;&amp; ! -L $1 &amp;&amp; ! -L $2 ]] || exit 2
+exec 7&lt;"$1" 6&gt;"$2"
+while IFS= read -r -d '' path &lt;&amp;7; do
+    header=; status=ERROR
+    if [[ -f $path &amp;&amp; ! -L $path ]]; then
+        if {{
+            for ((index=0;index&lt;20;index++)); do
+                byte=
+                if ! IFS= read -r -n 1 -d '' byte &lt;&amp;8; then break; fi
+                # Bash3.2 can expose bytes &gt;=128 as signed char values.
+                printf -v octet '%d' "'$byte"
+                printf -v hexadecimal '%02x' "$((octet &amp; 255))"
+                header+=$hexadecimal
+            done
+        } 8&lt;"$path" 2&gt;/dev/null; then
+            [[ -z $header ]] || status=OK
+        fi
+    fi
+    printf '%s:%s\0' "$status" "$header" &gt;&amp;6 || exit 0
+done
+END_BACKGROUND_49f6302bed220249
+delete "{parameter "work"}/linux-read-header.sh"
+move __createfile "{parameter "work"}/linux-read-header.sh"
+continue if {sha256 of file "linux-read-header.sh" of folder (parameter "work") = "49f6302bed220249310d86d221ba0a08a1d56461530d12696b7caace8b07e17a"}
 wait /bin/bash "{parameter "work"}/background-unix.sh" launch Linux "{parameter "output"}" "{parameter "work"}" /bin/bash "{parameter "work"}/scan-linux.sh" --engine "{parameter "work"}/yr" --engine-sha256 {parameter "PHPYaraEngineSha256"} --rules "{parameter "work"}/php-detect.yar" --output "{parameter "output"}" --archive "{parameter "work"}/engine.tar.gz" --archive-sha256 {parameter "PHPYaraArchiveSha256"} --enumeration-seconds {parameter "PHPEnumerationSeconds"} --scan-seconds {parameter "PHPScanSeconds"} --max-files {parameter "PHPMaxFiles"} --candidate-gb {parameter "PHPCandidateGB"} --max-file-mb {parameter "PHPMaxFileMB"} --cpu-limit {parameter "PHPCpuLimit"} --exclude-directories-hex "{parameter "PHPExcludeDirectoriesHex"}" --include-build-text {parameter "PHPIncludeBuildText"} --include-broader-locations {parameter "PHPIncludeBroaderLocations"} --include-nonstandard-names {parameter "PHPIncludeNonstandardNames"}
 parameter "scanExit" = "{exit code of action}"
 continue if {parameter "scanExit" = "0"}
