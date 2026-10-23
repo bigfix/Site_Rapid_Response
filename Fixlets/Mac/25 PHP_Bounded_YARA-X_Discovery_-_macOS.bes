@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <BES xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="BES.xsd">
   <Task>
-    <Title>PHP YARA Vulnerability Scanner – CVE-2026-109618 and CVE-2026-109619 (Mac)</Title>
+    <Title>PHP YARA Vulnerability Scanner v3 – CVE-2026-109618 and CVE-2026-109619 (Mac)</Title>
     <Description>&lt;style type="text/css"&gt;
 .phpScan {font-family:Segoe UI,Tahoma,Arial,sans-serif;font-size:13px;line-height:1.45;color:#243447;max-width:1000px;margin:8px 12px 20px;}
 .phpScan h2 {font-size:20px;color:#183953;margin:0 0 5px;}
@@ -23,8 +23,8 @@
 .phpScan .launch {border-top:1px solid #dce3e9;padding-top:12px;margin-top:15px;}
 .phpScan button {background:#245b7d;color:white;border:1px solid #194766;padding:8px 16px;cursor:pointer;}
 .phpScan button:focus,.phpScan input:focus,.phpScan select:focus {outline:2px solid #438bb7;outline-offset:1px;}
-&lt;/style&gt;&lt;div class="phpScan"&gt;&lt;h2&gt;PHP vulnerability scan&lt;/h2&gt;&lt;p&gt;Find PHP runtime versions affected by &lt;strong&gt;CVE-2026-109618&lt;/strong&gt; and &lt;strong&gt;CVE-2026-109619&lt;/strong&gt; on macOS, without running PHP.&lt;/p&gt;&lt;p class="hint"&gt;&lt;strong&gt;Mac version for team testing.&lt;/strong&gt;&lt;/p&gt;&lt;div class="recommend"&gt;&lt;strong&gt;Recommended: start with Quick Scan and leave the limits at their defaults.&lt;/strong&gt;&lt;br /&gt;Choose a broader scan only when needed. More coverage increases disk activity and run time.&lt;/div&gt;&lt;p&gt;Document, media, font, ordinary text and selected asset file types are skipped in every scan type, including Deep. Native executables and libraries remain eligible; php-config and php_version.h are retained when PHP build-text detection is enabled. A runtime renamed with an excluded extension can be missed.&lt;/p&gt;
-&lt;h3&gt;1. Choose a scan type&lt;/h3&gt;&lt;p&gt;&lt;label for="PHPScanPreset"&gt;&lt;strong&gt;Scan type:&lt;/strong&gt;&lt;/label&gt; &lt;select id="PHPScanPreset" onchange="PhpScan.preset(this.value);"&gt;&lt;option value="quick" selected="selected"&gt;QUICK SCAN (recommended)&lt;/option&gt;&lt;option value="normal"&gt;NORMAL SCAN&lt;/option&gt;&lt;option value="deep"&gt;DEEP SCAN&lt;/option&gt;&lt;option value="custom" disabled="disabled"&gt;CUSTOM (advanced settings)&lt;/option&gt;&lt;/select&gt;&lt;/p&gt;&lt;table&gt;&lt;colgroup&gt;&lt;col class="mode" /&gt;&lt;col /&gt;&lt;/colgroup&gt;&lt;tr&gt;&lt;th scope="col"&gt;Scan&lt;/th&gt;&lt;th scope="col"&gt;Coverage and tradeoff&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Quick&lt;/strong&gt;&lt;br /&gt;&lt;span class="hint"&gt;Default&lt;/span&gt;&lt;/td&gt;&lt;td&gt;Standard PHP runtime names in the usual application locations. Fastest; can miss renamed or embedded runtimes.&lt;br /&gt;&lt;span class="hint"&gt;Limits: 10 min search; 10 min content scan; 5 million files; 30 GiB candidate input; 512 MiB per file; 10% YARA CPU.&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Normal&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Also checks renamed/nonstandard binaries, while keeping the usual folder exclusions. Broader runtime coverage; takes longer.&lt;br /&gt;&lt;span class="hint"&gt;Limits: 30 min search; 30 min content scan; 10 million files; 40 GiB candidate input; 512 MiB per file; 10% YARA CPU.&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr class="deep"&gt;&lt;td&gt;&lt;strong&gt;Deep&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Also includes normally skipped OS/cache/data locations and PHP build text. &lt;span class="warning"&gt;WARNING: This takes much longer and is more likely to hit file and scan limits. Deep already uses the maximum search time, content scan time, file count and total candidate input; it can still hit limits.&lt;/span&gt;&lt;br /&gt;&lt;span class="hint"&gt;Limits: 60 min search; 60 min content scan; 10 million files; 100 GiB candidate input; 1 GiB per file; 25% YARA CPU.&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p class="hint"&gt;Choosing a scan type fills its recommended limits below. Quick and Normal use 512 MiB per file and 10% YARA CPU. Deep uses 1 GiB per file and 25% YARA CPU, with the maximum allowed time, file-count and candidate-input budgets. You can adjust individual settings afterward. Remote storage, cloud placeholders and other permanent exclusions still apply. Build text alone does not prove an installed vulnerable runtime.&lt;/p&gt;&lt;h3&gt;2. Advanced settings (optional)&lt;/h3&gt;&lt;p&gt;Changing coverage or a preset limit updates the scan type above; a non-preset combination is shown as Custom. Choosing another scan type resets these settings to its recommended values. Additional directory exclusions and extra-gentle disk access are retained.&lt;/p&gt;&lt;table&gt;&lt;colgroup&gt;&lt;col class="setting" /&gt;&lt;col class="value" /&gt;&lt;col /&gt;&lt;/colgroup&gt;&lt;tr&gt;&lt;th scope="col"&gt;Setting&lt;/th&gt;&lt;th scope="col"&gt;Value&lt;/th&gt;&lt;th scope="col"&gt;What it does&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPIncludeNonstandardNames"&gt;Include renamed or nonstandard PHP binaries (slower)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input type="checkbox" id="PHPIncludeNonstandardNames"   onchange="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Scans other native binary names; leaving this off can miss renamed or custom embedded PHP.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPIncludeBroaderLocations"&gt;Include OS, recovery, cache and data locations (slower)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input type="checkbox" id="PHPIncludeBroaderLocations"   onchange="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Includes normally skipped OS and cache folders; remote, cloud-only, snapshot and disk-image exclusions remain.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPIncludeBuildText"&gt;Include PHP source/build text (slower)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input type="checkbox" id="PHPIncludeBuildText"   onchange="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Includes PHP build/header evidence without treating it as an installed runtime.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;h3&gt;Time and resource limits&lt;/h3&gt;&lt;table&gt;&lt;colgroup&gt;&lt;col class="setting" /&gt;&lt;col class="value" /&gt;&lt;col /&gt;&lt;/colgroup&gt;&lt;tr&gt;&lt;th scope="col"&gt;Setting&lt;/th&gt;&lt;th scope="col"&gt;Value&lt;/th&gt;&lt;th scope="col"&gt;What it does&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPEnumerationSeconds"&gt;File search time (minutes)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPEnumerationSeconds" value="10" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Stops searching after this many minutes and marks unfinished coverage as partial. (Allowed: 1 to 60.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPScanSeconds"&gt;Content scan time (minutes)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPScanSeconds" value="10" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Limits YARA content scanning to this many minutes and reports partial results if it times out. (Allowed: 1 to 60.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPMaxFiles"&gt;Maximum files checked&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPMaxFiles" value="5000000" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Caps files considered during discovery to bound work on unusually large filesystems. (Allowed: 1000 to 10000000.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPCandidateGB"&gt;Maximum candidate input (GiB)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPCandidateGB" value="30" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Caps the combined size of files sent to YARA; exceeding this reports a partial scan. (Allowed: 1 to 100.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPMaxFileMB"&gt;Maximum individual file size (MiB)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPMaxFileMB" value="512" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Skips individual files at or above this size; 512 MiB covers normal PHP and large embedded builds. (Allowed: 16 to 2048.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPCpuLimit"&gt;YARA CPU setting (%)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPCpuLimit" value="10" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Sets the YARA engine CPU target; this is not a total system CPU guarantee. (Allowed: 1 to 50.)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;h3&gt;Additional directory exclusions (optional)&lt;/h3&gt;&lt;div class="exclusion"&gt;&lt;strong&gt;&lt;label for="PHPExcludeDirectoriesHex"&gt;Additional directory exclusions (comma-separated)&lt;/label&gt;&lt;/strong&gt;&lt;input id="PHPExcludeDirectoriesHex" value="" size="48" maxlength="4096" /&gt;&lt;p class="hint"&gt;Skip your chosen folders; leave blank for no additional exclusions. See the examples below.&lt;/p&gt;&lt;/div&gt;&lt;table&gt;&lt;tr&gt;&lt;th scope="col"&gt;Example&lt;/th&gt;&lt;th scope="col"&gt;What is skipped&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;/data/*&lt;/code&gt;&lt;br /&gt;&lt;code&gt;C:\folder\*&lt;/code&gt;&lt;/td&gt;&lt;td&gt;The named directory and all its subdirectories.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;/data/&lt;/code&gt;&lt;br /&gt;&lt;code&gt;C:\folder\&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Only files directly in that directory; subdirectories are still searched.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;*/data/*&lt;/code&gt;&lt;br /&gt;&lt;code&gt;*\folder\*&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Every matching directory and its subdirectories, wherever found.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p class="hint"&gt;Separate entries with commas, without quotes. Use an absolute path or a leading */; * includes path separators and other characters are literal. Windows ignores case; Linux/macOS matching is case-sensitive. Spaces are supported; commas inside a folder name are not. Maximum 32 entries and 4096 UTF-8 bytes. Exclusions apply to every scan type, can hide PHP, and are logged; intentional exclusions do not mark a scan partial.&lt;/p&gt;&lt;div class="launch"&gt;&lt;button onclick="return PhpScan.prepare();"&gt;Configure and Take Action&lt;/button&gt;&lt;p class="hint"&gt;Opens the standard Console Take Action dialog, where you select computers. These settings apply only to that action. API/WebUI actions without parameters use Quick defaults; API integrations can supply the same parameters.&lt;/p&gt;&lt;/div&gt;&lt;h3&gt;Reading the results&lt;/h3&gt;&lt;table&gt;&lt;colgroup&gt;&lt;col class="mode" /&gt;&lt;col /&gt;&lt;/colgroup&gt;&lt;tr&gt;&lt;td&gt;&lt;strong&gt;TRUE&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;An upstream-affected PHP runtime was found. Check vendor patch status and web exposure before deciding remediation.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;strong&gt;FALSE&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;No affected runtime was found within the completed, selected scan scope.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;strong&gt;UNKNOWN&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;A short reason identifies unavailable results, incomplete coverage or evidence that needs verification. Vendor backports require checking the package advisory.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p&gt;Positive findings are retained during a partial scan. BigFix action success includes usable partial results or no PHP found; failure means no new usable result. The four Analysis properties retain the previous finished result while a scan runs.&lt;/p&gt;&lt;h3&gt;Coverage and requirements&lt;/h3&gt;&lt;p&gt;Quick checks php, php-cgi, php-fpm, phpdbg, lsphp, frankenphp, libphp and mod_php name families, including version suffixes and native runtime libraries (.exe/.dll on Windows, .so/.so.N on Linux, .dylib/.so on macOS). PHP core DLLs and server modules are included. Ordinary .php application scripts do not identify an installed runtime.&lt;/p&gt;&lt;p&gt;Legitimate per-user applications remain in scope, including common PHP installations such as Herd, Scoop, Homebrew, MAMP and XAMPP where applicable. OS/recovery trees, caches, backups and personal data are skipped unless broader locations are selected. Network storage, cloud-only files, symlinks, snapshots and scanner/cache data remain excluded. Archives and container images are not unpacked. Meaningful access restrictions and limits produce partial coverage; the scanner does not change system access or privacy settings.&lt;/p&gt;&lt;p&gt;macOS: Intel 10.12 or later, or Apple Silicon 11 or later, using stock Bash 3.2, zsh and BSD tools. Minimum OS releases and managed BigFix execution still need team validation. Native payload checks do not replace managed BigFix testing. Uncommon universal-binary formats can produce UNKNOWN/partial results.&lt;/p&gt;&lt;p&gt;Minimum ActionScript syntax: BigFix Client 9.5.7. Use a client supported on the target OS and architecture; this syntax minimum does not establish ARM64 support. The pinned YARA-X engine is delivered by BigFix. No endpoint Python, PHP or compiler is required.&lt;/p&gt;&lt;h3&gt;Detailed scan log&lt;/h3&gt;&lt;p&gt;Open &lt;code&gt;YARA_PHP/scan.log&lt;/code&gt; under the BigFix client state root:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;code&gt;YARA_PHP/scan.log&lt;/code&gt; under the BigFix client state root (macOS)&lt;/li&gt;&lt;/ul&gt;&lt;p class="hint"&gt;summary.txt supplies the four Analysis properties; scan.lock prevents overlapping scans. Temporary action work is removed after completion.&lt;/p&gt;&lt;p class="hint"&gt;Community utility, not HCL-supported patch content. Rule source: &lt;a href="https://github.com/bigfix/Site_Rapid_Response"&gt;Site Rapid Response&lt;/a&gt; (Apache-2.0).&lt;/p&gt;&lt;script type="text/javascript"&gt;var phpScanFields = [{"key": "PHPExcludeDirectoriesHex", "label": "Additional directory exclusions (comma-separated)", "text": true}, {"key": "PHPIncludeNonstandardNames", "label": "Include renamed or nonstandard PHP binaries (slower)", "min": 0, "max": 1, "checkbox": true}, {"key": "PHPIncludeBroaderLocations", "label": "Include OS, recovery, cache and data locations (slower)", "min": 0, "max": 1, "checkbox": true}, {"key": "PHPIncludeBuildText", "label": "Include PHP source/build text (slower)", "min": 0, "max": 1, "checkbox": true}, {"key": "PHPEnumerationSeconds", "label": "File search time (minutes)", "min": 30, "max": 3600, "multiplier": 60}, {"key": "PHPScanSeconds", "label": "Content scan time (minutes)", "min": 30, "max": 3600, "multiplier": 60}, {"key": "PHPMaxFiles", "label": "Maximum files checked", "min": 1000, "max": 10000000}, {"key": "PHPCandidateGB", "label": "Maximum candidate input (GiB)", "min": 1, "max": 100}, {"key": "PHPMaxFileMB", "label": "Maximum individual file size (MiB)", "min": 16, "max": 2048}, {"key": "PHPCpuLimit", "label": "YARA CPU setting (%)", "min": 1, "max": 50}];
+&lt;/style&gt;&lt;div class="phpScan"&gt;&lt;h2&gt;PHP vulnerability scan&lt;/h2&gt;&lt;p&gt;Find PHP runtime versions affected by &lt;strong&gt;CVE-2026-109618&lt;/strong&gt; and &lt;strong&gt;CVE-2026-109619&lt;/strong&gt; on macOS, without running PHP.&lt;/p&gt;&lt;p class="hint"&gt;&lt;strong&gt;Mac version for team testing.&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Version compatibility:&lt;/strong&gt; Use the v3 scanners with the v3 Results Analysis. Scanner and Analysis versions should match. Run a new scan after upgrading to refresh the results.&lt;/p&gt;&lt;div class="recommend"&gt;&lt;strong&gt;Recommended: start with Quick Scan and leave the limits at their defaults.&lt;/strong&gt;&lt;br /&gt;Choose a broader scan only when needed. More coverage increases disk activity and run time.&lt;/div&gt;&lt;p&gt;Document, media, font, ordinary text and selected asset file types are skipped in every scan type, including Deep. Native executables and libraries remain eligible; php-config and php_version.h are retained when PHP build-text detection is enabled. A runtime renamed with an excluded extension can be missed.&lt;/p&gt;
+&lt;h3&gt;1. Choose a scan type&lt;/h3&gt;&lt;p&gt;&lt;label for="PHPScanPreset"&gt;&lt;strong&gt;Scan type:&lt;/strong&gt;&lt;/label&gt; &lt;select id="PHPScanPreset" onchange="PhpScan.preset(this.value);"&gt;&lt;option value="quick" selected="selected"&gt;QUICK SCAN (recommended)&lt;/option&gt;&lt;option value="normal"&gt;NORMAL SCAN&lt;/option&gt;&lt;option value="deep"&gt;DEEP SCAN&lt;/option&gt;&lt;option value="custom" disabled="disabled"&gt;CUSTOM (advanced settings)&lt;/option&gt;&lt;/select&gt;&lt;/p&gt;&lt;table&gt;&lt;colgroup&gt;&lt;col class="mode" /&gt;&lt;col /&gt;&lt;/colgroup&gt;&lt;tr&gt;&lt;th scope="col"&gt;Scan&lt;/th&gt;&lt;th scope="col"&gt;Coverage and tradeoff&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Quick&lt;/strong&gt;&lt;br /&gt;&lt;span class="hint"&gt;Default&lt;/span&gt;&lt;/td&gt;&lt;td&gt;Standard PHP runtime names in the usual application locations. Fastest; can miss renamed or embedded runtimes.&lt;br /&gt;&lt;span class="hint"&gt;Limits: 10 min search; 10 min content scan; 5 million files; 30 GiB candidate input; 512 MiB per file; 10% YARA CPU.&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Normal&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Also checks renamed/nonstandard binaries, while keeping the usual folder exclusions. Broader runtime coverage; takes longer.&lt;br /&gt;&lt;span class="hint"&gt;Limits: 30 min search; 30 min content scan; 10 million files; 40 GiB candidate input; 512 MiB per file; 10% YARA CPU.&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr class="deep"&gt;&lt;td&gt;&lt;strong&gt;Deep&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Also includes normally skipped OS/cache/data locations and PHP build text. &lt;span class="warning"&gt;WARNING: This takes much longer and is more likely to hit file and scan limits. Deep already uses the maximum search time, content scan time, file count and total candidate input; it can still hit limits.&lt;/span&gt;&lt;br /&gt;&lt;span class="hint"&gt;Limits: 60 min search; 60 min content scan; 10 million files; 100 GiB candidate input; 1 GiB per file; 25% YARA CPU.&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p class="hint"&gt;Choosing a scan type fills its recommended limits below. Quick and Normal use 512 MiB per file and 10% YARA CPU. Deep uses 1 GiB per file and 25% YARA CPU, with the maximum allowed time, file-count and candidate-input budgets. You can adjust individual settings afterward. Remote storage, cloud placeholders and other permanent exclusions still apply. Build text alone does not prove an installed vulnerable runtime.&lt;/p&gt;&lt;h3&gt;2. Advanced settings (optional)&lt;/h3&gt;&lt;p&gt;Changing coverage or a preset limit updates the scan type above; a non-preset combination is shown as Custom. Choosing another scan type resets these settings to its recommended values. Additional directory exclusions are retained.&lt;/p&gt;&lt;table&gt;&lt;colgroup&gt;&lt;col class="setting" /&gt;&lt;col class="value" /&gt;&lt;col /&gt;&lt;/colgroup&gt;&lt;tr&gt;&lt;th scope="col"&gt;Setting&lt;/th&gt;&lt;th scope="col"&gt;Value&lt;/th&gt;&lt;th scope="col"&gt;What it does&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPIncludeNonstandardNames"&gt;Include renamed or nonstandard PHP binaries (slower)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input type="checkbox" id="PHPIncludeNonstandardNames"   onchange="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Scans other native binary names; leaving this off can miss renamed or custom embedded PHP.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPIncludeBroaderLocations"&gt;Include OS, recovery, cache and data locations (slower)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input type="checkbox" id="PHPIncludeBroaderLocations"   onchange="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Includes normally skipped OS and cache folders; remote, cloud-only, snapshot and disk-image exclusions remain.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPIncludeBuildText"&gt;Include PHP source/build text (slower)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input type="checkbox" id="PHPIncludeBuildText"   onchange="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Includes PHP build/header evidence without treating it as an installed runtime.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;h3&gt;Time and resource limits&lt;/h3&gt;&lt;table&gt;&lt;colgroup&gt;&lt;col class="setting" /&gt;&lt;col class="value" /&gt;&lt;col /&gt;&lt;/colgroup&gt;&lt;tr&gt;&lt;th scope="col"&gt;Setting&lt;/th&gt;&lt;th scope="col"&gt;Value&lt;/th&gt;&lt;th scope="col"&gt;What it does&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPEnumerationSeconds"&gt;File search time (minutes)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPEnumerationSeconds" value="10" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Stops searching after this many minutes and marks unfinished coverage as partial. (Allowed: 1 to 60.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPScanSeconds"&gt;Content scan time (minutes)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPScanSeconds" value="10" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Limits YARA content scanning to this many minutes and reports partial results if it times out. (Allowed: 1 to 60.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPMaxFiles"&gt;Maximum files checked&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPMaxFiles" value="5000000" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Caps files considered during discovery to bound work on unusually large filesystems. (Allowed: 1000 to 10000000.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPCandidateGB"&gt;Maximum candidate input (GiB)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPCandidateGB" value="30" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Caps the combined size of files sent to YARA; exceeding this reports a partial scan. (Allowed: 1 to 100.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPMaxFileMB"&gt;Maximum individual file size (MiB)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPMaxFileMB" value="512" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Skips individual files at or above this size; 512 MiB covers normal PHP and large embedded builds. (Allowed: 16 to 2048.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPCpuLimit"&gt;YARA CPU setting (%)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPCpuLimit" value="10" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Sets the YARA engine CPU target; this is not a total system CPU guarantee. (Allowed: 1 to 50.)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;h3&gt;Additional directory exclusions (optional)&lt;/h3&gt;&lt;div class="exclusion"&gt;&lt;strong&gt;&lt;label for="PHPExcludeDirectoriesHex"&gt;Additional directory exclusions (comma-separated)&lt;/label&gt;&lt;/strong&gt;&lt;input id="PHPExcludeDirectoriesHex" value="" size="48" maxlength="4096" /&gt;&lt;p class="hint"&gt;Skip your chosen folders; leave blank for no additional exclusions. See the examples below.&lt;/p&gt;&lt;/div&gt;&lt;table&gt;&lt;tr&gt;&lt;th scope="col"&gt;Example&lt;/th&gt;&lt;th scope="col"&gt;What is skipped&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;/data/*&lt;/code&gt;&lt;br /&gt;&lt;code&gt;C:\folder\*&lt;/code&gt;&lt;/td&gt;&lt;td&gt;The named directory and all its subdirectories.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;/data/&lt;/code&gt;&lt;br /&gt;&lt;code&gt;C:\folder\&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Only files directly in that directory; subdirectories are still searched.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;*/data/*&lt;/code&gt;&lt;br /&gt;&lt;code&gt;*\folder\*&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Every matching directory and its subdirectories, wherever found.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p class="hint"&gt;Separate entries with commas, without quotes. Use an absolute path or a leading */; * includes path separators and other characters are literal. Windows ignores case; Linux/macOS matching is case-sensitive. Spaces are supported; commas inside a folder name are not. Maximum 32 entries and 4096 UTF-8 bytes. Exclusions apply to every scan type, can hide PHP, and are logged; intentional exclusions do not mark a scan partial.&lt;/p&gt;&lt;div class="launch"&gt;&lt;button onclick="return PhpScan.prepare();"&gt;Configure and Take Action&lt;/button&gt;&lt;p class="hint"&gt;Opens the standard Console Take Action dialog, where you select computers. These settings apply only to that action. API/WebUI actions without parameters use Quick defaults; API integrations can supply the same parameters.&lt;/p&gt;&lt;/div&gt;&lt;h3&gt;Reading the results&lt;/h3&gt;&lt;table&gt;&lt;colgroup&gt;&lt;col class="mode" /&gt;&lt;col /&gt;&lt;/colgroup&gt;&lt;tr&gt;&lt;td&gt;&lt;strong&gt;TRUE&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;An upstream-affected PHP runtime was found. Check vendor patch status and web exposure before deciding remediation.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;strong&gt;FALSE&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;No affected runtime was found within the completed, selected scan scope.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;strong&gt;UNKNOWN&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;A short reason identifies unavailable results, incomplete coverage or evidence that needs verification. Vendor backports require checking the package advisory.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p&gt;Positive findings are retained during a partial scan. BigFix action success includes usable partial results or no PHP found; failure means no new usable result. The four Analysis properties retain the previous finished result while a scan runs.&lt;/p&gt;&lt;h3&gt;Coverage and requirements&lt;/h3&gt;&lt;p&gt;Quick checks php, php-cgi, php-fpm, phpdbg, lsphp, frankenphp, libphp and mod_php name families, including version suffixes and native runtime libraries (.exe/.dll on Windows, .so/.so.N on Linux, .dylib/.so on macOS). PHP core DLLs and server modules are included. Ordinary .php application scripts do not identify an installed runtime.&lt;/p&gt;&lt;p&gt;Legitimate per-user applications remain in scope, including common PHP installations such as Herd, Scoop, Homebrew, MAMP and XAMPP where applicable. OS/recovery trees, caches, backups and personal data are skipped unless broader locations are selected. Network storage, cloud-only files, symlinks, snapshots and scanner/cache data remain excluded. Archives and container images are not unpacked. Meaningful access restrictions and limits produce partial coverage; the scanner does not change system access or privacy settings.&lt;/p&gt;&lt;p&gt;macOS: Intel 10.12 or later, or Apple Silicon 11 or later, using stock Bash 3.2, zsh and BSD tools. Minimum OS releases and managed BigFix execution still need team validation. Native payload checks do not replace managed BigFix testing. Uncommon universal-binary formats can produce UNKNOWN/partial results.&lt;/p&gt;&lt;p&gt;Minimum ActionScript syntax: BigFix Client 9.5.7. Use a client supported on the target OS and architecture; this syntax minimum does not establish ARM64 support. The pinned YARA-X engine is delivered by BigFix. No endpoint Python, PHP or compiler is required.&lt;/p&gt;&lt;h3&gt;Detailed scan log&lt;/h3&gt;&lt;p&gt;Open &lt;code&gt;YARA_PHP/scan.log&lt;/code&gt; under the BigFix client state root:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;code&gt;YARA_PHP/scan.log&lt;/code&gt; under the BigFix client state root (macOS)&lt;/li&gt;&lt;/ul&gt;&lt;p class="hint"&gt;summary.txt supplies the four Analysis properties; scan.lock prevents overlapping scans. Temporary action work is removed after completion.&lt;/p&gt;&lt;p class="hint"&gt;Community utility, not HCL-supported patch content. Rule source: &lt;a href="https://github.com/bigfix/Site_Rapid_Response"&gt;Site Rapid Response&lt;/a&gt; (Apache-2.0).&lt;/p&gt;&lt;script type="text/javascript"&gt;var phpScanFields = [{"key": "PHPExcludeDirectoriesHex", "label": "Additional directory exclusions (comma-separated)", "text": true}, {"key": "PHPIncludeNonstandardNames", "label": "Include renamed or nonstandard PHP binaries (slower)", "min": 0, "max": 1, "checkbox": true}, {"key": "PHPIncludeBroaderLocations", "label": "Include OS, recovery, cache and data locations (slower)", "min": 0, "max": 1, "checkbox": true}, {"key": "PHPIncludeBuildText", "label": "Include PHP source/build text (slower)", "min": 0, "max": 1, "checkbox": true}, {"key": "PHPEnumerationSeconds", "label": "File search time (minutes)", "min": 30, "max": 3600, "multiplier": 60}, {"key": "PHPScanSeconds", "label": "Content scan time (minutes)", "min": 30, "max": 3600, "multiplier": 60}, {"key": "PHPMaxFiles", "label": "Maximum files checked", "min": 1000, "max": 10000000}, {"key": "PHPCandidateGB", "label": "Maximum candidate input (GiB)", "min": 1, "max": 100}, {"key": "PHPMaxFileMB", "label": "Maximum individual file size (MiB)", "min": 16, "max": 2048}, {"key": "PHPCpuLimit", "label": "YARA CPU setting (%)", "min": 1, "max": 50}];
 var phpScanWindows = false;
 /* Console JScript compatible: no JSON dependency, eval, credentials or target selection. */
 var PhpScan = (function () {
@@ -117,7 +117,7 @@ var PhpScan = (function () {
     return {parameters: parameters, prepare: prepare, preset: preset, syncPreset: syncPreset};
 }());
 document.body.ontakeaction = function () { return PhpScan.prepare(); };
-&lt;/script&gt;&lt;/div&gt;</Description>
+&lt;/script&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Action scheduling:&lt;/strong&gt; This action stays Running until the scan finishes and can delay other BigFix actions on that system. File search and content scan have separate time limits; their allowed times add together, plus a short shutdown allowance.&lt;/p&gt;&lt;p&gt;API-only PHP extension markers are logged as supporting evidence; they do not by themselves make a scan UNKNOWN.&lt;/p&gt;&lt;p&gt;Standard Homebrew and MacPorts PHP locations are assessed against upstream versions. Custom/vendor patch status and web exposure still require verification.&lt;/p&gt;</Description>
     <Relevance>if version of client &gt;= "9.5.7" then (mac of operating system and ((architecture of operating system = "arm64" and version of operating system &gt;= "11.0") or (architecture of operating system = "x86_64" and version of operating system &gt;= "10.12"))) else false</Relevance>
     <Category>PHP Security Discovery</Category>
     <DefaultAction ID="Action1">
@@ -313,7 +313,7 @@ delete "{parameter "work"}/php-detect.yar"
 move __createfile "{parameter "work"}/php-detect.yar"
 continue if {sha256 of file "php-detect.yar" of folder (parameter "work") = "0f68f1276f3d50db3dcba06fd1d8089e157fbc8e60bcca49ac1e7b2dde664615"}
 delete __createfile
-createfile until END_PHP_YARA_79a347c912a5bc6c
+createfile until END_PHP_YARA_5208e234d6eae9fb
 #!/bin/bash
 # macOS PHP discovery with stock Bash 3.2, BSD utilities and stock zsh modules.
 # No Python, jq, GNU tools, compiler or PHP execution required.
@@ -337,6 +337,78 @@ engine= rules= output= archive= engine_sha256= archive_sha256=
 enumeration_seconds=600 scan_seconds=600 max_files=5000000 candidate_gb=30
 max_file_mb=512 cpu_limit=10 include_build_text=0 include_broader_locations=0 include_nonstandard_names=0
 roots=()
+
+valid_utf8() {{
+    local text=$1 i byte remaining=0 low=128 high=191
+    for ((i=0;i&lt;${{#text};i++)); do
+        printf -v byte '%d' "'${{text:i:1}"
+        byte=$((byte &amp; 255))
+        if ((remaining)); then
+            ((byte&gt;=low &amp;&amp; byte&lt;=high)) || return 1
+            remaining=$((remaining-1)); low=128; high=191
+        elif ((byte&lt;128)); then :
+        elif ((byte&gt;=194 &amp;&amp; byte&lt;=223)); then remaining=1
+        elif ((byte&gt;=224 &amp;&amp; byte&lt;=239)); then
+            remaining=2; ((byte!=224)) || low=160; ((byte!=237)) || high=159
+        elif ((byte&gt;=240 &amp;&amp; byte&lt;=244)); then
+            remaining=3; ((byte!=240)) || low=144; ((byte!=244)) || high=143
+        else return 1; fi
+    done
+    ((remaining==0))
+}
+# Shared v3 workspace/path helpers, embedded in both Unix scanners.
+cleanup_abandoned_work() {{
+    local candidate marker metadata owner mode
+    for candidate in "$output"/work-*; do
+        [[ -d $candidate &amp;&amp; ! -L $candidate &amp;&amp; $candidate != "$work" ]] || continue
+        [[ ${{candidate##*/} =~ ^work-[0-9]+-[0-9]+-[0-9]+$ ]] || continue
+        metadata=$(stat -f '%u %Lp' "$candidate" 2&gt;/dev/null) || continue
+        read -r owner mode &lt;&lt;&lt;"$metadata"
+        [[ $owner = "$EUID" &amp;&amp; $mode =~ ^[0-7]+$ ]] || continue
+        (( (8#$mode &amp; 0022)==0 )) || continue
+        [[ -f $candidate/attempt.started &amp;&amp; ! -L $candidate/attempt.started ]] || continue
+        metadata=$(stat -f '%u %Lp' "$candidate/attempt.started" 2&gt;/dev/null) || continue
+        read -r owner mode &lt;&lt;&lt;"$metadata"
+        [[ $owner = "$EUID" &amp;&amp; $mode =~ ^[0-7]+$ ]] || continue
+        (( (8#$mode &amp; 0022)==0 )) || continue
+        marker=
+        IFS= read -r marker &lt;"$candidate/attempt.started" || continue
+        [[ $marker = PHP_YARA_WORKSPACE_V3 ]] || continue
+        # Only a prior launched-v3 workspace is eligible under the global lock.
+        # Unmarked folders may still be in ActionScript preparation: leave them.
+        rm -rf -- "$candidate"
+    done
+    [[ ! -L $work/attempt.started ]] || return 1
+    printf 'PHP_YARA_WORKSPACE_V3\n' &gt;"$work/attempt.started"
+}
+
+scan_list_path_safe() {{
+    [[ $1 != *[[:cntrl:]]* ]] || return 1
+    [[ $1 != *[!\ -\~]* ]] || valid_utf8 "$1"
+}
+
+stage_candidate() {{
+    local available blocks copied
+    available=$(df -Pk "$work" 2&gt;/dev/null | awk 'NR&gt;1 {{v=$4} END {{if(v ~ /^[0-9]+$/) print v}') || available=
+    blocks=$(((size+1023)/1024))
+    if [[ ! $available =~ ^[0-9]+$ ]] || ((available&lt;blocks+65536)); then
+        reasons+=('insufficient free space for unusual-path staging')
+        return 1
+    fi
+    # Non-POSIX Bash ulimit -f uses 1024-byte blocks. Bound growing files too.
+    if ! (ulimit -f "$blocks"; timeout -k 2 "$((deadline-SECONDS&gt;0 ? deadline-SECONDS : 1))" cp -p "$path" "$scan_path"); then
+        rm -f -- "$scan_path"
+        read_errors=$((read_errors+1))
+        return 1
+    fi
+    copied=$(stat -f %z "$scan_path" 2&gt;/dev/null) || copied=
+    if [[ $copied != "$size" ]]; then
+        rm -f -- "$scan_path"
+        read_errors=$((read_errors+1))
+        return 1
+    fi
+}
+
 exclude_directories_hex=x
 # macOS adapters, sourced into the generated Bash 3.2-compatible scanner.
 # No GNU utilities, Python, PHP, compiler or Homebrew installation is needed.
@@ -394,7 +466,11 @@ package_status() {{
     logical=${{file#/System/Volumes/Data}
     package_state=unverified
     case "$logical" in
-        /System/*|/usr/bin/*|/opt/homebrew/Cellar/*|/usr/local/Cellar/*|/opt/local/*) package_state=vendor;;
+        /System/*|/usr/bin/*) package_state=vendor;;
+        /opt/homebrew/Cellar/php/*|/opt/homebrew/Cellar/php@[0-9]*/*|/usr/local/Cellar/php/*|/usr/local/Cellar/php@[0-9]*/*|/opt/local/bin/php*|/opt/local/sbin/php*|/opt/local/lib/php*|/opt/local/apache*/modules/*php*)
+            # Standard package-manager PHP is assessed against upstream versions.
+            # This does not establish the patch status of a custom build.
+            package_state=upstream;;
         *)
             budget=$((package_deadline-SECONDS)); ((budget&lt;=2)) || budget=2
             if ((budget&gt;=1)); then
@@ -433,7 +509,7 @@ done
 ((enumeration_seconds&gt;=1 &amp;&amp; enumeration_seconds&lt;=3600 &amp;&amp; scan_seconds&gt;=1 &amp;&amp; scan_seconds&lt;=3600 &amp;&amp; max_files&gt;=1 &amp;&amp; max_files&lt;=10000000 &amp;&amp; candidate_gb&gt;=1 &amp;&amp; candidate_gb&lt;=100 &amp;&amp; max_file_mb&gt;=1 &amp;&amp; max_file_mb&lt;=2048 &amp;&amp; cpu_limit&gt;=1 &amp;&amp; cpu_limit&lt;=99 &amp;&amp; include_build_text&lt;=1 &amp;&amp; include_broader_locations&lt;=1 &amp;&amp; include_nonstandard_names&lt;=1)) || {{ echo 'Scan setting outside its allowed range' &gt;&amp;2; exit 2; }
 [[ $output = /* &amp;&amp; $engine = /* &amp;&amp; $rules = /* ]] || {{ echo 'Engine, rule and output paths must be absolute' &gt;&amp;2; exit 2; }
 missing=()
-for command in find stat od awk sort shasum tar gzip date mkdir mv chmod dirname mkfifo cp nice cat head tr rm zsh pkgutil hdiutil mount; do
+for command in df find stat od awk sort shasum tar gzip date mkdir mv chmod dirname mkfifo cp nice cat head tr rm zsh pkgutil hdiutil mount; do
     command -v "$command" &gt;/dev/null 2&gt;&amp;1 || missing+=("$command")
 done
 ((${{#missing[@]}==0)) || {{ printf 'Missing required utilities: %s\n' "${{missing[*]}" &gt;&amp;2; exit 2; }
@@ -511,6 +587,7 @@ trap failure EXIT
 trap 'exit 130' INT TERM
 printf 'PHP scan started: %s\nStandard names: %s; build text: %s; broader locations: %s\n' "$started" "$((1-include_nonstandard_names))" "$include_build_text" "$include_broader_locations" &gt;"$output/scan.log"
 exec 2&gt;&gt;"$output/scan.log"
+cleanup_abandoned_work
 # Decode only validated byte pairs. Paths are never shell code, printf formats or
 # evaluated expressions. BSD find gets quoted regex arguments with literal syntax
 # escaped; only '*' is a wildcard. Directory pruning happens before any file read.
@@ -582,6 +659,9 @@ prune_expression+=( ')' ')' -prune -o )
 non_runtime_extension_regex='.*[.](3g2|3gp|3mf|aac|ai|aif|aifc|aiff|alac|amr|arw|ass|avi|avif|bdf|bib|blend|bmp|c4d|cfg|conf|cr2|cr3|css|csv|dgn|dib|dng|doc|docm|docx|dot|dotm|dotx|dwg|dxf|eml|eot|eps|epub|fbx|flac|flv|fnt|fon|frag|geojson|gif|glb|glsl|gltf|gpx|heic|heif|hlsl|htm|html|icns|ico|ics|iges|igs|indd|inf|ini|jpe|jpeg|jpg|json|jsonl|key|kml|kmz|less|log|m2ts|m2v|m4a|m4b|m4v|ma|manifest|markdown|max|mb|mbox|md|mid|midi|mkv|mobi|mov|mp3|mp4|mpeg|mpg|msg|mts|ndjson|nef|numbers|odp|ods|odt|oga|ogg|ogv|opus|orf|ost|otf|otp|ots|ott|pages|pcf|pdf|png|pot|potm|potx|pps|ppsm|ppsx|ppt|pptm|pptx|prefab|properties|psb|psd|pst|reg|rst|rtf|rw2|sass|scss|shader|shadergraph|shp|shx|sketch|srt|ssa|step|stl|stp|svg|tex|tif|tiff|toml|tsv|ttc|ttf|txt|uasset|ucas|umap|unity|unitypackage|usf|ush|utoc|vcf|vert|vob|vpk|vtt|wav|webm|webp|wma|wmv|woff|woff2|xcf|xhtml|xls|xlsb|xlsm|xlsx|xlt|xltm|xltx|xml|yaml|yml)'
 file_scope_expression=( '(' -iname 'php-config' -o -iname 'php_version.h' -o '!' -iregex "$non_runtime_extension_regex" ')' )
 
+if ((!include_broader_locations)); then
+    file_scope_expression+=( '!' -iregex '.*[.](db|sqlite|sqlite3|bak|dump|dmp|iso|vhd|vhdx|vmdk|wim|esd)' )
+fi
 direct_expression=()
 for expression in "${{custom_direct[@]}"; do direct_expression+=( '!' -regex "$expression" '!' -regex "/System/Volumes/Data$expression" ); done
 # Directory pruning alone cannot exclude a file supplied as a starting root,
@@ -601,27 +681,29 @@ fi
 mkfifo -- "$fifo"
 mkdir -p -- "$work/staged"
 original_paths=()
+discovery_stopped=0
 files=0; candidates=0; bytes=0; size_skipped=0; structural_skipped=0; read_errors=0
 deadline=$((SECONDS+enumeration_seconds))
 # A timeout covers blocked directory reads. Streaming NUL records preserves path
 # bytes and avoids a huge on-disk inventory; the FIFO provides backpressure.
 root_arguments=(); for root in "${{roots[@]}"; do root_arguments+=(--root "$root"); done
-/bin/zsh -f "$work/mac-run-bounded.zsh" "$enumeration_seconds" 5 /bin/bash "$work/mac-find.sh" "${{root_arguments[@]}" -- "${{prune_expression[@]}" -type f "${{name_expression[@]}" "${{file_scope_expression[@]}" "${{direct_expression[@]}" -print0 &gt;"$fifo" 2&gt;"$work/find.stderr" &amp;
+/bin/zsh -f "$work/mac-run-bounded.zsh" "$enumeration_seconds" 5 /bin/bash "$work/mac-find.sh" "${{root_arguments[@]}" -- "${{prune_expression[@]}" -type f -size +0c "${{name_expression[@]}" "${{file_scope_expression[@]}" "${{direct_expression[@]}" -print0 &gt;"$fifo" 2&gt;"$work/find.stderr" &amp;
 find_pid=$!
 while IFS= read -r -d '' -t "$enumeration_seconds" path; do
-    if ((SECONDS&gt;=deadline)); then reasons+=('file search time limit reached'); break; fi
-    if ((files&gt;=max_files)); then reasons+=('file count limit reached'); break; fi
+    if ((SECONDS&gt;=deadline)); then reasons+=('file search time limit reached'); discovery_stopped=1; break; fi
+    if ((files&gt;=max_files)); then reasons+=('file count limit reached'); discovery_stopped=1; break; fi
     files=$((files+1)); leaf=${{path##*/}; lower=$leaf
-    if [[ $lower = *[A-Z]* ]]; then lower=$(printf '%s' "$leaf" | tr '[:upper:]' '[:lower:]'); fi
     if ((!include_nonstandard_names)); then
+        if [[ $lower = *[A-Z]* ]]; then lower=$(printf '%s' "$leaf" | tr '[:upper:]' '[:lower:]'); fi
         [[ $lower =~ $mac_regex_3 ]] || continue
         case "$lower" in
             php-config|php_version.h) ((include_build_text)) || continue;;
             *.*) extension=${{lower##*.}; [[ $extension = exe || $extension = dll || $extension = dylib || $extension = so || $extension =~ $mac_regex_4 ]] || continue;;
         esac
     fi
-    if [[ $lower = php-config || $lower = php_version.h ]]; then ((include_build_text)) || continue; fi
-    if ((!include_broader_locations)); then case "$lower" in *.db|*.sqlite|*.sqlite3|*.bak|*.dump|*.dmp|*.iso|*.vhd|*.vhdx|*.vmdk|*.wim|*.esd) continue;; esac; fi
+    case "$leaf" in
+        [pP][hH][pP]-[cC][oO][nN][fF][iI][gG]|[pP][hH][pP]_[vV][eE][rR][sS][iI][oO][nN].[hH]) ((include_build_text)) || continue;;
+    esac
     # BSD stat collects size and dataless flags together. Never hydrate a
     # cloud placeholder merely to inspect its content.
     [[ -f $path &amp;&amp; ! -L $path ]] || continue
@@ -666,24 +748,29 @@ while IFS= read -r -d '' -t "$enumeration_seconds" path; do
         fi
         continue
     fi
-    if ((bytes+size&gt;candidate_gb*1073741824)); then reasons+=('total candidate size limit'); break; fi
+    if ((bytes+size&gt;candidate_gb*1073741824)); then reasons+=('total candidate size limit'); discovery_stopped=1; break; fi
     # YARA scan lists are UTF-8 and newline-separated. Stage unusual raw-byte
     # paths to ASCII names; retain original bytes for readable UTF-8 reporting.
     scan_path=$path
-    if [[ $path = *[!\ -\~]* ]]; then
+    if ! scan_list_path_safe "$path"; then
         scan_path=$work/staged/$candidates
         [[ ! -L $scan_path ]] || {{ echo 'Symlink staged file rejected' &gt;&amp;2; exit 2; }
-        if ! timeout -k 2 "$((deadline-SECONDS&gt;0 ? deadline-SECONDS : 1))" cp -p "$path" "$scan_path"; then read_errors=$((read_errors+1)); continue; fi
+        stage_candidate || continue
         original_paths[candidates]=$path
     fi
     printf '%s\n' "$scan_path" &gt;&gt;"$list"
     candidates=$((candidates+1)); bytes=$((bytes+size))
 done &lt;"$fifo"
 stop_header_worker
-if ((${{#reasons[@]})); then kill "$find_pid" 2&gt;/dev/null || :; fi
+if ((discovery_stopped)); then kill "$find_pid" 2&gt;/dev/null || :; fi
 find_rc=0; wait "$find_pid" || find_rc=$?; find_pid=
-if ((find_rc!=0)); then
+if ((find_rc!=0 &amp;&amp; !discovery_stopped)); then
     if ((SECONDS&gt;=deadline)); then reasons+=('file search time limit reached')
+    elif ((find_rc==1)) &amp;&amp; awk 'NF {{seen=1; if($0 !~ /No such file or directory$/) bad=1} END {{exit !(seen &amp;&amp; !bad)}' "$work/find.stderr"; then
+        # Ignore expected vanished entries only if selected starting roots remain.
+        for root in "${{roots[@]}"; do
+            [[ -e $root ]] || {{ reasons+=('file search incomplete (starting location unavailable)'); break; }
+        done
     else reasons+=('file search incomplete'); fi
 fi
 if awk 'NF &amp;&amp; $0 !~ /No such file or directory$/ {{found=1} END{{exit !found}' "$work/find.stderr"; then reasons+=('unreadable locations or macOS privacy restrictions'); fi
@@ -701,29 +788,12 @@ fi
 # Parse the engine's documented text output, not shell code or executable PHP.
 awk '
  /^PHP_/ {{rule=$1; file=$0; sub(/^[^ ]+ /,"",file); seen[file]=1; if(rule=="PHP_Runtime_Version")core[file]=1; if(rule=="PHP_Build_Artifact")build[file]=1; next}
+ /:\$[A-Za-z_]+: / {{if(rule=="PHP_Binary_Broad") {{if($0 ~ /:\$api: /) api[file]=1; else non_api[file]=1}}
  /:\$(ver|pv|cfg_ver|hdr_ver): / {{v=$0; gsub(/\\x00/,"",v); sub(/^[^ ]+ /,"",v); if(match(v,/[0-9]+\.[0-9]+\.[0-9]+[0-9A-Za-z.+~_-]*/)) {{v=substr(v,RSTART,RLENGTH); if(rule=="PHP_Runtime_Version")runtime[file SUBSEP v]=1; else evidence[file SUBSEP v]=1}}
- END {{for(k in runtime){{split(k,a,SUBSEP);print a[1] "\truntime\t" a[2]} for(k in evidence){{split(k,a,SUBSEP);if(!core[a[1]])print a[1] "\tevidence\t" a[2]} for(f in seen)if(!core[f] &amp;&amp; !build[f]) print f "\tunconfirmed\tunknown"}
+ END {{for(k in runtime){{split(k,a,SUBSEP);print a[1] "\truntime\t" a[2]} for(k in evidence){{split(k,a,SUBSEP);if(!core[a[1]])print a[1] "\tevidence\t" a[2]} for(f in seen)if(!core[f] &amp;&amp; !build[f]) print f ((api[f] &amp;&amp; !non_api[f]) ? "\textension_only\tunknown" : "\tunconfirmed\tunknown")}
 ' "$raw" | sort -u &gt;"$work/versions.tsv"
 # Portable byte-based validation handles UTF-8 without installing a locale, Python or another tool.
 # Invalid bytes and control characters use reversible shell quoting, never eval.
-valid_utf8() {{
-    local text=$1 i byte remaining=0 low=128 high=191
-    for ((i=0;i&lt;${{#text};i++)); do
-        printf -v byte '%d' "'${{text:i:1}"
-        byte=$((byte &amp; 255))
-        if ((remaining)); then
-            ((byte&gt;=low &amp;&amp; byte&lt;=high)) || return 1
-            remaining=$((remaining-1)); low=128; high=191
-        elif ((byte&lt;128)); then :
-        elif ((byte&gt;=194 &amp;&amp; byte&lt;=223)); then remaining=1
-        elif ((byte&gt;=224 &amp;&amp; byte&lt;=239)); then
-            remaining=2; ((byte!=224)) || low=160; ((byte!=237)) || high=159
-        elif ((byte&gt;=240 &amp;&amp; byte&lt;=244)); then
-            remaining=3; ((byte!=240)) || low=144; ((byte!=244)) || high=143
-        else return 1; fi
-    done
-    ((remaining==0))
-}
 display_path() {{
     if [[ $1 != *[[:cntrl:]]* ]] &amp;&amp; valid_utf8 "$1"; then printf '%s' "$1"; else printf '%q' "$1"; fi
 }
@@ -770,7 +840,7 @@ while IFS=$'\t' read -r path kind version; do
     else unknown=$((unknown+1)); printf '%s | PHP %s | Version assessment unavailable\n' "$display" "$version" &gt;&gt;"$work/unverified.txt"; fi
     if ((affected)); then
         package_status "$original"
-        if [[ $package_state != unowned || ( -n $suffix &amp;&amp; ! $suffix =~ $mac_regex_7 ) ]]; then
+        if [[ ($package_state != unowned &amp;&amp; $package_state != upstream) || ( -n $suffix &amp;&amp; ! $suffix =~ $mac_regex_7 ) ]]; then
             vendor_unverified=$((vendor_unverified+1))
             printf '%s | PHP %s | Vendor patch status unverified\n' "$display" "$version" &gt;&gt;"$work/unverified.txt"
             printf 'Vendor patch status unverified: %s | ownership %s\n' "$display" "$package_state" &gt;&gt;"$output/scan.log"
@@ -789,7 +859,14 @@ fi
 elapsed=$((SECONDS-start_seconds))
 printf -v duration '%s hours, %s minutes, %s seconds' "$((elapsed/3600))" "$((elapsed%3600/60))" "$((elapsed%60))"
 completed=$(date -u '+%Y-%m-%d %H:%M:%S UTC'); last_scan=$completed
-if ((${{#reasons[@]})); then last_scan+=" (Partial: $(IFS=', '; echo "${{reasons[*]}"); see scan.log)"; fi
+if ((${{#reasons[@]})); then
+    reason_text=
+    for reason in "${{reasons[@]}"; do
+        [[ -z $reason_text ]] || reason_text+=', '
+        reason_text+=$reason
+    done
+    last_scan+=" (Partial: $reason_text; see scan.log)"
+fi
 if ((vendor_unverified)); then last_scan+=' (Vendor patch status unverified; see scan.log)'; fi
 if ((vulnerable+vendor_unverified+unknown&gt;100)); then last_scan+=' (first 100 paths shown; all paths in scan.log)'; fi
 {{
@@ -835,10 +912,10 @@ if ((vulnerable+vendor_unverified+unknown&gt;100)); then last_scan+=' (first 100
 mv -f -- "$output/summary.txt.new" "$output/summary.txt"
 finished=1
 if ((${{#reasons[@]})); then exit 10; fi
-END_PHP_YARA_79a347c912a5bc6c
+END_PHP_YARA_5208e234d6eae9fb
 delete "{parameter "work"}/scan-macos.sh"
 move __createfile "{parameter "work"}/scan-macos.sh"
-continue if {sha256 of file "scan-macos.sh" of folder (parameter "work") = "79a347c912a5bc6c5c752b3943e42df2039a56a5dc7d8a252b6eae40e7469f94"}
+continue if {sha256 of file "scan-macos.sh" of folder (parameter "work") = "5208e234d6eae9fba957a292a755cb775de4f495f6f539264eb5f73165eb5526"}
 delete __createfile
 createfile until END_PHP_YARA_40d8859de3217c09
 #!/bin/bash
