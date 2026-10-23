@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <BES xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="BES.xsd">
 	<Analysis>
-		<Title>Relevance Detections</Title>
+		<Title>PHP Relevance Detections</Title>
 		<Description>An analysis for pure relevance detections related to CVEs. Currently only PHP. "PHP Installs" lists path | version for PHP runtimes in common install locations on Windows, Linux and macOS, plus results from the YARA-X PHP scans when present.</Description>
 		<!-- relevance-ok: this analysis is meant to report on every endpoint -->
 		<Relevance><![CDATA[true]]></Relevance>
