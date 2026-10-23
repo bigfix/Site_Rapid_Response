@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <BES xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="BES.xsd">
   <Task>
-    <Title>PHP YARA Vulnerability Scanner v3 – CVE-2026-109618 and CVE-2026-109619 (Windows)</Title>
+    <Title>PHP YARA Vulnerability Scanner v4 – CVE-2026-109618 and CVE-2026-109619 (Windows)</Title>
     <Description>&lt;style type="text/css"&gt;
 .phpScan {font-family:Segoe UI,Tahoma,Arial,sans-serif;font-size:13px;line-height:1.45;color:#243447;max-width:1000px;margin:8px 12px 20px;}
 .phpScan h2 {font-size:20px;color:#183953;margin:0 0 5px;}
@@ -23,7 +23,7 @@
 .phpScan .launch {border-top:1px solid #dce3e9;padding-top:12px;margin-top:15px;}
 .phpScan button {background:#245b7d;color:white;border:1px solid #194766;padding:8px 16px;cursor:pointer;}
 .phpScan button:focus,.phpScan input:focus,.phpScan select:focus {outline:2px solid #438bb7;outline-offset:1px;}
-&lt;/style&gt;&lt;div class="phpScan"&gt;&lt;h2&gt;PHP vulnerability scan&lt;/h2&gt;&lt;p&gt;Find PHP runtime versions affected by &lt;strong&gt;CVE-2026-109618&lt;/strong&gt; and &lt;strong&gt;CVE-2026-109619&lt;/strong&gt; on Windows, without running PHP.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Version compatibility:&lt;/strong&gt; Use the v3 scanners with the v3 Results Analysis. Scanner and Analysis versions should match. Run a new scan after upgrading to refresh the results.&lt;/p&gt;&lt;div class="recommend"&gt;&lt;strong&gt;Recommended: start with Quick Scan and leave the limits at their defaults.&lt;/strong&gt;&lt;br /&gt;Choose a broader scan only when needed. More coverage increases disk activity and run time.&lt;/div&gt;&lt;p&gt;Document, media, font, ordinary text and selected asset file types are skipped in every scan type, including Deep. Native executables and libraries remain eligible; php-config and php_version.h are retained when PHP build-text detection is enabled. A runtime renamed with an excluded extension can be missed.&lt;/p&gt;
+&lt;/style&gt;&lt;div class="phpScan"&gt;&lt;h2&gt;PHP vulnerability scan&lt;/h2&gt;&lt;p&gt;Find PHP runtime versions affected by &lt;strong&gt;CVE-2026-109618&lt;/strong&gt; and &lt;strong&gt;CVE-2026-109619&lt;/strong&gt; on Windows, without running PHP.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Version compatibility:&lt;/strong&gt; Use the v4 scanners with the v4 Results Analysis. Scanner and Analysis versions should match. Run a new scan after upgrading to refresh the results.&lt;/p&gt;&lt;div class="recommend"&gt;&lt;strong&gt;Recommended: start with Quick Scan and leave the limits at their defaults.&lt;/strong&gt;&lt;br /&gt;Choose a broader scan only when needed. More coverage increases disk activity and run time.&lt;/div&gt;&lt;p&gt;Document, media, font, ordinary text and selected asset file types are skipped in every scan type, including Deep. Native executables and libraries remain eligible; php-config and php_version.h are retained when PHP build-text detection is enabled. A runtime renamed with an excluded extension can be missed.&lt;/p&gt;
 &lt;h3&gt;1. Choose a scan type&lt;/h3&gt;&lt;p&gt;&lt;label for="PHPScanPreset"&gt;&lt;strong&gt;Scan type:&lt;/strong&gt;&lt;/label&gt; &lt;select id="PHPScanPreset" onchange="PhpScan.preset(this.value);"&gt;&lt;option value="quick" selected="selected"&gt;QUICK SCAN (recommended)&lt;/option&gt;&lt;option value="normal"&gt;NORMAL SCAN&lt;/option&gt;&lt;option value="deep"&gt;DEEP SCAN&lt;/option&gt;&lt;option value="custom" disabled="disabled"&gt;CUSTOM (advanced settings)&lt;/option&gt;&lt;/select&gt;&lt;/p&gt;&lt;table&gt;&lt;colgroup&gt;&lt;col class="mode" /&gt;&lt;col /&gt;&lt;/colgroup&gt;&lt;tr&gt;&lt;th scope="col"&gt;Scan&lt;/th&gt;&lt;th scope="col"&gt;Coverage and tradeoff&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Quick&lt;/strong&gt;&lt;br /&gt;&lt;span class="hint"&gt;Default&lt;/span&gt;&lt;/td&gt;&lt;td&gt;Standard PHP runtime names in the usual application locations. Fastest; can miss renamed or embedded runtimes.&lt;br /&gt;&lt;span class="hint"&gt;Limits: 10 min search; 10 min content scan; 5 million files; 30 GiB candidate input; 512 MiB per file; 10% YARA CPU.&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Normal&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Also checks renamed/nonstandard binaries, while keeping the usual folder exclusions. Broader runtime coverage; takes longer.&lt;br /&gt;&lt;span class="hint"&gt;Limits: 30 min search; 30 min content scan; 10 million files; 40 GiB candidate input; 512 MiB per file; 10% YARA CPU.&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr class="deep"&gt;&lt;td&gt;&lt;strong&gt;Deep&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Also includes normally skipped OS/cache/data locations and PHP build text. &lt;span class="warning"&gt;WARNING: This takes much longer and is more likely to hit file and scan limits. Deep already uses the maximum search time, content scan time, file count and total candidate input; it can still hit limits.&lt;/span&gt;&lt;br /&gt;&lt;span class="hint"&gt;Limits: 60 min search; 60 min content scan; 10 million files; 100 GiB candidate input; 1 GiB per file; 25% YARA CPU.&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p class="hint"&gt;Choosing a scan type fills its recommended limits below. Quick and Normal use 512 MiB per file and 10% YARA CPU. Deep uses 1 GiB per file and 25% YARA CPU, with the maximum allowed time, file-count and candidate-input budgets. You can adjust individual settings afterward. Remote storage, cloud placeholders and other permanent exclusions still apply. Build text alone does not prove an installed vulnerable runtime.&lt;/p&gt;&lt;h3&gt;2. Advanced settings (optional)&lt;/h3&gt;&lt;p&gt;Changing coverage or a preset limit updates the scan type above; a non-preset combination is shown as Custom. Choosing another scan type resets these settings to its recommended values. Additional directory exclusions and extra-gentle disk access are retained.&lt;/p&gt;&lt;table&gt;&lt;colgroup&gt;&lt;col class="setting" /&gt;&lt;col class="value" /&gt;&lt;col /&gt;&lt;/colgroup&gt;&lt;tr&gt;&lt;th scope="col"&gt;Setting&lt;/th&gt;&lt;th scope="col"&gt;Value&lt;/th&gt;&lt;th scope="col"&gt;What it does&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPIncludeNonstandardNames"&gt;Include renamed or nonstandard PHP binaries (slower)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input type="checkbox" id="PHPIncludeNonstandardNames"   onchange="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Scans other native binary names; leaving this off can miss renamed or custom embedded PHP.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPIncludeBroaderLocations"&gt;Include OS, recovery, cache and data locations (slower)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input type="checkbox" id="PHPIncludeBroaderLocations"   onchange="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Restores OS, recovery, cache and data locations normally excluded, while retaining scan limits.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPIncludeBuildText"&gt;Include PHP source/build text (slower)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input type="checkbox" id="PHPIncludeBuildText"   onchange="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Includes PHP build/header evidence without treating it as an installed runtime.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;h3&gt;Time and resource limits&lt;/h3&gt;&lt;table&gt;&lt;colgroup&gt;&lt;col class="setting" /&gt;&lt;col class="value" /&gt;&lt;col /&gt;&lt;/colgroup&gt;&lt;tr&gt;&lt;th scope="col"&gt;Setting&lt;/th&gt;&lt;th scope="col"&gt;Value&lt;/th&gt;&lt;th scope="col"&gt;What it does&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPEnumerationSeconds"&gt;File search time (minutes)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPEnumerationSeconds" value="10" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Stops searching after this many minutes and marks unfinished coverage as partial. (Allowed: 1 to 60.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPScanSeconds"&gt;Content scan time (minutes)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPScanSeconds" value="10" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Limits YARA content scanning to this many minutes and reports partial results if it times out. (Allowed: 1 to 60.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPMaxFiles"&gt;Maximum files checked&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPMaxFiles" value="5000000" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Caps files considered during discovery to bound work on unusually large filesystems. (Allowed: 1000 to 10000000.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPCandidateGB"&gt;Maximum candidate input (GiB)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPCandidateGB" value="30" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Caps the combined size of files sent to YARA; exceeding this reports a partial scan. (Allowed: 1 to 100.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPMaxFileMB"&gt;Maximum individual file size (MiB)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPMaxFileMB" value="512" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Skips individual files at or above this size; 512 MiB covers normal PHP and large embedded builds. (Allowed: 16 to 2048.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPCpuLimit"&gt;YARA CPU setting (%)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPCpuLimit" value="10" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Sets the YARA engine CPU target; this is not a total system CPU guarantee. (Allowed: 1 to 50.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPGentleDisk"&gt;Extra-gentle disk access (slower, Windows only)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input type="checkbox" id="PHPGentleDisk"  /&gt;&lt;/td&gt;&lt;td&gt;Uses lower disk scheduling priority to reduce disk contention, which can slow the scan.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;h3&gt;Additional directory exclusions (optional)&lt;/h3&gt;&lt;div class="exclusion"&gt;&lt;strong&gt;&lt;label for="PHPExcludeDirectoriesHex"&gt;Additional directory exclusions (comma-separated)&lt;/label&gt;&lt;/strong&gt;&lt;input id="PHPExcludeDirectoriesHex" value="" size="48" maxlength="4096" /&gt;&lt;p class="hint"&gt;Skip your chosen folders; leave blank for no additional exclusions. See the examples below.&lt;/p&gt;&lt;/div&gt;&lt;table&gt;&lt;tr&gt;&lt;th scope="col"&gt;Example&lt;/th&gt;&lt;th scope="col"&gt;What is skipped&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;/data/*&lt;/code&gt;&lt;br /&gt;&lt;code&gt;C:\folder\*&lt;/code&gt;&lt;/td&gt;&lt;td&gt;The named directory and all its subdirectories.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;/data/&lt;/code&gt;&lt;br /&gt;&lt;code&gt;C:\folder\&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Only files directly in that directory; subdirectories are still searched.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;*/data/*&lt;/code&gt;&lt;br /&gt;&lt;code&gt;*\folder\*&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Every matching directory and its subdirectories, wherever found.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p class="hint"&gt;Separate entries with commas, without quotes. Use an absolute path or a leading */; * includes path separators and other characters are literal. Windows ignores case; Linux/macOS matching is case-sensitive. Spaces are supported; commas inside a folder name are not. Maximum 32 entries and 4096 UTF-8 bytes. Exclusions apply to every scan type, can hide PHP, and are logged; intentional exclusions do not mark a scan partial.&lt;/p&gt;&lt;div class="launch"&gt;&lt;button onclick="return PhpScan.prepare();"&gt;Configure and Take Action&lt;/button&gt;&lt;p class="hint"&gt;Opens the standard Console Take Action dialog, where you select computers. These settings apply only to that action. API/WebUI actions without parameters use Quick defaults; API integrations can supply the same parameters.&lt;/p&gt;&lt;/div&gt;&lt;h3&gt;Reading the results&lt;/h3&gt;&lt;table&gt;&lt;colgroup&gt;&lt;col class="mode" /&gt;&lt;col /&gt;&lt;/colgroup&gt;&lt;tr&gt;&lt;td&gt;&lt;strong&gt;TRUE&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;An upstream-affected PHP runtime was found. Check vendor patch status and web exposure before deciding remediation.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;strong&gt;FALSE&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;No affected runtime was found within the completed, selected scan scope.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;strong&gt;UNKNOWN&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;A short reason identifies unavailable results, incomplete coverage or evidence that needs verification. Vendor backports require checking the package advisory.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p&gt;Positive findings are retained during a partial scan. BigFix action success includes usable partial results or no PHP found; failure means no new usable result. The four Analysis properties retain the previous finished result while a scan runs.&lt;/p&gt;&lt;h3&gt;Coverage and requirements&lt;/h3&gt;&lt;p&gt;Quick checks php, php-cgi, php-fpm, phpdbg, lsphp, frankenphp, libphp and mod_php name families, including version suffixes and native runtime libraries (.exe/.dll on Windows, .so/.so.N on Linux, .dylib/.so on macOS). PHP core DLLs and server modules are included. Ordinary .php application scripts do not identify an installed runtime.&lt;/p&gt;&lt;p&gt;Legitimate per-user applications remain in scope, including common PHP installations such as Herd, Scoop, Homebrew, MAMP and XAMPP where applicable. OS/recovery trees, caches, backups and personal data are skipped unless broader locations are selected. Network storage, cloud-only files, symlinks, snapshots and scanner/cache data remain excluded. Archives and container images are not unpacked. Meaningful access restrictions and limits produce partial coverage; the scanner does not change system access or privacy settings.&lt;/p&gt;&lt;p&gt;Windows 10/11 x64 and Windows Server 2016 or later, with Windows PowerShell 5.1/.NET.&lt;/p&gt;&lt;p&gt;Minimum ActionScript syntax: BigFix Client 9.5.7. Use a client supported on the target OS and architecture; this syntax minimum does not establish ARM64 support. The pinned YARA-X engine is delivered by BigFix. No endpoint Python, PHP or compiler is required.&lt;/p&gt;&lt;h3&gt;Detailed scan log&lt;/h3&gt;&lt;p&gt;Open &lt;code&gt;YARA_PHP/scan.log&lt;/code&gt; under the BigFix client state root:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;code&gt;C:\Program Files (x86)\BigFix Enterprise\BES Client\YARA_PHP\scan.log&lt;/code&gt; (typical Windows location)&lt;/li&gt;&lt;/ul&gt;&lt;p class="hint"&gt;summary.txt supplies the four Analysis properties; scan.lock prevents overlapping scans. Temporary action work is removed after completion.&lt;/p&gt;&lt;p class="hint"&gt;Community utility, not HCL-supported patch content. Rule source: &lt;a href="https://github.com/bigfix/Site_Rapid_Response"&gt;Site Rapid Response&lt;/a&gt; (Apache-2.0).&lt;/p&gt;&lt;script type="text/javascript"&gt;var phpScanFields = [{"key": "PHPExcludeDirectoriesHex", "label": "Additional directory exclusions (comma-separated)", "text": true}, {"key": "PHPIncludeNonstandardNames", "label": "Include renamed or nonstandard PHP binaries (slower)", "min": 0, "max": 1, "checkbox": true}, {"key": "PHPIncludeBroaderLocations", "label": "Include OS, recovery, cache and data locations (slower)", "min": 0, "max": 1, "checkbox": true}, {"key": "PHPIncludeBuildText", "label": "Include PHP source/build text (slower)", "min": 0, "max": 1, "checkbox": true}, {"key": "PHPEnumerationSeconds", "label": "File search time (minutes)", "min": 30, "max": 3600, "multiplier": 60}, {"key": "PHPScanSeconds", "label": "Content scan time (minutes)", "min": 30, "max": 3600, "multiplier": 60}, {"key": "PHPMaxFiles", "label": "Maximum files checked", "min": 1000, "max": 10000000}, {"key": "PHPCandidateGB", "label": "Maximum candidate input (GiB)", "min": 1, "max": 100}, {"key": "PHPMaxFileMB", "label": "Maximum individual file size (MiB)", "min": 16, "max": 2048}, {"key": "PHPCpuLimit", "label": "YARA CPU setting (%)", "min": 1, "max": 50}, {"key": "PHPGentleDisk", "label": "Extra-gentle disk access (slower, Windows only)", "min": 0, "max": 1, "checkbox": true}];
 var phpScanWindows = true;
 /* Console JScript compatible: no JSON dependency, eval, credentials or target selection. */
@@ -117,7 +117,7 @@ var PhpScan = (function () {
     return {parameters: parameters, prepare: prepare, preset: preset, syncPreset: syncPreset};
 }());
 document.body.ontakeaction = function () { return PhpScan.prepare(); };
-&lt;/script&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Action scheduling:&lt;/strong&gt; This action stays Running until the scan finishes and can delay other BigFix actions on that system. File search and content scan have separate time limits; their allowed times add together, plus a short shutdown allowance.&lt;/p&gt;&lt;p&gt;API-only PHP extension markers are logged as supporting evidence; they do not by themselves make a scan UNKNOWN.&lt;/p&gt;</Description>
+&lt;/script&gt;&lt;/div&gt;&lt;p&gt;API-only PHP extension markers are logged as supporting evidence; they do not by themselves make a scan UNKNOWN.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Background scanning:&lt;/strong&gt; The BigFix action waits only for the scan to start, then other actions can run. Fixed means the scan launched; check the Results Analysis for Running, completed or interrupted status. Only one PHP scan runs at a time. Completed results and scan.log stay in YARA_PHP; temporary scan files are removed after the worker stops. Stopping the launch action after it finishes does not cancel the background scan.&lt;/p&gt;</Description>
     <Relevance>if (version of client &gt;= "9.5.7") then (if windows of operating system then (x64 of operating system and (exists (it as string as version) whose (it &gt;= "5.1" as version) of values "PowerShellVersion" of keys "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PowerShell\3\PowerShellEngine" of native registry) and (if product type of operating system = nt workstation product type then version of operating system &gt;= "10.0.10240" as version else if product type of operating system = nt server product type or product type of operating system = nt domain controller product type then version of operating system &gt;= "10.0.14393" as version else false)) else false) else false</Relevance>
     <Category>PHP Security Discovery</Category>
     <DefaultAction ID="Action1">
@@ -318,7 +318,7 @@ END_PHP_YARA_318980fafe61de1e
 delete "{parameter "work"}/extract-engine.ps1"
 move __createfile "{parameter "work"}/extract-engine.ps1"
 delete __createfile
-createfile until END_PHP_YARA_4846eed58b6ca76f
+createfile until END_PHP_YARA_f3f3367b0c01315f
 #Requires -Version 5.1
 &lt;# Bounded PHP signature discovery. Never executes discovered PHP binaries.
    PhpCandidateFilter.cs and the pinned rules ship beside this script. #&gt;
@@ -374,6 +374,24 @@ $lock = $null
 Assert-NoReparsePath (Join-Path $OutputDirectory 'scan.lock')
 try {{ $lock = [IO.File]::Open((Join-Path $OutputDirectory 'scan.lock'), [IO.FileMode]::OpenOrCreate, [IO.FileAccess]::ReadWrite, [IO.FileShare]::None) }
 catch [IO.IOException] {{ exit 75 }
+# Called only by a background worker AFTER it owns the existing scan.lock.
+# Never remove an unmarked folder: another action may still be staging it.
+if ($env:PHP_BACKGROUND_RUN_ID) {{
+    foreach ($candidate in [IO.Directory]::GetDirectories($OutputDirectory, 'work-*')) {{
+        if ($candidate -eq $PSScriptRoot -or [IO.Path]::GetFileName($candidate) -notmatch '^work-[0-9]+-[0-9]+-[0-9]+$') {{ continue }
+        Assert-NoReparsePath $candidate
+        $marker=Join-Path $candidate 'attempt.started'
+        Assert-NoReparsePath $marker
+        if (-not [IO.File]::Exists($marker) -or (Get-Item -LiteralPath $marker).Length -gt 128 -or [IO.File]::ReadAllText($marker).Trim() -ne 'PHP_YARA_BACKGROUND_WORKSPACE_V1') {{ continue }
+        $safe=$true
+        foreach ($entry in Get-ChildItem -LiteralPath $candidate -Force -Recurse -ErrorAction Stop) {{
+            if (($entry.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {{ $safe=$false; break }
+        }
+        if ($safe) {{ [IO.Directory]::Delete($candidate,$true) }
+    }
+    [IO.File]::WriteAllText((Join-Path $PSScriptRoot 'attempt.started'),"PHP_YARA_BACKGROUND_WORKSPACE_V1`n",$utf8)
+    [IO.File]::WriteAllText((Join-Path $PSScriptRoot 'attempt.admitted'),$env:PHP_BACKGROUND_RUN_ID,$utf8)
+}
 $started = [DateTime]::UtcNow.ToString('o')
 $summaryPath = Join-Path $OutputDirectory 'summary.txt'
 $logPath = Join-Path $OutputDirectory 'scan.log'
@@ -562,6 +580,7 @@ try {{
         if (-not $details.Count) {{ $details = @('Incomplete or unverified results; see scan.log') }
         $summary += 'UNKNOWN_REASON=' + ($details -join '; ')
     }
+    if ($env:PHP_BACKGROUND_RUN_ID) {{ $summary += 'RUN_ID=' + $env:PHP_BACKGROUND_RUN_ID }
     $summary += $pathRows.ToArray()
     # A single replacement publishes all four properties together; in-progress
     # scans never clear a previous positive result or publish a start time as completion.
@@ -576,7 +595,7 @@ catch {{
     throw
 }
 finally {{ if ($lock) {{ $lock.Dispose() } }
-END_PHP_YARA_4846eed58b6ca76f
+END_PHP_YARA_f3f3367b0c01315f
 delete "{parameter "work"}/scan-windows.ps1"
 move __createfile "{parameter "work"}/scan-windows.ps1"
 delete __createfile
@@ -1247,10 +1266,208 @@ public static class PhpCandidateFilter
 END_PHP_YARA_1168f0093a173aff
 delete "{parameter "work"}/PhpCandidateFilter.cs"
 move __createfile "{parameter "work"}/PhpCandidateFilter.cs"
-waithidden "{pathname of native system folder}/WindowsPowerShell/v1.0/powershell.exe" -NoProfile -ExecutionPolicy Bypass -File "{parameter "work"}/scan-windows.ps1" -Engine "{parameter "work"}/yr.exe" -EngineSha256 e2e431175174158fc74c8709896c6d4a6667592bbb65a8132dea624ba125d76f -Rules "{parameter "work"}/php-detect.yar" -OutputDirectory "{parameter "output"}" -Archive "{pathname of download file "yara-x-v1.22.0-x86_64-pc-windows-msvc.zip"}" -ArchiveSha256 eac36a58699b94d3732a7fe1d8453fe89e0077bb18ac2c99b4c2ee102a431f2e -ExcludeDirectoriesHex "{parameter "PHPExcludeDirectoriesHex"}" -EnumerationSeconds {parameter "PHPEnumerationSeconds"} -ScanSeconds {parameter "PHPScanSeconds"} -MaxFiles {parameter "PHPMaxFiles"} -CandidateGB {parameter "PHPCandidateGB"} -MaxFileMB {parameter "PHPMaxFileMB"} -CpuLimit {parameter "PHPCpuLimit"} -GentleDisk {parameter "PHPGentleDisk"} -IncludeBuildText {parameter "PHPIncludeBuildText"} -IncludeBroaderLocations {parameter "PHPIncludeBroaderLocations"} -IncludeNonstandardNames {parameter "PHPIncludeNonstandardNames"}
+delete __createfile
+createfile until END_BACKGROUND_ea80d237385717f0
+#Requires -Version 5.1
+# Launch mode copies verified input out of __Download and waits only for admission.
+# Supervisor mode owns its worker job, heartbeat, deadline and temporary cleanup.
+[CmdletBinding()]
+param(
+    [string]$ConfigFile,
+    [string]$Engine, [string]$EngineSha256, [string]$Rules, [string]$OutputDirectory,
+    [string]$Archive, [string]$ArchiveSha256, [string[]]$Roots,
+    [long]$MaxFiles=5000000, [long]$MaxFileMB=512, [long]$CandidateGB=30,
+    [int]$EnumerationSeconds=600, [int]$ScanSeconds=600, [int]$CpuLimit=10,
+    [int]$GentleDisk=0, [int]$IncludeBuildText=0, [int]$IncludeBroaderLocations=0,
+    [int]$IncludeNonstandardNames=0, [string]$ExcludeDirectoriesHex='x'
+)
+Set-StrictMode -Version Latest
+$ErrorActionPreference='Stop'
+$utf8=New-Object Text.UTF8Encoding($false)
+function Assert-SafePath([string]$Path) {{
+    $current=[IO.Path]::GetFullPath($Path)
+    while($current) {{
+        if([IO.File]::Exists($current) -or [IO.Directory]::Exists($current)) {{
+            if(([IO.File]::GetAttributes($current) -band [IO.FileAttributes]::ReparsePoint) -ne 0) {{ throw 'Reparse path rejected' }
+        }
+        $current=[IO.Path]::GetDirectoryName($current)
+    }
+}
+function Write-Atomic([string]$Path,[string]$Text) {{
+    for($attempt=0;$attempt -lt 20;$attempt++) {{
+        Assert-SafePath $Path; Assert-SafePath ($Path+'.new')
+        try {{
+            [IO.File]::WriteAllText($Path+'.new',$Text,$utf8)
+            if([IO.File]::Exists($Path)) {{ [IO.File]::Replace($Path+'.new',$Path,[NullString]::Value) }
+            else {{ [IO.File]::Move($Path+'.new',$Path) }
+            return
+        }
+        catch [IO.IOException] {{ if($attempt -eq 19) {{ throw }; Start-Sleep -Milliseconds 100 }
+    }
+}
+function New-Child([string[]]$Arguments) {{
+    foreach($argument in $Arguments) {{ if($argument.Contains('"') -or $argument.EndsWith('\')) {{ throw 'Unsupported argument quoting' } }
+    $info=New-Object Diagnostics.ProcessStartInfo
+    $info.FileName=Join-Path $PSHOME 'powershell.exe'
+    $info.Arguments=($Arguments | ForEach-Object {{ '"'+$_+'"' }) -join ' '
+    $info.UseShellExecute=$false; $info.CreateNoWindow=$true
+    # Windows holds the current directory open: never make the disposable work
+    # directory the supervisor's CWD, or its final recursive removal can fail.
+    $info.WorkingDirectory=[IO.Path]::GetDirectoryName($work)
+    $info.RedirectStandardOutput=$true; $info.RedirectStandardError=$true
+    $process=[Diagnostics.Process]::Start($info)
+    $null=$process.StandardOutput.BaseStream.CopyToAsync([IO.Stream]::Null)
+    $null=$process.StandardError.BaseStream.CopyToAsync([IO.Stream]::Null)
+    return $process
+}
+$work=[IO.Path]::GetFullPath($PSScriptRoot)
+Assert-SafePath $work
+if(-not $ConfigFile) {{
+    $OutputDirectory=[IO.Path]::GetFullPath($OutputDirectory); Assert-SafePath $OutputDirectory
+    if([IO.Path]::GetDirectoryName($work) -ne $OutputDirectory -or [IO.Path]::GetFileName($work) -notmatch '^work-[0-9]+-[0-9]+-[0-9]+$') {{ throw 'Invalid attempt workspace' }
+    $configuration=@{{}
+    foreach($key in $PSBoundParameters.Keys) {{ $configuration[$key]=$PSBoundParameters[$key] }
+    if($Archive) {{
+        $staged=Join-Path $work 'engine.zip'; Assert-SafePath $staged
+        [IO.File]::Copy($Archive,$staged,$false)
+        if((Get-FileHash -LiteralPath $staged -Algorithm SHA256).Hash.ToLowerInvariant() -ne $ArchiveSha256) {{ throw 'Staged archive hash mismatch' }
+        $configuration.Archive=$staged
+    }
+    $ConfigFile=Join-Path $work 'background-config.json'
+    Write-Atomic $ConfigFile (($configuration | ConvertTo-Json -Depth 4)+"`n")
+    $launchArguments=@('-NoProfile','-ExecutionPolicy','Bypass','-File',$PSCommandPath,'-ConfigFile',$ConfigFile)
+    foreach($value in $launchArguments) {{ if($value.Contains('"') -or $value.EndsWith('\')) {{ throw 'Unsupported launch argument' } }
+    $quotedArguments=($launchArguments | ForEach-Object {{ '"'+$_+'"' }) -join ' '
+    # A separate hidden window avoids inheriting BigFix's action output handles.
+    $supervisor=Start-Process -FilePath (Join-Path $PSHOME 'powershell.exe') -ArgumentList $quotedArguments -WorkingDirectory $OutputDirectory -WindowStyle Hidden -PassThru
+    $deadline=[DateTime]::UtcNow.AddSeconds(25)
+    $ready=Join-Path $work 'launch.ready'
+    while(-not [IO.File]::Exists($ready)) {{
+        if($supervisor.HasExited) {{ $code=$supervisor.ExitCode; $supervisor.Dispose(); [IO.Directory]::Delete($work,$true); if($code -eq 0) {{ exit 2 }; exit $code }
+        if([DateTime]::UtcNow -gt $deadline) {{ throw 'Background admission timed out; check scan-state.txt' }
+        Start-Sleep -Milliseconds 100
+    }
+    $admission=[IO.File]::ReadAllText($ready).Trim()
+    [IO.File]::WriteAllText((Join-Path $work 'launch.accepted'),"accepted`n",$utf8)
+    # Do not synchronously dispose redirected streams while their asynchronous
+    # drain is active. The short-lived launcher exits and closes its own handles.
+    if($admission -ne 'RUNNING') {{ exit 2 }
+    exit 0
+}
+Assert-SafePath $ConfigFile
+if([IO.Path]::GetFullPath($ConfigFile) -ne (Join-Path $work 'background-config.json') -or (Get-Item -LiteralPath $ConfigFile).Length -gt 16384) {{ throw 'Invalid background configuration' }
+$settings=ConvertFrom-Json ([IO.File]::ReadAllText($ConfigFile,$utf8))
+$OutputDirectory=[IO.Path]::GetFullPath($settings.OutputDirectory)
+Assert-SafePath $OutputDirectory
+if([IO.Path]::GetDirectoryName($work) -ne $OutputDirectory -or [IO.Path]::GetFileName($work) -notmatch '^work-[0-9]+-[0-9]+-[0-9]+$') {{ throw 'Invalid attempt workspace' }
+$guardPath=Join-Path $OutputDirectory 'background.lock'; Assert-SafePath $guardPath
+$guard=$null
+try {{ $guard=[IO.File]::Open($guardPath,[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None) }
+catch [IO.IOException] {{ exit 75 }
+$child=$null; $job=$null; $admitted=$false; $finalState='FAILED'; $exitCode=2
+$started=[DateTime]::UtcNow.ToString('r'); $runId=[IO.Path]::GetFileName($work)
+function Write-State([string]$State) {{
+    Write-Atomic (Join-Path $OutputDirectory 'scan-state.txt') ("STATE_FORMAT=1`nRUN_ID=$runId`nSTATE=$State`nSTARTED=$started`nUPDATED=$([DateTime]::UtcNow.ToString('r'))`n")
+}
+try {{
+    Add-Type -Path (Join-Path $work 'background-job.cs')
+    $arguments=New-Object 'Collections.Generic.List[string]'
+    foreach($value in @('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $work 'scan-windows.ps1'))) {{ $arguments.Add($value) }
+    foreach($property in $settings.PSObject.Properties) {{
+        $arguments.Add('-'+$property.Name)
+        foreach($value in @($property.Value)) {{ $arguments.Add([string]$value) }
+    }
+    $env:PHP_BACKGROUND_RUN_ID=$runId
+    $child=New-Child $arguments.ToArray()
+    try {{ $job=New-Object PhpBackgroundJob($child) } catch {{ if(-not $child.HasExited) {{ $child.Kill() }; throw }
+    $admissionDeadline=[DateTime]::UtcNow.AddSeconds(20)
+    while(-not [IO.File]::Exists((Join-Path $work 'attempt.admitted'))) {{
+        if($child.HasExited) {{ throw "Worker admission failed (exit $($child.ExitCode))" }
+        if([DateTime]::UtcNow -gt $admissionDeadline) {{ throw 'Worker admission timed out' }
+        Start-Sleep -Milliseconds 100
+    }
+    $admitted=$true; Write-State 'RUNNING'
+    [IO.File]::WriteAllText((Join-Path $work 'launch.ready'),"RUNNING`n",$utf8)
+    $search=if($settings.PSObject.Properties.Name -contains 'EnumerationSeconds') {{ [int]$settings.EnumerationSeconds } else {{600}
+    $scan=if($settings.PSObject.Properties.Name -contains 'ScanSeconds') {{ [int]$settings.ScanSeconds } else {{600}
+    $deadline=[DateTime]::UtcNow.AddSeconds($search+$scan+120); $heartbeat=[DateTime]::UtcNow
+    while(-not $child.WaitForExit(200)) {{
+        if([DateTime]::UtcNow -gt $deadline) {{ throw 'Background scan exceeded its total deadline' }
+        if([DateTime]::UtcNow -ge $heartbeat) {{ Write-State 'RUNNING'; $heartbeat=[DateTime]::UtcNow.AddSeconds(10) }
+    }
+    $exitCode=$child.ExitCode
+    $summaryPath=Join-Path $OutputDirectory 'summary.txt'; Assert-SafePath $summaryPath
+    $freshResults=[IO.File]::Exists($summaryPath) -and (Get-Item -LiteralPath $summaryPath).Length -le 131072 -and
+        ([IO.File]::ReadAllLines($summaryPath) -contains ('RUN_ID='+$runId))
+    if($freshResults -and $exitCode -eq 0) {{ $finalState='COMPLETED' } elseif($freshResults -and $exitCode -eq 10) {{ $finalState='PARTIAL' }
+}
+catch {{ $exitCode=2 }
+finally {{
+    if($job) {{ $job.Dispose() }
+    if($child) {{
+        if(-not $child.HasExited -and -not $child.WaitForExit(5000)) {{ throw 'Worker did not stop; preserving its workspace' }
+        $child.Dispose()
+    }
+    if($admitted) {{ Write-State $finalState }
+    $deadline=[DateTime]::UtcNow.AddSeconds(25)
+    while([IO.File]::Exists((Join-Path $work 'launch.ready')) -and -not [IO.File]::Exists((Join-Path $work 'launch.accepted')) -and [DateTime]::UtcNow -lt $deadline) {{ Start-Sleep -Milliseconds 100 }
+    # No persistent result or log is included: this is the exact current work-* only.
+    Assert-SafePath $work
+    [IO.Directory]::Delete($work,$true)
+    $guard.Dispose()
+}
+exit $exitCode
+END_BACKGROUND_ea80d237385717f0
+delete "{parameter "work"}/background-windows.ps1"
+move __createfile "{parameter "work"}/background-windows.ps1"
+continue if {sha256 of file "background-windows.ps1" of folder (parameter "work") = "ea80d237385717f0044c54388b0f99abd3d836ddacaeef1e4577b68e0f9abccf"}
+delete __createfile
+createfile until END_BACKGROUND_5d4ef2679f448d50
+using System;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+
+// Closing the supervisor's job terminates only its worker and descendants.
+// Handles are non-inheritable; a crashed supervisor cannot leave a YARA child.
+public sealed class PhpBackgroundJob : IDisposable
+{{
+    private IntPtr handle;
+    [StructLayout(LayoutKind.Sequential)] private struct BasicLimits {{
+        public long ProcessTime, JobTime; public uint Flags;
+        public UIntPtr MinWorkingSet, MaxWorkingSet;
+        public uint ActiveProcesses; public UIntPtr Affinity;
+        public uint PriorityClass, SchedulingClass;
+    }
+    [StructLayout(LayoutKind.Sequential)] private struct IoCounters {{
+        public ulong ReadOperations, WriteOperations, OtherOperations;
+        public ulong ReadBytes, WriteBytes, OtherBytes;
+    }
+    [StructLayout(LayoutKind.Sequential)] private struct ExtendedLimits {{
+        public BasicLimits Basic; public IoCounters Io;
+        public UIntPtr ProcessMemory, JobMemory, PeakProcessMemory, PeakJobMemory;
+    }
+    [DllImport("kernel32.dll", CharSet=CharSet.Unicode, SetLastError=true)] private static extern IntPtr CreateJobObject(IntPtr attributes, string name);
+    [DllImport("kernel32.dll", SetLastError=true)] private static extern bool SetInformationJobObject(IntPtr job, int kind, ref ExtendedLimits value, uint size);
+    [DllImport("kernel32.dll", SetLastError=true)] private static extern bool AssignProcessToJobObject(IntPtr job, IntPtr process);
+    [DllImport("kernel32.dll")] private static extern bool CloseHandle(IntPtr value);
+    public PhpBackgroundJob(Process worker) {{
+        handle=CreateJobObject(IntPtr.Zero, null);
+        if(handle==IntPtr.Zero) throw new Win32Exception();
+        var limits=new ExtendedLimits(); limits.Basic.Flags=0x2000;
+        if(!SetInformationJobObject(handle,9,ref limits,(uint)Marshal.SizeOf(limits)) || !AssignProcessToJobObject(handle,worker.Handle)) {{
+            int error=Marshal.GetLastWin32Error(); Dispose(); throw new Win32Exception(error);
+        }
+    }
+    public void Dispose() {{ if(handle!=IntPtr.Zero) {{ CloseHandle(handle); handle=IntPtr.Zero; } }
+}
+END_BACKGROUND_5d4ef2679f448d50
+delete "{parameter "work"}/background-job.cs"
+move __createfile "{parameter "work"}/background-job.cs"
+continue if {sha256 of file "background-job.cs" of folder (parameter "work") = "5d4ef2679f448d50002804696e3b0f107dce1c438bbd6ef12fdb7931ceed1874"}
+waithidden "{pathname of native system folder}/WindowsPowerShell/v1.0/powershell.exe" -NoProfile -ExecutionPolicy Bypass -File "{parameter "work"}/background-windows.ps1" -Engine "{parameter "work"}/yr.exe" -EngineSha256 e2e431175174158fc74c8709896c6d4a6667592bbb65a8132dea624ba125d76f -Rules "{parameter "work"}/php-detect.yar" -OutputDirectory "{parameter "output"}" -Archive "{pathname of download file "yara-x-v1.22.0-x86_64-pc-windows-msvc.zip"}" -ArchiveSha256 eac36a58699b94d3732a7fe1d8453fe89e0077bb18ac2c99b4c2ee102a431f2e -ExcludeDirectoriesHex "{parameter "PHPExcludeDirectoriesHex"}" -EnumerationSeconds {parameter "PHPEnumerationSeconds"} -ScanSeconds {parameter "PHPScanSeconds"} -MaxFiles {parameter "PHPMaxFiles"} -CandidateGB {parameter "PHPCandidateGB"} -MaxFileMB {parameter "PHPMaxFileMB"} -CpuLimit {parameter "PHPCpuLimit"} -GentleDisk {parameter "PHPGentleDisk"} -IncludeBuildText {parameter "PHPIncludeBuildText"} -IncludeBroaderLocations {parameter "PHPIncludeBroaderLocations"} -IncludeNonstandardNames {parameter "PHPIncludeNonstandardNames"}
 parameter "scanExit" = "{exit code of action}"
-folder delete "{parameter "work"}"
-continue if {parameter "scanExit" = "0" or parameter "scanExit" = "10"}
+continue if {parameter "scanExit" = "0"}
 exit 0
 </ActionScript>
       <SuccessCriteria Option="RunToCompletion" />
