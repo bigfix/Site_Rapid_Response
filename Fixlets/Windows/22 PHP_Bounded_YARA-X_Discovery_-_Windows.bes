@@ -1,43 +1,34 @@
-<?xml version='1.0' encoding='utf-8'?>
-<BES xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="BES.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<BES>
   <Task>
-    <Title>PHP YARA Vulnerability Scanner v4 – CVE-2026-109618 and CVE-2026-109619 (Windows)</Title>
-    <Description>&lt;style type="text/css"&gt;
-.phpScan {font-family:Segoe UI,Tahoma,Arial,sans-serif;font-size:13px;line-height:1.45;color:#243447;max-width:1000px;margin:8px 12px 20px;}
-.phpScan h2 {font-size:20px;color:#183953;margin:0 0 5px;}
-.phpScan h3 {font-size:15px;color:#183953;margin:20px 0 8px;padding-bottom:5px;border-bottom:2px solid #dbe5ed;}
-.phpScan p {margin:7px 0;}
-.phpScan .recommend {background:#edf5fa;border-left:4px solid #28658a;padding:10px 12px;margin:12px 0;}
-.phpScan table {width:100%;border-collapse:collapse;table-layout:fixed;margin:8px 0;}
-.phpScan th {background:#edf1f5;text-align:left;font-weight:600;}
-.phpScan td,.phpScan th {padding:8px;vertical-align:top;border-bottom:1px solid #dce3e9;word-wrap:break-word;}
-.phpScan .setting {width:31%;}.phpScan .value {width:18%;}
-.phpScan .mode {width:110px;}.phpScan .deep {background:#fff7e7;}
-.phpScan .warning {color:#865000;font-weight:bold;}
-.phpScan input,.phpScan select,.phpScan button {font-family:inherit;font-size:13px;}
-.phpScan input {max-width:95%;}.phpScan input[type=text],.phpScan input:not([type]) {box-sizing:border-box;padding:5px;border:1px solid #9baab7;}
-.phpScan select {padding:5px;max-width:100%;}.phpScan input[type=checkbox] {margin-top:3px;}
-.phpScan .exclusion input {display:block;width:98%;margin:5px 0;}
-.phpScan .hint {color:#516170;font-size:12px;}
-.phpScan code {font-family:Consolas,monospace;font-size:12px;word-wrap:break-word;}
-.phpScan .launch {border-top:1px solid #dce3e9;padding-top:12px;margin-top:15px;}
-.phpScan button {background:#245b7d;color:white;border:1px solid #194766;padding:8px 16px;cursor:pointer;}
-.phpScan button:focus,.phpScan input:focus,.phpScan select:focus {outline:2px solid #438bb7;outline-offset:1px;}
-&lt;/style&gt;&lt;div class="phpScan"&gt;&lt;h2&gt;PHP vulnerability scan&lt;/h2&gt;&lt;p&gt;Find PHP runtime versions affected by &lt;strong&gt;CVE-2026-109618&lt;/strong&gt; and &lt;strong&gt;CVE-2026-109619&lt;/strong&gt; on Windows, without running PHP.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Version compatibility:&lt;/strong&gt; Use the v4 scanners with the v4 Results Analysis. Scanner and Analysis versions should match. Run a new scan after upgrading to refresh the results.&lt;/p&gt;&lt;div class="recommend"&gt;&lt;strong&gt;Recommended: start with Quick Scan and leave the limits at their defaults.&lt;/strong&gt;&lt;br /&gt;Choose a broader scan only when needed. More coverage increases disk activity and run time.&lt;/div&gt;&lt;p&gt;Document, media, font, ordinary text, source, archive, package, debug and selected asset file types are skipped in every scan type, including Deep. Native executables and libraries remain eligible; php-config and php_version.h are retained when PHP build-text detection is enabled. A runtime renamed with an excluded extension, such as .js or .zip, can be missed.&lt;/p&gt;
-&lt;h3&gt;1. Choose a scan type&lt;/h3&gt;&lt;p&gt;&lt;label for="PHPScanPreset"&gt;&lt;strong&gt;Scan type:&lt;/strong&gt;&lt;/label&gt; &lt;select id="PHPScanPreset" onchange="PhpScan.preset(this.value);"&gt;&lt;option value="quick" selected="selected"&gt;QUICK SCAN (recommended)&lt;/option&gt;&lt;option value="normal"&gt;NORMAL SCAN&lt;/option&gt;&lt;option value="deep"&gt;DEEP SCAN&lt;/option&gt;&lt;option value="custom" disabled="disabled"&gt;CUSTOM (advanced settings)&lt;/option&gt;&lt;/select&gt;&lt;/p&gt;&lt;table&gt;&lt;colgroup&gt;&lt;col class="mode" /&gt;&lt;col /&gt;&lt;/colgroup&gt;&lt;tr&gt;&lt;th scope="col"&gt;Scan&lt;/th&gt;&lt;th scope="col"&gt;Coverage and tradeoff&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Quick&lt;/strong&gt;&lt;br /&gt;&lt;span class="hint"&gt;Default&lt;/span&gt;&lt;/td&gt;&lt;td&gt;Standard PHP runtime names in the usual application locations. Fastest; can miss renamed or embedded runtimes.&lt;br /&gt;&lt;span class="hint"&gt;Limits: 10 min search; 10 min content scan; 5 million files; 30 GiB candidate input; 512 MiB per file; 10% YARA CPU.&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Normal&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Also checks renamed/nonstandard binaries, while keeping the usual folder exclusions. Broader runtime coverage; takes longer.&lt;br /&gt;&lt;span class="hint"&gt;Limits: 30 min search; 30 min content scan; 10 million files; 40 GiB candidate input; 512 MiB per file; 10% YARA CPU.&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr class="deep"&gt;&lt;td&gt;&lt;strong&gt;Deep&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Also includes normally skipped OS/cache/data locations and PHP build text. &lt;span class="warning"&gt;WARNING: This takes much longer and is more likely to hit file and scan limits. Deep already uses the maximum search time, content scan time, file count and total candidate input; it can still hit limits.&lt;/span&gt;&lt;br /&gt;&lt;span class="hint"&gt;Limits: 60 min search; 60 min content scan; 10 million files; 100 GiB candidate input; 1 GiB per file; 25% YARA CPU.&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p class="hint"&gt;Choosing a scan type fills its recommended limits below. Quick and Normal use 512 MiB per file and 10% YARA CPU. Deep uses 1 GiB per file and 25% YARA CPU, with the maximum allowed time, file-count and candidate-input budgets. You can adjust individual settings afterward. Remote storage, cloud placeholders and other permanent exclusions still apply. Build text alone does not prove an installed vulnerable runtime.&lt;/p&gt;&lt;h3&gt;2. Advanced settings (optional)&lt;/h3&gt;&lt;p&gt;Changing coverage or a preset limit updates the scan type above; a non-preset combination is shown as Custom. Choosing another scan type resets these settings to its recommended values. Additional directory exclusions and extra-gentle disk access are retained.&lt;/p&gt;&lt;table&gt;&lt;colgroup&gt;&lt;col class="setting" /&gt;&lt;col class="value" /&gt;&lt;col /&gt;&lt;/colgroup&gt;&lt;tr&gt;&lt;th scope="col"&gt;Setting&lt;/th&gt;&lt;th scope="col"&gt;Value&lt;/th&gt;&lt;th scope="col"&gt;What it does&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPIncludeNonstandardNames"&gt;Include renamed or nonstandard PHP binaries (slower)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input type="checkbox" id="PHPIncludeNonstandardNames"   onchange="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Scans other native binary names; leaving this off can miss renamed or custom embedded PHP.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPIncludeBroaderLocations"&gt;Include OS, recovery, cache and data locations (slower)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input type="checkbox" id="PHPIncludeBroaderLocations"   onchange="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Restores OS, recovery, cache and data locations normally excluded, while retaining scan limits.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPIncludeBuildText"&gt;Include PHP source/build text (slower)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input type="checkbox" id="PHPIncludeBuildText"   onchange="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Includes PHP build/header evidence without treating it as an installed runtime.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;h3&gt;Time and resource limits&lt;/h3&gt;&lt;table&gt;&lt;colgroup&gt;&lt;col class="setting" /&gt;&lt;col class="value" /&gt;&lt;col /&gt;&lt;/colgroup&gt;&lt;tr&gt;&lt;th scope="col"&gt;Setting&lt;/th&gt;&lt;th scope="col"&gt;Value&lt;/th&gt;&lt;th scope="col"&gt;What it does&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPEnumerationSeconds"&gt;File search time (minutes)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPEnumerationSeconds" value="10" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Stops searching after this many minutes and marks unfinished coverage as partial. (Allowed: 1 to 60.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPScanSeconds"&gt;Content scan time (minutes)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPScanSeconds" value="10" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Limits YARA content scanning to this many minutes and reports partial results if it times out. (Allowed: 1 to 60.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPMaxFiles"&gt;Maximum files checked&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPMaxFiles" value="5000000" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Caps files considered during discovery to bound work on unusually large filesystems. (Allowed: 1000 to 10000000.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPCandidateGB"&gt;Maximum candidate input (GiB)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPCandidateGB" value="30" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Caps the combined size of files sent to YARA; exceeding this reports a partial scan. (Allowed: 1 to 100.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPMaxFileMB"&gt;Maximum individual file size (MiB)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPMaxFileMB" value="512" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Skips individual files at or above this size; 512 MiB covers normal PHP and large embedded builds. (Allowed: 16 to 2048.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPCpuLimit"&gt;YARA CPU setting (%)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input id="PHPCpuLimit" value="10" size="12"  onchange="PhpScan.syncPreset();" onkeyup="PhpScan.syncPreset();" /&gt;&lt;/td&gt;&lt;td&gt;Sets the YARA engine CPU target; this is not a total system CPU guarantee. (Allowed: 1 to 50.)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;label for="PHPGentleDisk"&gt;Extra-gentle disk access (slower, Windows only)&lt;/label&gt;&lt;/td&gt;&lt;td&gt;&lt;input type="checkbox" id="PHPGentleDisk"  /&gt;&lt;/td&gt;&lt;td&gt;Uses lower disk scheduling priority to reduce disk contention, which can slow the scan.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;h3&gt;Additional directory exclusions (optional)&lt;/h3&gt;&lt;div class="exclusion"&gt;&lt;strong&gt;&lt;label for="PHPExcludeDirectoriesHex"&gt;Additional directory exclusions (comma-separated)&lt;/label&gt;&lt;/strong&gt;&lt;input id="PHPExcludeDirectoriesHex" value="" size="48" maxlength="4096" /&gt;&lt;p class="hint"&gt;Skip your chosen folders; leave blank for no additional exclusions. See the examples below.&lt;/p&gt;&lt;/div&gt;&lt;table&gt;&lt;tr&gt;&lt;th scope="col"&gt;Example&lt;/th&gt;&lt;th scope="col"&gt;What is skipped&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;/data/*&lt;/code&gt;&lt;br /&gt;&lt;code&gt;C:\folder\*&lt;/code&gt;&lt;/td&gt;&lt;td&gt;The named directory and all its subdirectories.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;/data/&lt;/code&gt;&lt;br /&gt;&lt;code&gt;C:\folder\&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Only files directly in that directory; subdirectories are still searched.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;*/data/*&lt;/code&gt;&lt;br /&gt;&lt;code&gt;*\folder\*&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Every matching directory and its subdirectories, wherever found.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p class="hint"&gt;Separate entries with commas, without quotes. Use an absolute path or a leading */; * includes path separators and other characters are literal. Windows ignores case; Linux/macOS matching is case-sensitive. Spaces are supported; commas inside a folder name are not. Maximum 32 entries and 4096 UTF-8 bytes. Exclusions apply to every scan type, can hide PHP, and are logged; intentional exclusions do not mark a scan partial.&lt;/p&gt;&lt;div class="launch"&gt;&lt;button onclick="return PhpScan.prepare();"&gt;Configure and Take Action&lt;/button&gt;&lt;p class="hint"&gt;Opens the standard Console Take Action dialog, where you select computers. These settings apply only to that action. API/WebUI actions without parameters use Quick defaults; API integrations can supply the same parameters.&lt;/p&gt;&lt;/div&gt;&lt;h3&gt;Reading the results&lt;/h3&gt;&lt;table&gt;&lt;colgroup&gt;&lt;col class="mode" /&gt;&lt;col /&gt;&lt;/colgroup&gt;&lt;tr&gt;&lt;td&gt;&lt;strong&gt;TRUE&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;An upstream-affected PHP runtime was found. Check vendor patch status and web exposure before deciding remediation.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;strong&gt;FALSE&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;No affected runtime was found within the completed, selected scan scope.&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;strong&gt;UNKNOWN&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;A short reason identifies unavailable results, incomplete coverage or evidence that needs verification. Vendor backports require checking the package advisory.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p&gt;Positive findings are retained during a partial scan. BigFix action status Fixed confirms that the background scan started, not that it finished. Use the matching Results Analysis to check scan progress and final results. While a scan runs or after an interruption, the properties explain that state; the previous completed summary stays on disk until replaced by a new usable result.&lt;/p&gt;&lt;h3&gt;Coverage and requirements&lt;/h3&gt;&lt;p&gt;Quick checks php, php-cgi, php-fpm, phpdbg, lsphp, frankenphp, libphp and mod_php name families, including version suffixes and native runtime libraries (.exe/.dll on Windows, .so/.so.N on Linux, .dylib/.so on macOS). PHP core DLLs and server modules are included. Ordinary .php application scripts do not identify an installed runtime.&lt;/p&gt;&lt;p&gt;Legitimate per-user applications remain in scope, including common PHP installations such as Herd, Scoop, Homebrew, MAMP and XAMPP where applicable. OS/recovery trees, caches, backups and personal data are skipped unless broader locations are selected. Network storage, cloud-only files, symlinks, snapshots and scanner/cache data remain excluded. Archives and container images are not unpacked. Meaningful access restrictions and limits produce partial coverage; the scanner does not change system access or privacy settings.&lt;/p&gt;&lt;p&gt;Windows 10/11 x64 and Windows Server 2016 or later, with Windows PowerShell 5.1/.NET.&lt;/p&gt;&lt;p&gt;Minimum ActionScript syntax: BigFix Client 9.5.7. Use a client supported on the target OS and architecture; this syntax minimum does not establish ARM64 support. The pinned YARA-X engine is delivered by BigFix. No endpoint Python, PHP or compiler is required.&lt;/p&gt;&lt;h3&gt;Detailed scan log&lt;/h3&gt;&lt;p&gt;Open &lt;code&gt;YARA_PHP/scan.log&lt;/code&gt; under the BigFix client state root:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;code&gt;C:\Program Files (x86)\BigFix Enterprise\BES Client\YARA_PHP\scan.log&lt;/code&gt; (typical Windows location)&lt;/li&gt;&lt;/ul&gt;&lt;p class="hint"&gt;summary.txt supplies the four Analysis properties; scan.lock prevents overlapping scans. Temporary action work is removed after completion.&lt;/p&gt;&lt;p class="hint"&gt;Community utility, not HCL-supported patch content. Rule source: &lt;a href="https://github.com/bigfix/Site_Rapid_Response"&gt;Site Rapid Response&lt;/a&gt; (Apache-2.0).&lt;/p&gt;&lt;script type="text/javascript"&gt;var phpScanFields = [{"key": "PHPExcludeDirectoriesHex", "label": "Additional directory exclusions (comma-separated)", "text": true}, {"key": "PHPIncludeNonstandardNames", "label": "Include renamed or nonstandard PHP binaries (slower)", "min": 0, "max": 1, "checkbox": true}, {"key": "PHPIncludeBroaderLocations", "label": "Include OS, recovery, cache and data locations (slower)", "min": 0, "max": 1, "checkbox": true}, {"key": "PHPIncludeBuildText", "label": "Include PHP source/build text (slower)", "min": 0, "max": 1, "checkbox": true}, {"key": "PHPEnumerationSeconds", "label": "File search time (minutes)", "min": 30, "max": 3600, "multiplier": 60}, {"key": "PHPScanSeconds", "label": "Content scan time (minutes)", "min": 30, "max": 3600, "multiplier": 60}, {"key": "PHPMaxFiles", "label": "Maximum files checked", "min": 1000, "max": 10000000}, {"key": "PHPCandidateGB", "label": "Maximum candidate input (GiB)", "min": 1, "max": 100}, {"key": "PHPMaxFileMB", "label": "Maximum individual file size (MiB)", "min": 16, "max": 2048}, {"key": "PHPCpuLimit", "label": "YARA CPU setting (%)", "min": 1, "max": 50}, {"key": "PHPGentleDisk", "label": "Extra-gentle disk access (slower, Windows only)", "min": 0, "max": 1, "checkbox": true}];
+    <Title>PHP YARA Vulnerability Scanner – CVE-2026-109618 and CVE-2026-109619 (Windows) V7</Title>
+    <Description><![CDATA[<style>.php-hybrid{font-family:Segoe UI,Arial,sans-serif;max-width:1100px;line-height:1.45;color:#243447}.php-hybrid table{border-collapse:collapse;width:100%;margin:12px 0}.php-hybrid td,.php-hybrid th{padding:9px;border:1px solid #d6dee5;text-align:left;vertical-align:top}.php-hybrid th{background:#edf2f6}.php-hybrid .notice{padding:12px;background:#edf5fc;border-left:4px solid #356b98}.php-hybrid input{max-width:100%}</style>
+<div class="php-hybrid"><h2>PHP YARA Vulnerability Scanner V7</h2>
+<p>Detects PHP runtimes affected by CVE-2026-109618 and CVE-2026-109619 without executing PHP. Use the matching V7 analysis. Scanner and analysis versions should match.</p>
+<p class="notice"><strong>Normal is the default: 2 workers, low priority, no CPU throttle. Use Gentle on busy or sensitive systems.</strong> Quick selects Gentle; Normal and Deep select Fast. You can adjust resource usage after selecting the scan type. Every mode keeps the 512 MiB individual-file limit.</p>
+<h3>1. Coverage</h3><select id="PHPScanPreset" onchange="PhpScan.preset(this.value);"><option value="quick">Quick</option><option value="normal" selected="selected">Normal (default)</option><option value="deep">Deep</option><option value="custom" disabled="disabled">Custom</option></select>
+<table><tr><th>Scan</th><th>Coverage and tradeoff</th></tr><tr><td>Quick</td><td>Standard PHP runtime names in usual application locations; fastest, but can miss renamed runtimes.</td></tr><tr><td>Normal</td><td>Includes renamed runtimes while keeping usual location exclusions.</td></tr><tr><td>Deep</td><td>Adds further OS and application locations, selected caches and PHP build evidence. Permanent data/cache exclusions, including Windows.old, still apply. Allows 60 minutes for file search and 60 minutes for YARA scanning.</td></tr></table>
+<h3>2. Resource usage</h3><select id="PHPResourcePreset" onchange="PhpScan.resource(this.value);"><option value="gentle">Gentle (busy systems)</option><option value="fast" selected="selected">Fast (default)</option><option value="custom" disabled="disabled">Custom</option></select>
+<p><strong>Gentle:</strong> 2 workers, engine throttle 10%, low CPU priority. <strong>Fast, default:</strong> 2 workers, no throttle, low CPU priority. Low priority does not prevent disk or memory contention; use Fast when the system is quiet.</p>
+<h3>3. Advanced settings</h3><p>Changing the scan type selects its recommended resource settings and retains your directory exclusions. Change advanced settings afterward if needed. All times below are in minutes.</p><table><tr><th>Setting</th><th>Value</th><th>Purpose</th></tr><tr><td><label for="PHPExcludeDirectoriesHex">Additional directory exclusions (comma-separated)</label></td><td><input id="PHPExcludeDirectoriesHex" value="" size="48" maxlength="4096" /></td><td>Optional comma-separated directory exclusions; use /data/* or C:\folder\* to exclude a whole tree. A trailing slash alone excludes direct files only. Windows accepts either slash.</td></tr><tr><td><label for="PHPIncludeNonstandardNames">Include renamed or nonstandard PHP binaries (slower)</label></td><td><input type="checkbox" id="PHPIncludeNonstandardNames" checked="checked" onchange="PhpScan.syncPreset();" /></td><td>Includes renamed native runtimes; excluding them can miss custom PHP applications.</td></tr><tr><td><label for="PHPIncludeBroaderLocations">Include OS, recovery, cache and data locations (slower)</label></td><td><input type="checkbox" id="PHPIncludeBroaderLocations" onchange="PhpScan.syncPreset();" /></td><td>Includes normally skipped operating-system, cache and data locations.</td></tr><tr><td><label for="PHPIncludeBuildText">Include PHP source/build text (slower)</label></td><td><input type="checkbox" id="PHPIncludeBuildText" onchange="PhpScan.syncPreset();" /></td><td>Includes build evidence, which alone does not prove an installed vulnerable runtime.</td></tr><tr><td><label for="PHPEnumerationSeconds">File search time (minutes)</label></td><td><input id="PHPEnumerationSeconds" value="0" size="12" onchange="PhpScan.syncPreset();" /></td><td>Optional file-search time limit in minutes; 0 means no limit. Quick and Normal use 0; Deep uses 60.</td></tr><tr><td><label for="PHPScanSeconds">Content scan time (minutes)</label></td><td><input id="PHPScanSeconds" value="0" size="12" onchange="PhpScan.syncPreset();" /></td><td>Optional YARA content-scan time limit in minutes; 0 means no limit. Quick and Normal use 0; Deep uses 60.</td></tr><tr><td><label for="PHPMaxFiles">Maximum files checked (optional)</label></td><td><label><input id="PHPUseFileLimit" type="checkbox" onchange="PhpScan.syncPreset();" /> Limit files checked</label><br /><input id="PHPMaxFiles" value="50000000" size="12" onchange="PhpScan.syncPreset();" /></td><td>Enable only if you want a file-count limit. Unchecked means no limit for every scan type; the suggested enabled value is 50,000,000.</td></tr><tr><td><label for="PHPCandidateGB">Total input limit (GiB; 0 = off)</label></td><td><input id="PHPCandidateGB" value="0" size="12" onchange="PhpScan.syncPreset();" /></td><td>Optional cumulative input limit; 0 disables it. Time, individual-file and other safeguards remain active.</td></tr><tr><td><label for="PHPMaxFileMB">Maximum individual file size (MiB)</label></td><td><input id="PHPMaxFileMB" value="512" size="12" onchange="PhpScan.syncPreset();" /></td><td>Files at or above 512 MiB receive only a bounded header check; possible runtimes remain UNKNOWN.</td></tr><tr><td><label for="PHPCpuLimit">YARA CPU setting (%)</label></td><td><input id="PHPCpuLimit" value="0" size="12" onchange="PhpScan.syncPreset();" /></td><td>10 enables the engine throttle; 0 disables it. This is not a guaranteed whole-system CPU percentage.</td></tr><tr><td><label for="PHPGentleDisk">Pace Windows file search</label></td><td><input type="checkbox" id="PHPGentleDisk" onchange="PhpScan.syncPreset();" /></td><td>Adds a brief pause between batches during Windows file discovery; does not cap disk bandwidth or change YARA scanning.</td></tr><tr><td><label for="PHPYaraThreads">YARA workers</label></td><td><input id="PHPYaraThreads" value="2" size="12" onchange="PhpScan.syncPreset();" /></td><td>Concurrent YARA workers: use 2 normally; 4 may help a quiet Windows Deep scan but can increase contention.</td></tr></table>
+<p>On Windows, update downloads, component servicing, installer caches, logs, crash dumps, recycle/restore data and Windows.old and Windows upgrade staging folders stay excluded in every mode, including Deep. General application and user folders remain eligible under the selected scope.</p><p>Linux and Mac submit ordinary candidates directly to YARA-X. Windows also submits ordinary candidates directly to YARA-X using PowerShell and built-in process support. No local C# compilation, scheduled tasks or Python are required. Oversized candidates receive only a small header check. Remote mounts, cloud placeholders and permanent exclusions remain excluded.</p>
+<p>On Mac, specific Apple privacy, identity and personal-data stores are excluded. Desktop, Documents, Downloads, development folders and general application support remain in scope. On Mac, access-denied locations are skipped and recorded in scan.log, without making the scan Partial or UNKNOWN. FALSE means no vulnerable PHP was found in the accessible files; it does not confirm unreadable locations are clear. Running as root does not bypass macOS privacy controls.</p>
+<p>The BigFix action returns after launch; results update after the background scan completes. TRUE means affected runtime evidence; FALSE means none found within the completed scan scope (accessible files on Mac); UNKNOWN includes a reason. Vendor patch status and web exposure require separate verification.</p>
+<p>Results and detailed scan.log are under the BigFix client root in <code>YARA_PHP</code>. Previous completed results remain available while another scan runs.</p>
+<p><a href="#" onclick="return PhpScan.prepare();">Start scan with these settings</a></p></div><script type="text/javascript">var phpScanFields = [{"key": "PHPExcludeDirectoriesHex", "label": "Additional directory exclusions (comma-separated)", "text": true}, {"key": "PHPIncludeNonstandardNames", "label": "Include renamed or nonstandard PHP binaries (slower)", "min": 0, "max": 1, "checkbox": true}, {"key": "PHPIncludeBroaderLocations", "label": "Include OS, recovery, cache and data locations (slower)", "min": 0, "max": 1, "checkbox": true}, {"key": "PHPIncludeBuildText", "label": "Include PHP source/build text (slower)", "min": 0, "max": 1, "checkbox": true}, {"key": "PHPEnumerationSeconds", "label": "File search time (minutes)", "min": 0, "max": 3600, "multiplier": 60}, {"key": "PHPScanSeconds", "label": "Content scan time (minutes)", "min": 0, "max": 3600, "multiplier": 60}, {"key": "PHPMaxFiles", "label": "Maximum files checked (optional)", "min": 1, "max": 50000000}, {"key": "PHPCandidateGB", "label": "Total input limit (GiB; 0 = off)", "min": 0, "max": 100}, {"key": "PHPMaxFileMB", "label": "Maximum individual file size (MiB)", "min": 16, "max": 512}, {"key": "PHPCpuLimit", "label": "YARA CPU setting (%)", "min": 0, "max": 10}, {"key": "PHPGentleDisk", "label": "Pace Windows file search", "min": 0, "max": 1, "checkbox": true}, {"key": "PHPYaraThreads", "label": "YARA workers", "min": 1, "max": 4}];
 var phpScanWindows = true;
 /* Console JScript compatible: no JSON dependency, eval, credentials or target selection. */
 var PhpScan = (function () {
     function parameters(values) {
         var fields = phpScanFields, selected = {}, index, field, text, number, multiplier, minimum, maximum;
-        for (index = 0; index &lt; fields.length; index++) {
+        for (index = 0; index < fields.length; index++) {
             field = fields[index];
             text = String(values[field.key]);
             if (field.text) {
-                // Encode UTF-8 bytes, never interpolate a directory into script code.
+                /* Encode UTF-8 bytes, never interpolate a directory into script code. */
                 if (/[\x00-\x1f\x7f]/.test(text)) { throw new Error('Exclusions cannot contain control characters.'); }
                 var entries = text.split(','), clean = [], j, entry, encoded, hex = 'x', k, byte;
-                for (j = 0; j &lt; entries.length; j++) {
+                for (j = 0; j < entries.length; j++) {
                     entry = entries[j].replace(/^\s+|\s+$/g, '');
                     if (!entry) { continue; }
                     var prefix = phpScanWindows ? /^([A-Za-z]:[\\\/]|\*[\\\/])/ : /^(\/|\*\/)/;
@@ -47,14 +38,14 @@ var PhpScan = (function () {
                     }
                     clean.push(entry);
                 }
-                if (clean.length &gt; 32) { throw new Error('Use at most 32 directory exclusions.'); }
+                if (clean.length > 32) { throw new Error('Use at most 32 directory exclusions.'); }
                 encoded = encodeURIComponent(clean.join(','));
-                for (k = 0; k &lt; encoded.length; k++) {
+                for (k = 0; k < encoded.length; k++) {
                     if (encoded.charAt(k) === '%') { byte = encoded.substr(k + 1, 2); k += 2; }
-                    else { byte = encoded.charCodeAt(k).toString(16); if (byte.length &lt; 2) { byte = '0' + byte; } }
+                    else { byte = encoded.charCodeAt(k).toString(16); if (byte.length < 2) { byte = '0' + byte; } }
                     hex += byte.toLowerCase();
                 }
-                if (hex.length &gt; 8193) { throw new Error('Directory exclusions must fit within 4096 UTF-8 bytes.'); }
+                if (hex.length > 8193) { throw new Error('Directory exclusions must fit within 4096 UTF-8 bytes.'); }
                 selected[field.key] = hex;
                 continue;
             }
@@ -63,70 +54,79 @@ var PhpScan = (function () {
             multiplier = field.multiplier || 1;
             minimum = Math.ceil(field.min / multiplier);
             maximum = Math.floor(field.max / multiplier);
-            if (number &lt; minimum || number &gt; maximum) { throw new Error(field.label + ': use ' + minimum + ' to ' + maximum + '.'); }
+            if (number < minimum || number > maximum) { throw new Error(field.label + ': use ' + minimum + ' to ' + maximum + '.'); }
             number = number * multiplier;
             selected[field.key] = String(number);
         }
+        selected.PHPMaxFiles = String(values.PHPUseFileLimit) === '1' ? selected.PHPMaxFiles : '0';
         return selected;
     }
     function prepare() {
         try {
             var values = {}, index, field;
-            for (index = 0; index &lt; phpScanFields.length; index++) {
+            for (index = 0; index < phpScanFields.length; index++) {
                 field = phpScanFields[index];
                 values[field.key] = field.checkbox ? (document.getElementById(field.key).checked ? '1' : '0') : document.getElementById(field.key).value;
             }
+            values.PHPUseFileLimit = document.getElementById('PHPUseFileLimit').checked ? '1' : '0';
             var selected = parameters(values);
             if (typeof TakeFixletAction === 'undefined' || typeof Relevance === 'undefined') {
                 throw new Error('Open this content in the BigFix Console to use this settings form. API/WebUI launches use defaults unless action parameters are supplied.');
             }
-            // These are ordinary, nonsecret action parameters. The Console
-            // obtains the current Task's Action1; no XML or script is rebuilt.
+            /* These are ordinary, nonsecret action parameters. The Console */
+            /* obtains the current Task's Action1; no XML or script is rebuilt. */
             TakeFixletAction(Relevance('id of current fixlet'), Relevance('id of current bes site'), 'Action1', selected);
         } catch (error) { alert('Cannot prepare scan. ' + error.message); }
         return false;
     }
-    var presetFields = ["PHPEnumerationSeconds", "PHPScanSeconds", "PHPMaxFiles", "PHPCandidateGB", "PHPMaxFileMB", "PHPCpuLimit", "PHPIncludeNonstandardNames", "PHPIncludeBroaderLocations", "PHPIncludeBuildText"];
-    var presetValues = {"quick": [10, 10, 5000000, 30, 512, 10, false, false, false], "normal": [30, 30, 10000000, 40, 512, 10, true, false, false], "deep": [60, 60, 10000000, 100, 1024, 25, true, true, true]};
-    function preset(value) {
-        var values = presetValues[value], i, field;
-        if (!values) { return; }
-        for (i = 0; i &lt; presetFields.length; i++) {
-            field = document.getElementById(presetFields[i]);
-            if (i &lt; 6) { field.value = String(values[i]); }
-            else { field.checked = values[i]; }
+
+    var scopes = {"quick": {"PHPEnumerationSeconds": 0, "PHPScanSeconds": 0, "PHPMaxFiles": 50000000, "PHPCandidateGB": 0, "PHPMaxFileMB": 512, "PHPIncludeNonstandardNames": false, "PHPIncludeBroaderLocations": false, "PHPIncludeBuildText": false, "PHPCpuLimit": 10, "PHPYaraThreads": 2}, "normal": {"PHPEnumerationSeconds": 0, "PHPScanSeconds": 0, "PHPMaxFiles": 50000000, "PHPCandidateGB": 0, "PHPMaxFileMB": 512, "PHPIncludeNonstandardNames": true, "PHPIncludeBroaderLocations": false, "PHPIncludeBuildText": false, "PHPCpuLimit": 0, "PHPYaraThreads": 2}, "deep": {"PHPEnumerationSeconds": 60, "PHPScanSeconds": 60, "PHPMaxFiles": 50000000, "PHPCandidateGB": 0, "PHPMaxFileMB": 512, "PHPIncludeNonstandardNames": true, "PHPIncludeBroaderLocations": true, "PHPIncludeBuildText": true, "PHPCpuLimit": 0, "PHPYaraThreads": 2}};
+
+    function apply(values) {
+        var i, field, node;
+        for (i = 0; i < phpScanFields.length; i++) {
+            field = phpScanFields[i];
+            if (!Object.prototype.hasOwnProperty.call(values, field.key)) continue;
+            node = document.getElementById(field.key);
+            if (field.checkbox) node.checked = values[field.key];
+            else node.value = String(values[field.key]);
         }
+    }
+    function preset(value) {
+        if (!scopes[value]) return;
+        apply(scopes[value]);
+        document.getElementById('PHPUseFileLimit').checked = false;
         document.getElementById('PHPScanPreset').value = value;
+        if (Object.prototype.hasOwnProperty.call(scopes[value], 'PHPCpuLimit'))
+            document.getElementById('PHPResourcePreset').value = scopes[value].PHPCpuLimit === 0 ? 'fast' : 'gentle';
+    }
+    function resource(value) {
+        if (value !== 'gentle' && value !== 'fast') return;
+        apply({PHPCpuLimit: value === 'gentle' ? 10 : 0, PHPYaraThreads: 2});
+        document.getElementById('PHPResourcePreset').value = value;
     }
     function syncPreset() {
-        var modes = ['quick','normal','deep'], mode, values, i, matches, selected = 'custom', field;
-        for (mode = 0; mode &lt; modes.length; mode++) {
-            values = presetValues[modes[mode]];
-            matches = true;
-            for (i = 0; i &lt; presetFields.length; i++) {
-                field = document.getElementById(presetFields[i]);
-                if (i &lt; 6 ? String(field.value) !== String(values[i]) : field.checked !== values[i]) {
-                    matches = false;
-                    break;
-                }
-            }
-            if (matches) { selected = modes[mode]; break; }
-        }
-        document.getElementById('PHPScanPreset').value = selected;
+        document.getElementById('PHPScanPreset').value = 'custom';
+        document.getElementById('PHPResourcePreset').value = 'custom';
     }
-    return {parameters: parameters, prepare: prepare, preset: preset, syncPreset: syncPreset};
+    return {parameters: parameters, prepare: prepare, preset: preset, resource: resource, syncPreset: syncPreset};
 }());
 document.body.ontakeaction = function () { return PhpScan.prepare(); };
-&lt;/script&gt;&lt;p&gt;API-only PHP extension markers are logged as supporting evidence; they do not by themselves make a scan UNKNOWN.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Background scanning:&lt;/strong&gt; The BigFix action waits only for the scan to start, then other actions can run. Fixed means the scan launched; check the Results Analysis for Running, completed or interrupted status. Only one PHP scan runs at a time. Completed results and scan.log stay in YARA_PHP; temporary scan files are removed after the worker stops. Stopping the launch action after it finishes does not cancel the background scan.&lt;/p&gt;&lt;/div&gt;</Description>
-    <Relevance>if (version of client &gt;= "9.5.7") then (if windows of operating system then (x64 of operating system and (exists (it as string as version) whose (it &gt;= "5.1" as version) of values "PowerShellVersion" of keys "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PowerShell\3\PowerShellEngine" of native registry) and (if product type of operating system = nt workstation product type then version of operating system &gt;= "10.0.10240" as version else if product type of operating system = nt server product type or product type of operating system = nt domain controller product type then version of operating system &gt;= "10.0.14393" as version else false)) else false) else false</Relevance>
+</script>]]></Description>
+    <Relevance><![CDATA[if (version of client >= "9.5.7") then (if windows of operating system then (x64 of operating system and (exists (it as string as version) whose (it >= "5.1" as version) of values "PowerShellVersion" of keys "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PowerShell\3\PowerShellEngine" of native registry) and (if product type of operating system = nt workstation product type then version of operating system >= "10.0.10240" as version else if product type of operating system = nt server product type or product type of operating system = nt domain controller product type then version of operating system >= "10.0.14393" as version else false)) else false) else false]]></Relevance>
     <Category>PHP Security Discovery</Category>
+    <SourceReleaseDate>2026-10-25</SourceReleaseDate>
+    <MIMEField>
+      <Name>x-fixlet-modification-time</Name>
+      <Value>Sun, 25 Oct 2026 13:17:04 +0000</Value>
+    </MIMEField>
     <DefaultAction ID="Action1">
       <Description>
         <PreLink>Click </PreLink>
         <Link>here</Link>
         <PostLink> to run bounded local PHP discovery.</PostLink>
       </Description>
-      <ActionScript MIMEType="application/x-Fixlet-Windows-Shell">begin prefetch block
+      <ActionScript MIMEType="application/x-Fixlet-Windows-Shell"><![CDATA[begin prefetch block
 add prefetch item name=yara-x-v1.22.0-x86_64-pc-windows-msvc.zip sha1=344da50ce1693edd32b92c7d32eaf26d99c97f17 sha256=eac36a58699b94d3732a7fe1d8453fe89e0077bb18ac2c99b4c2ee102a431f2e size=9081400 url=https://github.com/VirusTotal/yara-x/releases/download/v1.22.0/yara-x-v1.22.0-x86_64-pc-windows-msvc.zip
 end prefetch block
 action uses file encoding UTF-8 NoBOM
@@ -134,64 +134,69 @@ action uses wow64 redirection false
 if {not exists parameter "PHPExcludeDirectoriesHex"}
 parameter "PHPExcludeDirectoriesHex" = "x"
 endif
-continue if {length of parameter "PHPExcludeDirectoriesHex" &lt;= 8193 and parameter "PHPExcludeDirectoriesHex" = regex "x([0-9A-Fa-f][0-9A-Fa-f])*"}
+continue if {length of parameter "PHPExcludeDirectoriesHex" <= 8193 and parameter "PHPExcludeDirectoriesHex" = regex "x([0-9A-Fa-f][0-9A-Fa-f])*"}
 if {not exists parameter "PHPIncludeNonstandardNames"}
-parameter "PHPIncludeNonstandardNames" = "0"
+parameter "PHPIncludeNonstandardNames" = "1"
 endif
-continue if {parameter "PHPIncludeNonstandardNames" = regex "[0-9]+" and length of parameter "PHPIncludeNonstandardNames" &lt;= 9}
-continue if {(parameter "PHPIncludeNonstandardNames" as integer) &gt;= 0 and (parameter "PHPIncludeNonstandardNames" as integer) &lt;= 1}
+continue if {parameter "PHPIncludeNonstandardNames" = regex "[0-9]+" and length of parameter "PHPIncludeNonstandardNames" <= 9}
+continue if {(parameter "PHPIncludeNonstandardNames" as integer) >= 0 and (parameter "PHPIncludeNonstandardNames" as integer) <= 1}
 if {not exists parameter "PHPIncludeBroaderLocations"}
 parameter "PHPIncludeBroaderLocations" = "0"
 endif
-continue if {parameter "PHPIncludeBroaderLocations" = regex "[0-9]+" and length of parameter "PHPIncludeBroaderLocations" &lt;= 9}
-continue if {(parameter "PHPIncludeBroaderLocations" as integer) &gt;= 0 and (parameter "PHPIncludeBroaderLocations" as integer) &lt;= 1}
+continue if {parameter "PHPIncludeBroaderLocations" = regex "[0-9]+" and length of parameter "PHPIncludeBroaderLocations" <= 9}
+continue if {(parameter "PHPIncludeBroaderLocations" as integer) >= 0 and (parameter "PHPIncludeBroaderLocations" as integer) <= 1}
 if {not exists parameter "PHPIncludeBuildText"}
 parameter "PHPIncludeBuildText" = "0"
 endif
-continue if {parameter "PHPIncludeBuildText" = regex "[0-9]+" and length of parameter "PHPIncludeBuildText" &lt;= 9}
-continue if {(parameter "PHPIncludeBuildText" as integer) &gt;= 0 and (parameter "PHPIncludeBuildText" as integer) &lt;= 1}
+continue if {parameter "PHPIncludeBuildText" = regex "[0-9]+" and length of parameter "PHPIncludeBuildText" <= 9}
+continue if {(parameter "PHPIncludeBuildText" as integer) >= 0 and (parameter "PHPIncludeBuildText" as integer) <= 1}
 if {not exists parameter "PHPEnumerationSeconds"}
-parameter "PHPEnumerationSeconds" = "600"
+parameter "PHPEnumerationSeconds" = "0"
 endif
-continue if {parameter "PHPEnumerationSeconds" = regex "[0-9]+" and length of parameter "PHPEnumerationSeconds" &lt;= 9}
-continue if {(parameter "PHPEnumerationSeconds" as integer) &gt;= 30 and (parameter "PHPEnumerationSeconds" as integer) &lt;= 3600}
+continue if {parameter "PHPEnumerationSeconds" = regex "[0-9]+" and length of parameter "PHPEnumerationSeconds" <= 9}
+continue if {(parameter "PHPEnumerationSeconds" as integer) >= 0 and (parameter "PHPEnumerationSeconds" as integer) <= 3600}
 if {not exists parameter "PHPScanSeconds"}
-parameter "PHPScanSeconds" = "600"
+parameter "PHPScanSeconds" = "0"
 endif
-continue if {parameter "PHPScanSeconds" = regex "[0-9]+" and length of parameter "PHPScanSeconds" &lt;= 9}
-continue if {(parameter "PHPScanSeconds" as integer) &gt;= 30 and (parameter "PHPScanSeconds" as integer) &lt;= 3600}
+continue if {parameter "PHPScanSeconds" = regex "[0-9]+" and length of parameter "PHPScanSeconds" <= 9}
+continue if {(parameter "PHPScanSeconds" as integer) >= 0 and (parameter "PHPScanSeconds" as integer) <= 3600}
 if {not exists parameter "PHPMaxFiles"}
-parameter "PHPMaxFiles" = "5000000"
+parameter "PHPMaxFiles" = "0"
 endif
-continue if {parameter "PHPMaxFiles" = regex "[0-9]+" and length of parameter "PHPMaxFiles" &lt;= 9}
-continue if {(parameter "PHPMaxFiles" as integer) &gt;= 1000 and (parameter "PHPMaxFiles" as integer) &lt;= 10000000}
+continue if {parameter "PHPMaxFiles" = regex "[0-9]+" and length of parameter "PHPMaxFiles" <= 9}
+continue if {(parameter "PHPMaxFiles" as integer) >= 0 and (parameter "PHPMaxFiles" as integer) <= 50000000}
 if {not exists parameter "PHPCandidateGB"}
-parameter "PHPCandidateGB" = "30"
+parameter "PHPCandidateGB" = "0"
 endif
-continue if {parameter "PHPCandidateGB" = regex "[0-9]+" and length of parameter "PHPCandidateGB" &lt;= 9}
-continue if {(parameter "PHPCandidateGB" as integer) &gt;= 1 and (parameter "PHPCandidateGB" as integer) &lt;= 100}
+continue if {parameter "PHPCandidateGB" = regex "[0-9]+" and length of parameter "PHPCandidateGB" <= 9}
+continue if {(parameter "PHPCandidateGB" as integer) >= 0 and (parameter "PHPCandidateGB" as integer) <= 100}
 if {not exists parameter "PHPMaxFileMB"}
 parameter "PHPMaxFileMB" = "512"
 endif
-continue if {parameter "PHPMaxFileMB" = regex "[0-9]+" and length of parameter "PHPMaxFileMB" &lt;= 9}
-continue if {(parameter "PHPMaxFileMB" as integer) &gt;= 16 and (parameter "PHPMaxFileMB" as integer) &lt;= 2048}
+continue if {parameter "PHPMaxFileMB" = regex "[0-9]+" and length of parameter "PHPMaxFileMB" <= 9}
+continue if {(parameter "PHPMaxFileMB" as integer) >= 16 and (parameter "PHPMaxFileMB" as integer) <= 512}
 if {not exists parameter "PHPCpuLimit"}
-parameter "PHPCpuLimit" = "10"
+parameter "PHPCpuLimit" = "0"
 endif
-continue if {parameter "PHPCpuLimit" = regex "[0-9]+" and length of parameter "PHPCpuLimit" &lt;= 9}
-continue if {(parameter "PHPCpuLimit" as integer) &gt;= 1 and (parameter "PHPCpuLimit" as integer) &lt;= 50}
+continue if {parameter "PHPCpuLimit" = regex "[0-9]+" and length of parameter "PHPCpuLimit" <= 9}
+continue if {(parameter "PHPCpuLimit" as integer) >= 0 and (parameter "PHPCpuLimit" as integer) <= 10}
 if {not exists parameter "PHPGentleDisk"}
 parameter "PHPGentleDisk" = "0"
 endif
-continue if {parameter "PHPGentleDisk" = regex "[0-9]+" and length of parameter "PHPGentleDisk" &lt;= 9}
-continue if {(parameter "PHPGentleDisk" as integer) &gt;= 0 and (parameter "PHPGentleDisk" as integer) &lt;= 1}
+continue if {parameter "PHPGentleDisk" = regex "[0-9]+" and length of parameter "PHPGentleDisk" <= 9}
+continue if {(parameter "PHPGentleDisk" as integer) >= 0 and (parameter "PHPGentleDisk" as integer) <= 1}
+if {not exists parameter "PHPYaraThreads"}
+parameter "PHPYaraThreads" = "2"
+endif
+continue if {parameter "PHPYaraThreads" = regex "[0-9]+" and length of parameter "PHPYaraThreads" <= 9}
+continue if {(parameter "PHPYaraThreads" as integer) >= 1 and (parameter "PHPYaraThreads" as integer) <= 4}
 parameter "output" = "{pathname of parent folder of data folder of client}/YARA_PHP"
 // Each attempt owns a separate workspace; interrupted children keep their scan lock.
 parameter "work" = "{parameter "output"}/work-{id of action}-{((now - ("01 Jan 1970 00:00:00 +0000" as time)) / microsecond) as integer as string}-{random integer of 2147483647 as string}"
 folder create "{parameter "output"}"
 folder create "{parameter "work"}"
 delete __createfile
-createfile until END_PHP_YARA_0f68f1276f3d50db
+createfile until END_PHP_HYBRID_d5fc6eed5b935a20
 /*
   PHP install detection + version, all OSes (Linux ELF, Windows PE, macOS Mach-O).
 
@@ -211,18 +216,33 @@ createfile until END_PHP_YARA_0f68f1276f3d50db
   No modules are imported so the rules also work in embedded YARA engines
   (osquery, EDRs) that are built without the pe/elf/macho modules.
 
-  See README.md for tested samples and the API number -&gt; branch table.
+  See README.md for tested samples and the API number -> branch table.
 */
 
 private rule PHP_Detect_IsExecutable
 {{
   condition:
-    uint32(0) == 0x464C457F                                 // ELF
-    or uint16(0) == 0x5A4D                                  // PE (MZ)
-    or uint32(0) == 0xFEEDFACE or uint32(0) == 0xFEEDFACF   // Mach-O 32/64
-    or uint32(0) == 0xCEFAEDFE or uint32(0) == 0xCFFAEDFE   // Mach-O 32/64, byte-swapped
-    or uint32(0) == 0xBEBAFECA                              // Mach-O universal (CAFEBABE)
+    // Keep existing ELF object/core exclusions inside YARA-X.
+    (uint32(0) == 0x464C457F and
+      not (uint16(16) == 1 or uint16(16) == 4 or
+           uint16be(16) == 1 or uint16be(16) == 4))
+    or uint16(0) == 0x5A4D
+    // Mach-O executable, dylib and bundle; relocatable objects are not runtimes.
+    or ((uint32(0) == 0xFEEDFACE or uint32(0) == 0xFEEDFACF) and
+        (uint32(12) == 2 or uint32(12) == 6 or uint32(12) == 8))
+    or ((uint32be(0) == 0xFEEDFACE or uint32be(0) == 0xFEEDFACF) and
+        (uint32be(12) == 2 or uint32be(12) == 6 or uint32be(12) == 8))
+    or uint32(0) == 0xBEBAFECA
 }
+
+// Coverage evidence only; do not silently certify unqualified fat variants.
+rule PHP_Unsupported_Format
+{{
+  condition:
+    uint32be(0) == 0xCAFEBABF or uint32be(0) == 0xBEBAFECA
+    or uint32be(0) == 0xBFBAFECA
+}
+
 
 rule PHP_Runtime_Version
 {{
@@ -244,12 +264,12 @@ rule PHP_Windows_VersionInfo
     description = "Windows PE with PHP version resource; $pv = ProductVersion (exact version)"
     confidence = "high"
   strings:
-    // UTF-16LE "ProductName" &lt;NUL + 0-2 bytes alignment pad&gt; "PHP\0"
+    // UTF-16LE "ProductName" <NUL + 0-2 bytes alignment pad> "PHP\0"
     $pname = {{ 50 00 72 00 6F 00 64 00 75 00 63 00 74 00 4E 00 61 00 6D 00 65 00 [2-4] 50 00 48 00 50 00 00 00 }
     $pv = /ProductVersion\x00[0-9]{{1,2}\.[0-9]{{1,2}\.[0-9]{{1,3}[0-9A-Za-z.\-]{{0,20}/ wide
   condition:
-    // #pv &gt;= 0 is always true: $pv is only there so -s prints the version
-    uint16(0) == 0x5A4D and $pname and #pv &gt;= 0
+    // #pv >= 0 is always true: $pv is only there so -s prints the version
+    uint16(0) == 0x5A4D and $pname and #pv >= 0
 }
 
 rule PHP_Binary_Broad
@@ -288,17 +308,17 @@ rule PHP_Build_Artifact
     $hdr_ver   = /#define PHP_VERSION "[0-9]{{1,2}\.[0-9]{{1,2}\.[0-9]{{1,3}[0-9A-Za-z.+~_-]{{0,40}"/
     $hdr_a     = "#define PHP_MAJOR_VERSION"
   condition:
-    filesize &lt; 64KB and
+    filesize < 64KB and
     (
       ($cfg_ver and $cfg_a and $cfg_b)
       or ($hdr_ver and $hdr_a)
     )
 }
-END_PHP_YARA_0f68f1276f3d50db
+END_PHP_HYBRID_d5fc6eed5b935a20
 delete "{parameter "work"}/php-detect.yar"
 move __createfile "{parameter "work"}/php-detect.yar"
 delete __createfile
-createfile until END_PHP_YARA_318980fafe61de1e
+createfile until END_PHP_HYBRID_318980fafe61de1e
 #Requires -Version 5.1
 param([string]$Archive,[string]$ArchiveHash,[string]$Destination,[string]$EngineHash)
 $ErrorActionPreference = 'Stop'
@@ -314,14 +334,14 @@ try {{
 }
 finally {{ $zip.Dispose() }
 if ((Get-FileHash -LiteralPath $Destination -Algorithm SHA256).Hash.ToLowerInvariant() -ne $EngineHash) {{ throw 'Engine hash mismatch' }
-END_PHP_YARA_318980fafe61de1e
+END_PHP_HYBRID_318980fafe61de1e
 delete "{parameter "work"}/extract-engine.ps1"
 move __createfile "{parameter "work"}/extract-engine.ps1"
 delete __createfile
-createfile until END_PHP_YARA_05336401dc9d2255
+createfile until END_PHP_HYBRID_03795773ed41317d
 #Requires -Version 5.1
-&lt;# Bounded PHP signature discovery. Never executes discovered PHP binaries.
-   PhpCandidateFilter.cs and the pinned rules ship beside this script. #&gt;
+<# Bounded PHP signature discovery. Never executes discovered PHP binaries.
+   candidate-files.ps1 and the pinned rules ship beside this script. #>
 [CmdletBinding()]
 param(
     [Parameter(Mandatory=$true)][string]$Engine,
@@ -331,23 +351,79 @@ param(
     [string]$Archive,
     [string]$ArchiveSha256,
     [string[]]$Roots,
-    [ValidateRange(1,10000000)][long]$MaxFiles = 5000000,
-    [ValidateRange(1,2048)][long]$MaxFileMB = 512,
-    [ValidateRange(1,100)][long]$CandidateGB = 30,
-    [ValidateRange(1,3600)][int]$EnumerationSeconds = 600,
-    [ValidateRange(1,3600)][int]$ScanSeconds = 600,
-    [ValidateRange(1,99)][int]$CpuLimit = 10,
+    [ValidateRange(0,50000000)][long]$MaxFiles = 0,
+    [ValidateRange(1,512)][long]$MaxFileMB = 512,
+    [ValidateRange(0,100)][long]$CandidateGB = 0,
+    [ValidateRange(0,3600)][int]$EnumerationSeconds = 0,
+    [ValidateRange(0,3600)][int]$ScanSeconds = 0,
+    [ValidateRange(0,10)][int]$CpuLimit = 0,
+    [ValidateRange(1,4)][int]$YaraThreads = 2,
     [ValidateRange(0,1)][int]$GentleDisk = 0,
     [ValidateRange(0,1)][int]$IncludeBuildText = 0,
     [ValidateRange(0,1)][int]$IncludeBroaderLocations = 0,
-    [ValidateRange(0,1)][int]$IncludeNonstandardNames = 0,
+    [ValidateRange(0,1)][int]$IncludeNonstandardNames = 1,
     [string]$ExcludeDirectoriesHex = 'x'
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 Import-Module (Join-Path $PSHOME 'Modules\Microsoft.PowerShell.Utility\Microsoft.PowerShell.Utility.psd1') -ErrorAction Stop
-$ruleSha256 = '0f68f1276f3d50db3dcba06fd1d8089e157fbc8e60bcca49ac1e7b2dde664615'
+# Immutable package rules; all occurrences are retained.
+$ruleSha256 = 'd5fc6eed5b935a2048726831d6735140a6f312345b0d92df870344500fffdc7f'
+# Exact YARA-X diagnostics only. Missing files must still be absent; permissions,
+# recreated paths, malformed messages and uncertain ancestors remain UNKNOWN.
+function Test-ConfirmedVanishedFile([string]$Path) {{
+    if ($Path -notmatch '^(?:\\\\\?\\)?[A-Za-z]:\\' -or $Path -match '[\x00-\x1f]') {{ return $false }
+    try {{
+        $null = [IO.File]::GetAttributes($Path)
+        return $false
+    } catch {{
+        $errorCode = $_.Exception.InnerException.HResult -band 0xffff
+        if ($errorCode -ne 2 -and $errorCode -ne 3) {{ return $false }
+    }
+    # Check each existing ancestor without File.Exists, which masks access errors.
+    $ancestor = [IO.Path]::GetDirectoryName($Path)
+    while ($ancestor) {{
+        try {{
+            $attributes = [IO.File]::GetAttributes($ancestor)
+            if (($attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {{ return $false }
+            if (($attributes -band [IO.FileAttributes]::Directory) -eq 0) {{ return $false }
+        } catch {{
+            $errorCode = $_.Exception.InnerException.HResult -band 0xffff
+            if ($errorCode -ne 2 -and $errorCode -ne 3) {{ return $false }
+        }
+        $ancestor = [IO.Path]::GetDirectoryName($ancestor)
+    }
+    return $true
+}
+function Get-YaraWarningSummary {{
+    param([string]$Path)
+    $expected = 0; $vanished = 0; $unknown = 0
+    $samples = New-Object 'Collections.Generic.List[string]'
+    foreach ($line in [IO.File]::ReadLines($Path)) {{
+        if (-not $line.Trim()) {{ continue }
+        $missing = [regex]::Match($line, '^error: can''t open `(?<path>[^`]+)`: The system cannot find the (?:file|path) specified\. \(os error (?<code>[23])\)$')
+        if ($missing.Success -and (Test-ConfirmedVanishedFile $missing.Groups['path'].Value)) {{ $vanished++; continue }
+        $parsed = [regex]::Match($line, '^error: scanning (?<quoted>"(?:\\.|[^"\\])*"): can not open `(?<path>.*)`: .* \(os error (?<code>[0-9]+)\)$')
+        $ignore = $false
+        if ($parsed.Success) {{
+            try {{
+                $quotedPath = [string]($parsed.Groups['quoted'].Value | ConvertFrom-Json)
+                $plainPath = $parsed.Groups['path'].Value
+                $code = [int]$parsed.Groups['code'].Value
+                if ($quotedPath -ceq $plainPath -and $plainPath -match '^(?:\\\\\?\\)?[A-Za-z]:\\') {{
+                    $ignore = (Test-PhpExpectedReadFailure $plainPath $code)
+                }
+            } catch {{ $ignore = $false }
+        }
+        if ($ignore) {{ $expected++ }
+        else {{ $unknown++; if ($samples.Count -lt 10) {{ $samples.Add($line) } }
+    }
+    return [ordered]@{{expected_locked_metadata=$expected; vanished_files=$vanished; unverified_errors=$unknown; samples=$samples.ToArray()}
+}
 $utf8 = New-Object Text.UTF8Encoding($false)
+. (Join-Path $PSScriptRoot 'process-control.ps1')
+. (Join-Path $PSScriptRoot 'candidate-files.ps1')
+Assert-PhpSupervisor
 
 # Bound the Analysis reason by UTF-8 bytes and preserve surrogate pairs.
 # Full reasons remain in scan.log. This runs at most once per completed scan.
@@ -401,7 +477,14 @@ if ($env:PHP_BACKGROUND_RUN_ID) {{
         foreach ($entry in Get-ChildItem -LiteralPath $candidate -Force -Recurse -ErrorAction Stop) {{
             if (($entry.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {{ $safe=$false; break }
         }
-        if ($safe) {{ [IO.Directory]::Delete($candidate,$true) }
+        if ($safe) {{
+            $oldConfig=Join-Path $candidate 'background-config.json'
+            if ([IO.File]::Exists($oldConfig) -and (Get-Item -LiteralPath $oldConfig).Length -le 16384) {{
+                $oldSettings=ConvertFrom-Json ([IO.File]::ReadAllText($oldConfig))
+                Stop-PhpOwnedEngine $candidate $oldSettings.Engine ([DateTime]::MinValue)
+            }
+            Remove-PhpAttemptDirectory $candidate $OutputDirectory
+        }
     }
     [IO.File]::WriteAllText((Join-Path $PSScriptRoot 'attempt.started'),"PHP_YARA_BACKGROUND_WORKSPACE_V1`n",$utf8)
     [IO.File]::WriteAllText((Join-Path $PSScriptRoot 'attempt.admitted'),$env:PHP_BACKGROUND_RUN_ID,$utf8)
@@ -421,15 +504,14 @@ try {{
         if (-not $Archive -or -not $ArchiveSha256) {{ throw 'Engine missing; verified archive required' }
         # Same process: avoid a second PowerShell startup. The bootstrap verifies
         # both archive and executable hashes before returning.
-        &amp; (Join-Path $PSScriptRoot 'extract-engine.ps1') -Archive $Archive -ArchiveHash $ArchiveSha256 -Destination $Engine -EngineHash $EngineSha256
+        & (Join-Path $PSScriptRoot 'extract-engine.ps1') -Archive $Archive -ArchiveHash $ArchiveSha256 -Destination $Engine -EngineHash $EngineSha256
     }
     elseif ((Get-FileHash -LiteralPath $Engine -Algorithm SHA256).Hash.ToLowerInvariant() -ne $EngineSha256) {{ throw 'Engine hash mismatch' }
-    if (-not ('PhpCandidateFilter' -as [type])) {{ Add-Type -Path (Join-Path $PSScriptRoot 'PhpCandidateFilter.cs') }
-    $customExclusions = New-Object PhpDirectoryExclusions($ExcludeDirectoriesHex)
+    $customExclusions = New-PhpDirectoryExclusions $ExcludeDirectoriesHex
     try {{ [Diagnostics.Process]::GetCurrentProcess().PriorityClass = [Diagnostics.ProcessPriorityClass]::BelowNormal } catch {{ }
     if (-not $Roots) {{ $Roots = @([IO.DriveInfo]::GetDrives() | Where-Object {{ $_.DriveType -eq [IO.DriveType]::Fixed -and $_.IsReady } | ForEach-Object {{ $_.RootDirectory.FullName }) }
     $candidateList = Join-Path $PSScriptRoot 'candidates.txt'
-    $stats = [PhpCandidateFilter]::WriteCandidates($Roots, $OutputDirectory, $candidateList, $MaxFiles, ($MaxFileMB * 1MB), ($CandidateGB * 1GB), $EnumerationSeconds, ($GentleDisk -eq 1), ($IncludeBuildText -eq 1), ($IncludeBroaderLocations -eq 1), ($IncludeNonstandardNames -eq 1), $customExclusions)
+    $stats = Write-PhpCandidates -Roots $Roots -ExcludedOutput $OutputDirectory -ListPath $candidateList -MaxFiles $MaxFiles -MaxFileBytes ($MaxFileMB * 1MB) -MaxCandidateBytes ($CandidateGB * 1GB) -MaxSeconds $EnumerationSeconds -GentleDisk ($GentleDisk -eq 1) -IncludeBuildText ($IncludeBuildText -eq 1) -IncludeBroaderLocations ($IncludeBroaderLocations -eq 1) -IncludeNonstandardNames ($IncludeNonstandardNames -eq 1) -CustomExclusions $customExclusions
     $reasons = New-Object 'Collections.Generic.List[string]'
     if ($stats.BudgetReason) {{ $reasons.Add($stats.BudgetReason) }
     if ($stats.Errors -gt 0) {{ $reasons.Add('enumeration_or_read_errors') }
@@ -441,8 +523,11 @@ try {{
     $scanClock = [Diagnostics.Stopwatch]::StartNew()
     if ($stats.Candidates -gt 0) {{
         $arguments = @('scan','--scan-list','--print-strings','--output-format','ndjson',
-                       '--threads','2','--cpu-limit',[string]$CpuLimit,'--timeout',[string]$ScanSeconds,
-                       '--max-matches-per-pattern','64',$Rules,$candidateList)
+                       '--threads',[string]$YaraThreads,
+                       '--max-matches-per-pattern','64')
+        if ($ScanSeconds -gt 0) {{ $arguments += @('--timeout',[string]$ScanSeconds) }
+        if ($CpuLimit -gt 0) {{ $arguments += @('--cpu-limit',[string]$CpuLimit) }
+        $arguments += @($Rules,$candidateList)
         # These controlled paths are ordinary Windows file paths (no embedded
         # quotes, and no directory-ending backslash); no command shell is used.
         foreach ($argument in $arguments) {{ if ($argument.Contains('"')) {{ throw 'Unsupported quoted argument' } }
@@ -458,10 +543,12 @@ try {{
         $child = $null
         try {{
             $child = [Diagnostics.Process]::Start($info)
+            try {{ $child.PriorityClass=[Diagnostics.ProcessPriorityClass]::BelowNormal } catch {{}
             $outputCopy = $child.StandardOutput.BaseStream.CopyToAsync($stdoutFile)
             $errorCopy = $child.StandardError.BaseStream.CopyToAsync($stderrFile)
             while (-not $child.WaitForExit(200)) {{
-                if ($scanClock.Elapsed.TotalSeconds -gt ($ScanSeconds + 15) -or $stdoutFile.Length -gt 64MB -or $stderrFile.Length -gt 8MB) {{
+                Assert-PhpSupervisor
+                if (($ScanSeconds -gt 0 -and $scanClock.Elapsed.TotalSeconds -gt ($ScanSeconds + 15)) -or $stdoutFile.Length -gt 64MB -or $stderrFile.Length -gt 8MB) {{
                     $child.Kill()
                     $reasons.Add('engine_deadline_or_output_budget')
                 }
@@ -475,9 +562,13 @@ try {{
             $stdoutFile.Dispose()
             $stderrFile.Dispose()
         }
-        if ((Get-Item -LiteralPath $errorPath).Length -gt 0) {{ $reasons.Add('engine_warnings_or_file_errors') }
+
     }
     else {{ [IO.File]::WriteAllText($rawPath,'',$utf8); [IO.File]::WriteAllText($errorPath,'',$utf8) }
+    $warningSummary = Get-YaraWarningSummary $errorPath
+    $stats.ExpectedSkipped += $warningSummary.expected_locked_metadata
+    $stats.VanishedSkipped += $warningSummary.vanished_files
+    if ($warningSummary.unverified_errors -gt 0) {{ $reasons.Add('engine_warnings_or_file_errors') }
     $findings = New-Object 'Collections.Generic.List[object]'
     $findingCount = 0
     foreach ($line in [IO.File]::ReadLines($rawPath, $utf8)) {{
@@ -553,7 +644,7 @@ try {{
     $elapsed = [long][Math]::Round($clock.Elapsed.TotalSeconds)
     $duration = '{{0} hours, {{1} minutes, {{2} seconds' -f [Math]::Floor($elapsed / 3600), [Math]::Floor(($elapsed % 3600) / 60), ($elapsed % 60)
     $completed = [DateTime]::UtcNow.ToString('yyyy-MM-dd HH:mm:ss') + ' UTC'
-    $messages = @{{enumeration_budget='File search limit reached'; search_time_limit='File search time limit reached'; file_limit='File count limit reached'; directory_budget='Folder count limit reached'; candidate_byte_budget='Total candidate size limit reached'; individual_file_size_limit=($stats.SizeSkipped.ToString() + ' possible runtime file(s) at or above ' + $MaxFileMB + ' MiB skipped'); engine_deadline_or_output_budget='Content scan time or output limit reached'; enumeration_or_read_errors='Unreadable files or folders'; engine_warnings_or_file_errors='Content scan warnings or unreadable files'; finding_limit='Result count limit reached'; PHP_version_or_runtime_unconfirmed='PHP version or runtime unconfirmed'}
+    $messages = @{{enumeration_budget='File search limit reached'; search_time_limit='File search time limit reached'; file_limit='File count limit reached'; directory_budget='Folder count limit reached'; candidate_byte_budget='Total candidate size limit reached'; candidate_list_limit='Candidate path list limit reached'; individual_file_size_limit=($stats.SizeSkipped.ToString() + ' possible runtime file(s) at or above ' + $MaxFileMB + ' MiB skipped'); engine_deadline_or_output_budget='Content scan time or output limit reached'; enumeration_or_read_errors='Unreadable files or folders'; engine_warnings_or_file_errors='Content scan warnings or unreadable files'; finding_limit='Result count limit reached'; PHP_version_or_runtime_unconfirmed='PHP version or runtime unconfirmed'}
     $why = @($reasons | Select-Object -Unique | ForEach-Object {{ if ($messages.ContainsKey($_)) {{ $messages[$_] } else {{ 'YARA error' } })
     $lastScan = $completed + $(if ($why.Count) {{ ' (Partial: ' + ($why -join ', ') + '; see scan.log)' } else {{ '' })
     if (@($unverified | Where-Object {{ $_.EndsWith('Vendor patch status unverified') }).Count) {{ $lastScan += ' (Vendor patch status unverified; see scan.log)' }
@@ -583,8 +674,9 @@ try {{
     $report = [ordered]@{{completed=$completed; duration=$duration; state=$(if ($reasons.Count) {{'Partial'} else {{'Completed'});
         started=$started; stats=$stats; scan_seconds=$scanClock.Elapsed.TotalSeconds; seconds=$clock.Elapsed.TotalSeconds;
         reasons=$reasons.ToArray(); roots=$Roots; custom_directory_exclusions=$customExclusions.Patterns.ToArray(); detected=$detected; vulnerable_paths=@($vulnerable); unverified_paths=@($unverified); findings_count=$findingCount; findings=$findings.ToArray();
-        engine_messages=[IO.File]::ReadAllText($errorPath); rule_sha256=$ruleSha256;
-        limits=@{{max_files=$MaxFiles; max_file_mb=$MaxFileMB; candidate_gb=$CandidateGB; enumeration_seconds=$EnumerationSeconds; scan_seconds=$ScanSeconds; cpu_limit=$CpuLimit; gentle_disk=$GentleDisk; include_build_text=$IncludeBuildText; include_broader_locations=$IncludeBroaderLocations; include_nonstandard_names=$IncludeNonstandardNames};
+        engine_messages=[IO.File]::ReadAllText($errorPath); engine_warning_classification=$warningSummary; rule_sha256=$ruleSha256;
+        discovery_method='direct';
+        limits=@{{max_files=$MaxFiles; max_file_mb=$MaxFileMB; candidate_gb=$CandidateGB; enumeration_seconds=$EnumerationSeconds; scan_seconds=$ScanSeconds; cpu_limit=$CpuLimit; yara_threads=$YaraThreads; gentle_disk=$GentleDisk; include_build_text=$IncludeBuildText; include_broader_locations=$IncludeBroaderLocations; include_nonstandard_names=$IncludeNonstandardNames};
         meaning='TRUE: upstream-affected runtime detected. FALSE: none detected within complete scan scope. UNKNOWN: unavailable, incomplete or unverified evidence. Vendor patch status and web exposure require verification.'}
     Write-AtomicText $logPath (($report | ConvertTo-Json -Depth 14) + "`n")
     $summary = @('RESULT_FORMAT=2', ('DETECTED=' + $detected), ('LAST_SCAN=' + $lastScan), ('DURATION=' + $duration))
@@ -609,893 +701,1335 @@ catch {{
     throw
 }
 finally {{ if ($lock) {{ $lock.Dispose() } }
-END_PHP_YARA_05336401dc9d2255
+END_PHP_HYBRID_03795773ed41317d
 delete "{parameter "work"}/scan-windows.ps1"
 move __createfile "{parameter "work"}/scan-windows.ps1"
 delete __createfile
-createfile until END_PHP_YARA_c9e87f8e00d7edc6
-// PHP content prefilter coupled to php-detect.yar SHA-256.
-// C# 5 / .NET Framework 4.6+: works in Windows PowerShell 5.1 without installs.
-using System;
-using System.IO;
-using System.Text;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-
-public sealed class PhpFilterStats
+createfile until END_PHP_HYBRID_3b73039afd515d7e
+#Requires -Version 5.1
+# Path enumeration follows jgstew's direct-YARA approach. Ordinary candidates
+# are never opened here. Only oversized candidates receive bounded header checks.
+# No Add-Type, P/Invoke, local compiler, executable PHP, or external runtime.
+$script:PhpWindows = [Environment]::GetFolderPath('Windows')
+$script:PhpProgramFiles = @([Environment]::GetFolderPath('ProgramFiles'), [Environment]::GetFolderPath('ProgramFilesX86'))
+$script:PhpDataPolicy = ConvertFrom-Json @'
 {{
-    public long Files, Directories, Candidates, CandidateBytes, PrefilterBytes, HeaderFiltered;
-    public long SizeSkipped, LinksSkipped, CloudSkipped, Errors, VanishedSkipped, ExpectedSkipped;
-    public long StructuralSkipped, StructuralBytes, ExcludedDirectories, DataFilesSkipped, NameSkipped;
-    public long CustomExcludedTrees, CustomDirectDirectories, CustomExcludedFiles;
-    public double Seconds;
-    public string BudgetReason = "";
-    public bool BackgroundMode;
-    public List&lt;string&gt; ErrorSamples = new List&lt;string&gt;();
-    // Bounded diagnostics in the existing scan.log; never read a large file in full.
-    public List&lt;string&gt; SizeSkippedSamples = new List&lt;string&gt;();
+  "windows_relative_trees": [
+    "SoftwareDistribution",
+    "WinSxS",
+    "servicing",
+    "assembly",
+    "Microsoft.NET/assembly",
+    "Installer",
+    "Logs",
+    "Minidump",
+    "LiveKernelReports",
+    "Prefetch",
+    "Panther",
+    "System32/LogFiles",
+    "System32/winevt/Logs",
+    "Debug"
+  ],
+  "all_volume_trees": [
+    "$Recycle.Bin",
+    "System Volume Information",
+    "Config.Msi",
+    "Windows.old"
+  ],
+  "system_volume_trees": [
+    "$Windows.~BT",
+    "$Windows.~WS"
+  ],
+  "purpose": "Windows servicing, installation, event logs, crash reports, recycle and restore metadata; applies to every scan scope.",
+  "preserved": [
+    "Windows/PHP",
+    "Windows/Temp",
+    "inetpub",
+    "Program Files",
+    "ProgramData",
+    "Users/*/Documents",
+    "Users/*/Downloads",
+    "Users/*/AppData/Local/Programs",
+    "Users/*/scoop/apps"
+  ],
+  "data_extensions": [
+    ".mdf",
+    ".ndf",
+    ".ldf",
+    ".ibd",
+    ".myd",
+    ".myi",
+    ".sqlite",
+    ".sqlite3",
+    ".db",
+    ".db3",
+    ".bak",
+    ".trn",
+    ".dmp",
+    ".dump",
+    ".vhd",
+    ".vhdx",
+    ".vmdk",
+    ".vdi",
+    ".wim",
+    ".esd",
+    ".iso"
+  ],
+  "non_runtime_extensions": [
+    ".3g2",
+    ".3gp",
+    ".3mf",
+    ".7z",
+    ".a",
+    ".aac",
+    ".ai",
+    ".aif",
+    ".aifc",
+    ".aiff",
+    ".alac",
+    ".amr",
+    ".apinotes",
+    ".apk",
+    ".arw",
+    ".ass",
+    ".avi",
+    ".avif",
+    ".bdf",
+    ".bib",
+    ".blend",
+    ".bmp",
+    ".bnnsir",
+    ".bom",
+    ".bz2",
+    ".c",
+    ".c4d",
+    ".cab",
+    ".caf",
+    ".car",
+    ".cat",
+    ".cc",
+    ".cfg",
+    ".chm",
+    ".cjs",
+    ".class",
+    ".conf",
+    ".cpp",
+    ".cr2",
+    ".cr3",
+    ".css",
+    ".csv",
+    ".db",
+    ".db-shm",
+    ".db-wal",
+    ".deb",
+    ".dgn",
+    ".dib",
+    ".dmg",
+    ".dng",
+    ".doc",
+    ".docm",
+    ".docx",
+    ".dot",
+    ".dotm",
+    ".dotx",
+    ".dwg",
+    ".dxf",
+    ".edb",
+    ".eml",
+    ".eot",
+    ".eps",
+    ".epub",
+    ".etl",
+    ".evtx",
+    ".fbx",
+    ".flac",
+    ".flv",
+    ".fnt",
+    ".fon",
+    ".frag",
+    ".fxf",
+    ".geojson",
+    ".gif",
+    ".glb",
+    ".glsl",
+    ".gltf",
+    ".go",
+    ".gpx",
+    ".gz",
+    ".h",
+    ".heic",
+    ".heif",
+    ".hlsl",
+    ".hpp",
+    ".htm",
+    ".html",
+    ".icns",
+    ".ico",
+    ".ics",
+    ".idx",
+    ".iges",
+    ".igs",
+    ".indd",
+    ".inf",
+    ".ini",
+    ".iso",
+    ".jar",
+    ".java",
+    ".journal",
+    ".jpe",
+    ".jpeg",
+    ".jpg",
+    ".js",
+    ".json",
+    ".jsonl",
+    ".jsx",
+    ".key",
+    ".kml",
+    ".kmz",
+    ".less",
+    ".lib",
+    ".log",
+    ".m",
+    ".m2ts",
+    ".m2v",
+    ".m4a",
+    ".m4b",
+    ".m4v",
+    ".ma",
+    ".manifest",
+    ".map",
+    ".markdown",
+    ".max",
+    ".mb",
+    ".mbox",
+    ".md",
+    ".mdb",
+    ".metallib",
+    ".mid",
+    ".midi",
+    ".mjs",
+    ".mkv",
+    ".mo",
+    ".mobi",
+    ".modulemap",
+    ".mov",
+    ".mp3",
+    ".mp4",
+    ".mpeg",
+    ".mpg",
+    ".msg",
+    ".msi",
+    ".msp",
+    ".mts",
+    ".ndjson",
+    ".nef",
+    ".nib",
+    ".numbers",
+    ".nupkg",
+    ".odp",
+    ".ods",
+    ".odt",
+    ".oga",
+    ".ogg",
+    ".ogv",
+    ".opus",
+    ".orf",
+    ".ost",
+    ".otf",
+    ".otp",
+    ".ots",
+    ".ott",
+    ".pack",
+    ".pages",
+    ".pcf",
+    ".pcm",
+    ".pdb",
+    ".pdf",
+    ".php",
+    ".pkg",
+    ".plist",
+    ".png",
+    ".po",
+    ".pot",
+    ".potm",
+    ".potx",
+    ".pps",
+    ".ppsm",
+    ".ppsx",
+    ".ppt",
+    ".pptm",
+    ".pptx",
+    ".prefab",
+    ".properties",
+    ".psb",
+    ".psd",
+    ".pst",
+    ".py",
+    ".pyc",
+    ".qcow2",
+    ".rar",
+    ".rb",
+    ".reg",
+    ".rpm",
+    ".rs",
+    ".rst",
+    ".rtf",
+    ".rw2",
+    ".sass",
+    ".scss",
+    ".shader",
+    ".shadergraph",
+    ".shp",
+    ".shx",
+    ".sketch",
+    ".sqlite",
+    ".sqlite-shm",
+    ".sqlite-wal",
+    ".srt",
+    ".ssa",
+    ".step",
+    ".stl",
+    ".stp",
+    ".strings",
+    ".svg",
+    ".svgz",
+    ".swift",
+    ".swiftdoc",
+    ".swiftinterface",
+    ".swiftmodule",
+    ".swiftsourceinfo",
+    ".tar",
+    ".tbd",
+    ".tex",
+    ".tgz",
+    ".tif",
+    ".tiff",
+    ".toml",
+    ".tracev3",
+    ".ts",
+    ".tsv",
+    ".tsx",
+    ".ttc",
+    ".ttf",
+    ".txt",
+    ".uasset",
+    ".ucas",
+    ".umap",
+    ".unity",
+    ".unitypackage",
+    ".usf",
+    ".ush",
+    ".utoc",
+    ".vcf",
+    ".vdi",
+    ".vert",
+    ".vmdk",
+    ".vob",
+    ".vpk",
+    ".vtt",
+    ".wal",
+    ".wav",
+    ".webm",
+    ".webp",
+    ".whl",
+    ".wma",
+    ".wmv",
+    ".woff",
+    ".woff2",
+    ".xcf",
+    ".xhtml",
+    ".xip",
+    ".xls",
+    ".xlsb",
+    ".xlsm",
+    ".xlsx",
+    ".xlt",
+    ".xltm",
+    ".xltx",
+    ".xml",
+    ".xz",
+    ".yaml",
+    ".yml",
+    ".zip",
+    ".zst"
+  ],
+  "default_relative_directories": [
+    "Windows",
+    "Windows.old",
+    "$Windows.~BT",
+    "$Windows.~WS",
+    "Recovery",
+    "$Recycle.Bin",
+    "System Volume Information",
+    "WindowsImageBackup",
+    "FileHistory",
+    "Program Files\\WindowsApps",
+    "Program Files (x86)\\WindowsApps",
+    "ProgramData\\Microsoft\\Windows\\WER"
+  ],
+  "expected_profile_locked_patterns": [
+    "^AppData\\\\Local\\\\Packages\\\\[^\\\\]+\\\\Settings\\\\settings\\.dat(?:\\.LOG[12])?$",
+    "^AppData\\\\Local\\\\Packages\\\\[^\\\\]+\\\\AppData\\\\CacheStorage\\\\CacheStorage\\.(?:edb|jfm)$",
+    "^AppData\\\\Local\\\\Google\\\\Chrome\\\\User Data\\\\[^\\\\]+\\\\Network\\\\Cookies(?:-journal)?$",
+    "^AppData\\\\Local\\\\Google\\\\Chrome\\\\User Data\\\\[^\\\\]+\\\\Sessions(?:_Encrypted)?\\\\(?:Session|Tabs)_[0-9]+$",
+    "^AppData\\\\Local\\\\Microsoft\\\\Windows\\\\Notifications\\\\WPNPRMRY\\.tmp$",
+    "^AppData\\\\Local\\\\Microsoft\\\\Internet Explorer\\\\CacheStorage\\\\edb\\.log$",
+    "^AppData\\\\Local\\\\Microsoft\\\\Windows\\\\(?:WebCacheLock\\.dat|WebCache\\\\(?:V01(?:tmp)?\\.log|WebCacheV01\\.(?:dat|jfm)))$"
+  ],
+  "expected_windows_locked_paths": [
+    "SystemTemp\\Velociraptor_Buffer.bin",
+    "System32\\LogFiles\\Sum\\Current.jfm",
+    "System32\\LogFiles\\Sum\\Current.mdb",
+    "System32\\LogFiles\\Sum\\Svc.log",
+    "System32\\LogFiles\\Sum\\Svctmp.log",
+    "System32\\config\\systemprofile\\AppData\\Local\\Microsoft\\Windows\\WebCacheLock.dat",
+    "System32\\config\\systemprofile\\AppData\\Local\\Microsoft\\Windows\\WebCache\\V01.log",
+    "System32\\config\\systemprofile\\AppData\\Local\\Microsoft\\Windows\\WebCache\\V01tmp.log",
+    "System32\\config\\systemprofile\\AppData\\Local\\Microsoft\\Windows\\WebCache\\WebCacheV01.dat",
+    "System32\\config\\systemprofile\\AppData\\Local\\Microsoft\\Windows\\WebCache\\WebCacheV01.jfm",
+    "System32\\config\\systemprofile\\AppData\\Local\\DataSharing\\Storage\\DSS.log",
+    "System32\\config\\systemprofile\\AppData\\Local\\DataSharing\\Storage\\DSTokenDB2.dat",
+    "System32\\config\\systemprofile\\AppData\\Local\\DataSharing\\Storage\\DSTokenDB2.jfm"
+  ]
+}
+'@
+$script:PhpDataExtensions = New-Object 'Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+foreach ($extension in $script:PhpDataPolicy.data_extensions) {{
+    [void]$script:PhpDataExtensions.Add($extension)
+}
+$script:PhpNonRuntimeExtensions = New-Object 'Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+foreach ($extension in $script:PhpDataPolicy.non_runtime_extensions) {{
+    [void]$script:PhpNonRuntimeExtensions.Add($extension)
+}
+$script:PhpDefaultDirectories = New-Object 'Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+foreach ($directory in $script:PhpDataPolicy.default_relative_directories) {{
+    [void]$script:PhpDefaultDirectories.Add($directory)
+}
+$script:PhpPermanentRoots = @($script:PhpDataPolicy.windows_relative_trees | ForEach-Object {{ [IO.Path]::Combine($script:PhpWindows, $_.Replace('/', '\')) })
+$script:PhpPermanentRoots += @($script:PhpDataPolicy.system_volume_trees | ForEach-Object {{ [IO.Path]::Combine([IO.Path]::GetPathRoot($script:PhpWindows), $_) })
+$script:PhpRuntimeName = [regex]::new('^(?:(?:php|phpdbg|libphp|mod_php|lsphp|frankenphp)(?:[0-9][0-9.]*(?:[-_][a-z0-9_.-]+)?|[-_][a-z0-9_.-]+)?(?:ts|nts|apache[0-9_]*)?)(?:\.exe|\.dll|\.so(?:\.[0-9]+)*)?$', [Text.RegularExpressions.RegexOptions]::IgnoreCase)
+$script:PhpSystemFileNames = New-Object 'Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+foreach ($name in @('pagefile.sys', 'hiberfil.sys', 'swapfile.sys', 'NTUSER.DAT', 'UsrClass.dat', 'SYSTEM', 'SOFTWARE', 'SAM', 'SECURITY', 'DEFAULT', 'BBI')) {{
+    [void]$script:PhpSystemFileNames.Add($name)
+    [void]$script:PhpSystemFileNames.Add($name + '.LOG1'); [void]$script:PhpSystemFileNames.Add($name + '.LOG2')
 }
 
-// Shared normalization and literal-plus-asterisk matching. No regex evaluation,
-// shell expansion, filesystem access or environment-variable expansion of user input.
-public sealed class PhpDirectoryExclusions
-{{
-    public readonly List&lt;string&gt; Patterns = new List&lt;string&gt;();
-    private readonly List&lt;string&gt; trees = new List&lt;string&gt;();
-    private readonly List&lt;string&gt; direct = new List&lt;string&gt;();
-
-    public PhpDirectoryExclusions(string encoded)
-    {{
-        if (encoded == null || encoded.Length &gt; 8193 || encoded.Length % 2 != 1 || encoded[0] != 'x')
-            throw new ArgumentException("Invalid encoded directory exclusions");
-        byte[] bytes = new byte[(encoded.Length - 1) / 2];
-        for (int i = 0; i &lt; bytes.Length; i++) bytes[i] = Convert.ToByte(encoded.Substring(1 + i * 2, 2), 16);
-        string text = new UTF8Encoding(false, true).GetString(bytes);
-        foreach (char value in text) if (value &lt; 32 || value == 127) throw new ArgumentException("Control character in exclusions");
-        foreach (string entry in text.Split(','))
-        {{
-            string pattern = entry.Trim().Replace('\\', '/');
-            if (pattern.Length == 0) continue;
-            if (Patterns.Count &gt;= 32) throw new ArgumentException("At most 32 exclusions allowed");
-            while (pattern.Contains("//")) pattern = pattern.Replace("//", "/");
-            while (pattern.Contains("**")) pattern = pattern.Replace("**", "*");
-            if (!(pattern.StartsWith("*/", StringComparison.Ordinal) ||
-                  (pattern.Length &gt;= 3 &amp;&amp; Char.IsLetter(pattern[0]) &amp;&amp; pattern[1] == ':' &amp;&amp; pattern[2] == '/')))
-                throw new ArgumentException("Windows exclusions need a drive path or leading */");
-            foreach (string part in pattern.Split('/'))
-                if (part == "." || part == "..") throw new ArgumentException("Relative path segments are not allowed");
-            Patterns.Add(pattern);
-            bool subtree = pattern.EndsWith("/*", StringComparison.Ordinal);
-            string basis = (subtree ? pattern.Substring(0, pattern.Length - 2) : pattern).TrimEnd('/').ToUpperInvariant();
-            (subtree ? trees : direct).Add(basis);
+function Initialize-PhpDirectoryPolicy {{
+    # These expressions contain only fixed package policy, not user expressions.
+    # Cache them once instead of rebuilding/testing every prefix on every folder.
+    $roots = @($script:PhpPermanentRoots | ForEach-Object {{ [regex]::Escape($_.TrimEnd('\')) })
+    $volumeNames = @($script:PhpDataPolicy.all_volume_trees | ForEach-Object {{ [regex]::Escape($_) })
+    $roots += '[A-Za-z]:\\(?:' + ($volumeNames -join '|') + ')'
+    $script:PhpPermanentDirectoryRegex = [regex]::new('^(?:' + ($roots -join '|') + ')(?:\\|$)', [Text.RegularExpressions.RegexOptions]::IgnoreCase)
+    $defaults = @([regex]::Escape($script:PhpWindows))
+    foreach ($root in $script:PhpProgramFiles) {{
+        if (-not $root) {{
+            continue
+        }
+        $defaults += [regex]::Escape([IO.Path]::Combine($root, 'WindowsApps'))
+        foreach ($product in @('BES Server', 'BES Relay')) {{
+            $defaults += [regex]::Escape([IO.Path]::Combine($root, 'BigFix Enterprise\' + $product + '\wwwrootbes\bfmirror\downloads\sha1'))
         }
     }
+    $profileRoots = @('[A-Za-z]:\\Users\\[^\\]+\\', ([regex]::Escape([IO.Path]::Combine($script:PhpWindows, 'ServiceProfiles')) + '\\[^\\]+\\'), ([regex]::Escape([IO.Path]::Combine($script:PhpWindows, 'System32\config\systemprofile')) + '\\'))
+    $cache = '(?:Pictures|Music|Videos|scoop\\cache|AppData\\Local\\CrashDumps|AppData\\Local\\(?:Google\\Chrome|Microsoft\\Edge)\\User Data\\(?:[^\\]+\\(?:Cache|Code Cache|GPUCache)|Crashpad\\reports)|AppData\\Local\\Mozilla\\Firefox\\Profiles\\[^\\]+\\cache2)'
+    $defaults += '(?:' + ($profileRoots -join '|') + ')' + $cache
+    $script:PhpDefaultDirectoryRegex = [regex]::new('^(?:' + ($defaults -join '|') + ')$', [Text.RegularExpressions.RegexOptions]::IgnoreCase)
+}
+Initialize-PhpDirectoryPolicy
 
-    private static bool Match(string path, string pattern)
-    {{
-        // Iterative glob matcher avoids regex backtracking and treats ?[] as literals.
-        int p = 0, t = 0, star = -1, retry = 0;
-        while (p &lt; path.Length)
-        {{
-            if (t &lt; pattern.Length &amp;&amp; pattern[t] != '*' &amp;&amp; pattern[t] == path[p]) {{ p++; t++; }
-            else if (t &lt; pattern.Length &amp;&amp; pattern[t] == '*') {{ star = t++; retry = p; }
-            else if (star &gt;= 0) {{ t = star + 1; p = ++retry; }
-            else return false;
-        }
-        while (t &lt; pattern.Length &amp;&amp; pattern[t] == '*') t++;
-        return t == pattern.Length;
+function ConvertTo-PhpNormalPath([string]$Path) {{
+    if ($Path.StartsWith('\\?\')) {{
+        $Path = $Path.Substring(4)
     }
-
-    public int Mode(string directory)
-    {{
-        if (Patterns.Count == 0) return 0;
-        if (directory.StartsWith(@"\\?\", StringComparison.Ordinal)) directory = directory.Substring(4);
-        directory = directory.Replace('\\', '/').TrimEnd('/').ToUpperInvariant();
-        // Match descendants too: separately ordered app roots cannot bypass an excluded ancestor.
-        foreach (string pattern in trees)
-            if (Match(directory, pattern) || Match(directory, pattern + "/*")) return 2;
-        foreach (string pattern in direct) if (Match(directory, pattern)) return 1;
-        return 0;
+    return $Path.Replace('/', '\')
+}
+function ConvertTo-PhpExtendedPath([string]$Path) {{
+    $normal = ConvertTo-PhpNormalPath $Path
+    if ($normal.StartsWith('\\') -or $normal.StartsWith('UNC\', [StringComparison]::OrdinalIgnoreCase)) {{
+        throw 'Network root excluded'
+    }
+    return '\\?\' + [IO.Path]::GetFullPath($normal)
+}
+function Test-PhpPathWithin([string]$Path, [string]$Root) {{
+    return $Path.Equals($Root, [StringComparison]::OrdinalIgnoreCase) -or $Path.StartsWith($Root + '\', [StringComparison]::OrdinalIgnoreCase)
+}
+function New-PhpDirectoryExclusions([string]$Encoded) {{
+    if ($Encoded -notmatch '^x(?:[a-fA-F0-9]{{2}){{0,4096}$') {{
+        throw 'Invalid encoded directory exclusions'
+    }
+    $bytes = New-Object byte[] (($Encoded.Length - 1) / 2)
+    for ($i = 0; $i -lt $bytes.Length; $i++) {{
+        $bytes[$i] = [Convert]::ToByte($Encoded.Substring(1 + $i * 2, 2), 16)
+    }
+    $text = [Text.UTF8Encoding]::new($false, $true).GetString($bytes)
+    if ($text -match '[\x00-\x1f\x7f]') {{
+        throw 'Control character in exclusions'
+    }
+    $patterns = New-Object 'Collections.Generic.List[string]'
+    $trees = New-Object 'Collections.Generic.List[object]'; $direct = New-Object 'Collections.Generic.List[object]'
+    foreach ($entry in $text.Split(',')) {{
+        $pattern = $entry.Trim().Replace('\', '/') -replace '/+', '/' -replace '\*+', '*'
+        if (-not $pattern) {{
+            continue
+        }
+        if ($patterns.Count -ge 32) {{
+            throw 'At most 32 exclusions allowed'
+        }
+        if ($pattern -notmatch '^(?:\*/|[A-Za-z]:/)' -or @($pattern.Split('/') | Where-Object {{ $_ -eq '.' -or $_ -eq '..' }).Count) {{
+            throw 'Invalid absolute directory exclusion'
+        }
+        $patterns.Add($pattern)
+        $subtree = $pattern.EndsWith('/*')
+        $basis = if ($subtree) {{
+            $pattern.Substring(0, $pattern.Length - 2).TrimEnd('/')
+        }
+        else {{
+            $pattern.TrimEnd('/')
+        }
+        # Escape everything except the supported asterisk. ? and [] stay literal.
+        $escaped = [Management.Automation.WildcardPattern]::Escape($basis).Replace('`*', '*')
+        $matcher = [Management.Automation.WildcardPattern]::new($escaped, [Management.Automation.WildcardOptions]::IgnoreCase)
+        if ($subtree) {{
+            $trees.Add(@($matcher, [Management.Automation.WildcardPattern]::new($escaped + '/*', [Management.Automation.WildcardOptions]::IgnoreCase)))
+        }
+        else {{
+            $direct.Add($matcher)
+        }
+    }
+    return [pscustomobject]@{{Patterns = $patterns; Trees = $trees; Direct = $direct }
+}
+function Get-PhpExclusionMode([string]$Path, $Exclusions) {{
+    if (-not $Exclusions.Patterns.Count) {{
+        return 0
+    }
+    $normal = (ConvertTo-PhpNormalPath $Path).Replace('\', '/').TrimEnd('/')
+    foreach ($pair in $Exclusions.Trees) {{
+        if ($pair[0].IsMatch($normal) -or $pair[1].IsMatch($normal)) {{
+            return 2
+        }
+    }
+    foreach ($matcher in $Exclusions.Direct) {{
+        if ($matcher.IsMatch($normal)) {{
+            return 1
+        }
+    }
+    return 0
+}
+function Test-PhpPermanentDirectory([string]$Path) {{
+    $normal = (ConvertTo-PhpNormalPath $Path).TrimEnd('\')
+    return $script:PhpPermanentDirectoryRegex.IsMatch($normal)
+}
+function Get-PhpProfileRelativePath([string]$Normal) {{
+    $system = Join-Path $script:PhpWindows 'System32\config\systemprofile\'
+    if ($Normal.StartsWith($system, [StringComparison]::OrdinalIgnoreCase)) {{
+        return $Normal.Substring($system.Length)
+    }
+    foreach ($root in @((Join-Path ([IO.Path]::GetPathRoot($Normal)) 'Users\'), (Join-Path $script:PhpWindows 'ServiceProfiles\'))) {{
+        if (-not $Normal.StartsWith($root, [StringComparison]::OrdinalIgnoreCase)) {{
+            continue
+        }
+        $rest = $Normal.Substring($root.Length); $index = $rest.IndexOf('\')
+        if ($index -ge 0) {{
+            return $rest.Substring($index + 1)
+        }
+    }
+    return ''
+}
+function Test-PhpDefaultDirectory([string]$Normal) {{
+    $volume = [IO.Path]::GetPathRoot($Normal)
+    return $script:PhpDefaultDirectories.Contains($Normal.Substring($volume.Length)) -or $script:PhpDefaultDirectoryRegex.IsMatch($Normal)
+}
+function Test-PhpExpectedSystemFile([string]$Path) {{
+    $normal = ConvertTo-PhpNormalPath $Path; $parent = [IO.Path]::GetDirectoryName($normal); $name = [IO.Path]::GetFileName($normal)
+    if ($parent.TrimEnd('\') -ieq [IO.Path]::GetPathRoot($normal).TrimEnd('\') -and $name -imatch '^(?:pagefile|hiberfil|swapfile)\.sys$') {{
+        return $true
+    }
+    $relative = Get-PhpProfileRelativePath $normal
+    if ($relative -imatch '^(?:NTUSER\.DAT(?:\.LOG[12])?|AppData\\Local\\Microsoft\\Windows\\UsrClass\.dat(?:\.LOG[12])?)$') {{
+        return $true
+    }
+    $config = Join-Path $script:PhpWindows 'System32\config'
+    return ($parent -ieq $config -or $parent -ieq (Join-Path $config 'RegBack')) -and $name -imatch '^(?:SYSTEM|SOFTWARE|SAM|SECURITY|DEFAULT|BBI)(?:\.LOG[12])?$'
+}
+function Test-PhpExpectedReadFailure([string]$Path, [int]$Code) {{
+    if ($Code -ne 32 -and $Code -ne 33) {{
+        return $false
+    }
+    $normal = ConvertTo-PhpNormalPath $Path; $name = [IO.Path]::GetFileName($normal)
+    if ($name -imatch '^(?:LOCK|\.lock|\.sLock)$') {{
+        try {{
+            if ([IO.FileInfo]::new($Path).Length -le 4096) {{
+                return $true
+            }
+        }
+        catch {{
+        }
+    }
+    if ($normal -ieq (Join-Path ([IO.Path]::GetPathRoot($script:PhpWindows)) 'DumpStack.log.tmp')) {{
+        return $true
+    }
+    if ($normal -imatch '\\TEMPDB\\templog\.ldf$') {{
+        return $true
+    }
+    foreach ($root in $script:PhpProgramFiles) {{
+        if ($root -and (Test-PhpPathWithin $normal (Join-Path $root 'Microsoft SQL Server')) -and $normal -imatch '\\MSSQL\\DATA\\[^\\]+\.(?:mdf|ndf|ldf)$') {{
+            return $true
+        }
+    }
+    $relative = Get-PhpProfileRelativePath $normal
+    foreach ($pattern in $script:PhpDataPolicy.expected_profile_locked_patterns) {{
+        if ($relative -imatch $pattern) {{
+            return $true
+        }
+    }
+    $programData = [Environment]::GetFolderPath('CommonApplicationData')
+    if ($normal -ieq (Join-Path $programData 'BigFixScanner\bf-scanner.lock')) {{
+        return $true
+    }
+    $defender = Join-Path $programData 'Microsoft\Windows Defender\'
+    if ($normal.StartsWith($defender, [StringComparison]::OrdinalIgnoreCase)) {{
+        $relativeDefender = $normal.Substring($defender.Length)
+        if ($relativeDefender -imatch '^Scans\\MpDiag\.bin$|^IMpService[0-9a-f]{{8}-(?:[0-9a-f]{{4}-){{3}[0-9a-f]{{12}\.lock$|^Scans\\History\\CacheManager\\[0-9a-f]{{8}-(?:[0-9a-f]{{4}-){{3}[0-9a-f]{{12}-[0-9]+\.bin$') {{
+            return $true
+        }
+    }
+    $windowsPrefix = $script:PhpWindows + '\'
+    if ($normal.StartsWith($windowsPrefix, [StringComparison]::OrdinalIgnoreCase)) {{
+        $relativeWindows = $normal.Substring($windowsPrefix.Length)
+        if ($relativeWindows -imatch '^System32\\catroot2\\.*(?:\.(?:log|jfm|edb)|\\catdb)$') {{
+            return $true
+        }
+        foreach ($entry in $script:PhpDataPolicy.expected_windows_locked_paths) {{
+            if ($relativeWindows -ieq $entry) {{
+                return $true
+            }
+        }
+    }
+    return $false
+}
+function Add-PhpDiscoveryError($Stats, [string]$Operation, [string]$Path, [Exception]$ErrorValue) {{
+    $cause = $ErrorValue.GetBaseException(); $code = $cause.HResult -band 65535
+    if ($Operation -ne 'root' -and ($cause -is [IO.FileNotFoundException] -or $cause -is [IO.DirectoryNotFoundException])) {{
+        $Stats.VanishedSkipped++; return
+    }
+    if ($Operation -eq 'read' -and (Test-PhpExpectedReadFailure $Path $code)) {{
+        $Stats.ExpectedSkipped++; return
+    }
+    $Stats.Errors++
+    if ($Stats.ErrorSamples.Count -lt 200) {{
+        $safe = (ConvertTo-PhpNormalPath $Path).Replace("`r", '\r').Replace("`n", '\n'); if ($safe.Length -gt 600) {{
+            $safe = $safe.Substring(0, 600) + '...[truncated]'
+        }; $Stats.ErrorSamples.Add($Operation + ' | type=' + $cause.GetType().Name + ' | code=' + $code + ' | path=' + $safe)
     }
 }
-
-public static class PhpCandidateFilter
-{{
-    // PHP core, CGI/FPM/CLI/debug SAPIs, Apache modules and common embedded distributions.
-    // Script/source files do not identify an installed runtime. Broad mode restores renamed binaries.
-    public static bool StandardRuntimeName(string path)
-    {{
-        string name = Path.GetFileName(path);
-        // Official Windows phpdbg modules accompany the core DLL. Keep these
-        // in the default candidate family; classification happens after YARA.
-        if (name.EndsWith("phpdbg.dll", StringComparison.OrdinalIgnoreCase) &amp;&amp;
-            System.Text.RegularExpressions.Regex.IsMatch(name, @"^php[0-9]+(?:ts|nts)?phpdbg\.dll$",
-            System.Text.RegularExpressions.RegexOptions.IgnoreCase)) return true;
-        string extension = Path.GetExtension(name);
-        if (extension.Length != 0 &amp;&amp; !extension.Equals(".exe", StringComparison.OrdinalIgnoreCase) &amp;&amp;
-            !extension.Equals(".dll", StringComparison.OrdinalIgnoreCase) &amp;&amp; !extension.Equals(".so", StringComparison.OrdinalIgnoreCase) &amp;&amp;
-            !System.Text.RegularExpressions.Regex.IsMatch(extension, @"^\.[0-9][a-zA-Z0-9_-]*$")) return false;
-        return System.Text.RegularExpressions.Regex.IsMatch(name,
-            @"^(?:(?:php|phpdbg|libphp|mod_php|lsphp|frankenphp)(?:[0-9][0-9.]*(?:[-_][a-z0-9_.-]+)?|[-_][a-z0-9_.-]+)?(?:ts|nts|apache[0-9_]*)?)(?:\.exe|\.dll|\.so(?:\.[0-9]+)*)?$",
-            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+function Read-PhpStructure($Stream, [long]$Offset, [byte[]]$Buffer, [int]$Count, $Stats) {{
+    if ($Offset -lt 0 -or $Count -lt 0 -or $Count -gt $Buffer.Length -or $Offset -gt $Stream.Length - $Count) {{
+        return $false
     }
-
-    private const int CloudMask = 0x1000 | 0x40000 | 0x400000;
-    private static readonly string WindowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
-    private static readonly string ProfilesDirectory = Path.Combine(Path.GetPathRoot(WindowsDirectory), "Users") + "\\";
-    private static readonly string ServiceProfilesDirectory = Path.Combine(WindowsDirectory, "ServiceProfiles") + "\\";
-    private static readonly string SystemProfileDirectory = Path.Combine(WindowsDirectory, @"System32\config\systemprofile") + "\\";
-    private static readonly string ProgramFilesDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-    private static readonly string ProgramFilesX86Directory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
-    // Fixed lookup lists are shared across file and directory checks.
-    private static readonly string[] ProgramFilesRoots = new[] {{ ProgramFilesDirectory, ProgramFilesX86Directory };
-    private static readonly string[] WindowsCacheNames = new[] {{ "Installer", "Logs", "Minidump", "LiveKernelReports", @"System32\LogFiles" };
-    private static readonly string[] BigFixServerProducts = new[] {{ "BES Server", "BES Relay" };
-    private static readonly string[] BrowserCachePrefixes = new[] {{ @"AppData\Local\Google\Chrome\User Data\", @"AppData\Local\Microsoft\Edge\User Data\" };
-    private static readonly string[] PersonalMediaNames = new[] {{ "Pictures", "Music", "Videos" };
-    private static readonly int[] NativeDirectoryIndices = new[] {{ 0, 1, 9 };
-    // Filename-based inventory scope, not a claim that these formats cannot
-    // contain executable bytes. The broader-locations option restores them.
-    private static readonly HashSet&lt;string&gt; DataExtensions = new HashSet&lt;string&gt;(new[] {{
-        ".mdf", ".ndf", ".ldf", ".ibd", ".myd", ".myi", ".sqlite", ".sqlite3",
-        ".db", ".db3", ".bak", ".trn", ".dmp", ".dump", ".vhd", ".vhdx",
-        ".vmdk", ".vdi", ".wim", ".esd", ".iso"
-    }, StringComparer.OrdinalIgnoreCase);
-    // Deliberate runtime inventory scope in ALL modes, including Deep.
-    // These suffixes describe documents/data, not native PHP runtimes.
-    private static readonly HashSet&lt;string&gt; NonRuntimeExtensions = new HashSet&lt;string&gt;(new[] {{
-        ".3g2", ".3gp", ".3mf", ".7z", ".a", ".aac", ".ai", ".aif",
-        ".aifc", ".aiff", ".alac", ".amr", ".apinotes", ".apk", ".arw", ".ass",
-        ".avi", ".avif", ".bdf", ".bib", ".blend", ".bmp", ".bnnsir", ".bom",
-        ".bz2", ".c", ".c4d", ".cab", ".caf", ".car", ".cat", ".cc",
-        ".cfg", ".chm", ".cjs", ".class", ".conf", ".cpp", ".cr2", ".cr3",
-        ".css", ".csv", ".db", ".db-shm", ".db-wal", ".deb", ".dgn", ".dib",
-        ".dmg", ".dng", ".doc", ".docm", ".docx", ".dot", ".dotm", ".dotx",
-        ".dwg", ".dxf", ".edb", ".eml", ".eot", ".eps", ".epub", ".etl",
-        ".evtx", ".fbx", ".flac", ".flv", ".fnt", ".fon", ".frag", ".fxf",
-        ".geojson", ".gif", ".glb", ".glsl", ".gltf", ".go", ".gpx", ".gz",
-        ".h", ".heic", ".heif", ".hlsl", ".hpp", ".htm", ".html", ".icns",
-        ".ico", ".ics", ".idx", ".iges", ".igs", ".indd", ".inf", ".ini",
-        ".iso", ".jar", ".java", ".journal", ".jpe", ".jpeg", ".jpg", ".js",
-        ".json", ".jsonl", ".jsx", ".key", ".kml", ".kmz", ".less", ".lib",
-        ".log", ".m", ".m2ts", ".m2v", ".m4a", ".m4b", ".m4v", ".ma",
-        ".manifest", ".map", ".markdown", ".max", ".mb", ".mbox", ".md", ".mdb",
-        ".metallib", ".mid", ".midi", ".mjs", ".mkv", ".mo", ".mobi", ".modulemap",
-        ".mov", ".mp3", ".mp4", ".mpeg", ".mpg", ".msg", ".msi", ".msp",
-        ".mts", ".ndjson", ".nef", ".nib", ".numbers", ".nupkg", ".odp", ".ods",
-        ".odt", ".oga", ".ogg", ".ogv", ".opus", ".orf", ".ost", ".otf",
-        ".otp", ".ots", ".ott", ".pack", ".pages", ".pcf", ".pcm", ".pdb",
-        ".pdf", ".php", ".pkg", ".plist", ".png", ".po", ".pot", ".potm",
-        ".potx", ".pps", ".ppsm", ".ppsx", ".ppt", ".pptm", ".pptx", ".prefab",
-        ".properties", ".psb", ".psd", ".pst", ".py", ".pyc", ".qcow2", ".rar",
-        ".rb", ".reg", ".rpm", ".rs", ".rst", ".rtf", ".rw2", ".sass",
-        ".scss", ".shader", ".shadergraph", ".shp", ".shx", ".sketch", ".sqlite", ".sqlite-shm",
-        ".sqlite-wal", ".srt", ".ssa", ".step", ".stl", ".stp", ".strings", ".svg",
-        ".svgz", ".swift", ".swiftdoc", ".swiftinterface", ".swiftmodule", ".swiftsourceinfo", ".tar", ".tbd",
-        ".tex", ".tgz", ".tif", ".tiff", ".toml", ".tracev3", ".ts", ".tsv",
-        ".tsx", ".ttc", ".ttf", ".txt", ".uasset", ".ucas", ".umap", ".unity",
-        ".unitypackage", ".usf", ".ush", ".utoc", ".vcf", ".vdi", ".vert", ".vmdk",
-        ".vob", ".vpk", ".vtt", ".wal", ".wav", ".webm", ".webp", ".whl",
-        ".wma", ".wmv", ".woff", ".woff2", ".xcf", ".xhtml", ".xip", ".xls",
-        ".xlsb", ".xlsm", ".xlsx", ".xlt", ".xltm", ".xltx", ".xml", ".xz",
-        ".yaml", ".yml", ".zip", ".zst"
-    }, StringComparer.OrdinalIgnoreCase);
-    private static readonly HashSet&lt;string&gt; DefaultRelativeDirectories = new HashSet&lt;string&gt;(new[] {{
-        "Windows", "Windows.old", "$Windows.~BT", "$Windows.~WS", "Recovery", "$Recycle.Bin",
-        "System Volume Information", "WindowsImageBackup", "FileHistory", @"Program Files\WindowsApps",
-        @"Program Files (x86)\WindowsApps", @"ProgramData\Microsoft\Windows\WER"
-    }, StringComparer.OrdinalIgnoreCase);
-    [DllImport("kernel32.dll", SetLastError = true)]
-    private static extern bool SetPriorityClass(IntPtr process, uint priorityClass);
-
-    private static string Extended(string path)
-    {{
-        if (path.StartsWith(@"\\?\UNC\", StringComparison.OrdinalIgnoreCase)) throw new ArgumentException("Network root excluded");
-        if (path.StartsWith(@"\\?\", StringComparison.Ordinal)) return path;
-        if (path.StartsWith(@"\\", StringComparison.Ordinal)) throw new ArgumentException("Network root excluded");
-        return @"\\?\" + Path.GetFullPath(path);
+    $Stream.Position = $Offset; $total = 0
+    while ($total -lt $Count) {{
+        $read = $Stream.Read($Buffer, $total, $Count - $total); if ($read -le 0) {{
+            break
+        }; $total += $read
     }
-
-    private static string Normal(string path)
-    {{
-        return path.StartsWith(@"\\?\", StringComparison.Ordinal) ? path.Substring(4) : path;
+    $Stats.StructuralBytes += $total; $Stats.PrefilterBytes += $total
+    return $total -eq $Count
+}
+function Test-PhpKnownNonRuntime($Stream, [byte[]]$Buffer, $Stats) {{
+    # Conservative structural proof. Uncertain or mixed/native images stay eligible.
+    if (-not (Read-PhpStructure $Stream 0 $Buffer 64 $Stats)) {{
+        return $false
     }
-
-    private static void RecordError(PhpFilterStats stats, string operation, string path, Exception error)
-    {{
-        if (operation != "root" &amp;&amp; (error is FileNotFoundException || error is DirectoryNotFoundException))
-        {{
-            stats.VanishedSkipped++;
-            return;
+    if ([BitConverter]::ToUInt32($Buffer, 0) -eq 0x464c457f) {{
+        if ($Buffer[4] -notin @(1, 2) -or $Buffer[5] -notin @(1, 2) -or $Buffer[6] -ne 1) {{
+            return $false
         }
-        int code = error.HResult &amp; 65535;
-        if (operation == "read" &amp;&amp; error is IOException &amp;&amp; (code == 32 || code == 33) &amp;&amp; (ExpectedLockedMetadata(path) || IsSmallLockFile(path)))
-        {{
-            stats.ExpectedSkipped++;
-            return;
+        $offset = if ($Buffer[4] -eq 1) {{
+            40
         }
-        stats.Errors++;
-        if (stats.ErrorSamples.Count &gt;= 200) return;
-        string safe = Normal(path).Replace("\r", "\\r").Replace("\n", "\\n");
-        if (safe.Length &gt; 600) safe = safe.Substring(0, 600) + "...[truncated]";
-        stats.ErrorSamples.Add(operation + " | type=" + error.GetType().Name + " | code=" + (error.HResult &amp; 65535) + " | path=" + safe);
-    }
-
-    private static string ProfileRelativePath(string normal)
-    {{
-        string prefix = ProfilesDirectory;
-        if (normal.StartsWith(SystemProfileDirectory, StringComparison.OrdinalIgnoreCase)) return normal.Substring(SystemProfileDirectory.Length);
-        if (normal.StartsWith(ServiceProfilesDirectory, StringComparison.OrdinalIgnoreCase)) prefix = ServiceProfilesDirectory;
-        else if (!normal.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) return "";
-        string remainder = normal.Substring(prefix.Length);
-        int separator = remainder.IndexOf('\\');
-        return separator &gt;= 0 ? remainder.Substring(separator + 1) : "";
-    }
-
-    private static bool IsSmallLockFile(string path)
-    {{
-        string name = Path.GetFileName(Normal(path));
-        if (!name.Equals("LOCK", StringComparison.OrdinalIgnoreCase) &amp;&amp; !name.Equals(".lock", StringComparison.OrdinalIgnoreCase) &amp;&amp; !name.Equals(".sLock", StringComparison.OrdinalIgnoreCase)) return false;
-        try {{ return new FileInfo(path).Length &lt;= 4096; }
-        catch (IOException) {{ return false; }
-        catch (UnauthorizedAccessException) {{ return false; }
-    }
-
-    private static bool ExpectedLockedMetadata(string path)
-    {{
-        string normal = Normal(path);
-        string windows = WindowsDirectory;
-        if (normal.Equals(Path.Combine(Path.GetPathRoot(windows), "DumpStack.log.tmp"), StringComparison.OrdinalIgnoreCase)) return true;
-        string relative = normal.StartsWith(windows + "\\", StringComparison.OrdinalIgnoreCase) ? normal.Substring(windows.Length + 1) : "";
-        string extension = Path.GetExtension(normal);
-        // SQL's canonical temporary transaction log is data, including when the
-        // administrator puts TEMPDB outside Program Files. Other custom DB paths
-        // remain coverage gaps when unreadable.
-        if (Path.GetFileName(normal).Equals("templog.ldf", StringComparison.OrdinalIgnoreCase) &amp;&amp;
-            Path.GetFileName(Path.GetDirectoryName(normal)).Equals("TEMPDB", StringComparison.OrdinalIgnoreCase)) return true;
-        if ((extension.Equals(".mdf", StringComparison.OrdinalIgnoreCase) || extension.Equals(".ndf", StringComparison.OrdinalIgnoreCase) || extension.Equals(".ldf", StringComparison.OrdinalIgnoreCase)) &amp;&amp;
-            Path.GetDirectoryName(normal).EndsWith(@"\MSSQL\DATA", StringComparison.OrdinalIgnoreCase))
-        {{
-            foreach (string basePath in ProgramFilesRoots)
-                if (basePath.Length != 0 &amp;&amp; normal.StartsWith(Path.Combine(basePath, "Microsoft SQL Server") + "\\", StringComparison.OrdinalIgnoreCase)) return true;
+        else {{
+            52
         }
-        string userRelative = ProfileRelativePath(normal);
-        const string packagePrefix = @"AppData\Local\Packages\";
-        if (userRelative.StartsWith(packagePrefix, StringComparison.OrdinalIgnoreCase))
-        {{
-            string[] parts = userRelative.Substring(packagePrefix.Length).Split('\\');
-            if (parts.Length == 3 &amp;&amp; parts[1].Equals("Settings", StringComparison.OrdinalIgnoreCase) &amp;&amp;
-                (parts[2].Equals("settings.dat", StringComparison.OrdinalIgnoreCase) || parts[2].Equals("settings.dat.LOG1", StringComparison.OrdinalIgnoreCase) || parts[2].Equals("settings.dat.LOG2", StringComparison.OrdinalIgnoreCase))) return true;
-            if (parts.Length == 4 &amp;&amp; parts[1].Equals("AppData", StringComparison.OrdinalIgnoreCase) &amp;&amp; parts[2].Equals("CacheStorage", StringComparison.OrdinalIgnoreCase) &amp;&amp;
-                (parts[3].Equals("CacheStorage.edb", StringComparison.OrdinalIgnoreCase) || parts[3].Equals("CacheStorage.jfm", StringComparison.OrdinalIgnoreCase))) return true;
+        $type = if ($Buffer[5] -eq 1) {{
+            [int]$Buffer[16] -bor ([int]$Buffer[17] -shl 8)
         }
-        const string chromePrefix = @"AppData\Local\Google\Chrome\User Data\";
-        if (userRelative.StartsWith(chromePrefix, StringComparison.OrdinalIgnoreCase))
-        {{
-            string[] parts = userRelative.Substring(chromePrefix.Length).Split('\\');
-            if (parts.Length == 3 &amp;&amp; parts[1].Equals("Network", StringComparison.OrdinalIgnoreCase) &amp;&amp;
-                (parts[2].Equals("Cookies", StringComparison.OrdinalIgnoreCase) || parts[2].Equals("Cookies-journal", StringComparison.OrdinalIgnoreCase))) return true;
-            if (parts.Length == 3 &amp;&amp; (parts[1].Equals("Sessions", StringComparison.OrdinalIgnoreCase) || parts[1].Equals("Sessions_Encrypted", StringComparison.OrdinalIgnoreCase)))
-            {{
-                string leaf = parts[2];
-                string number = leaf.StartsWith("Session_", StringComparison.Ordinal) ? leaf.Substring(8) : leaf.StartsWith("Tabs_", StringComparison.Ordinal) ? leaf.Substring(5) : "";
-                long sessionId;
-                if (number.Length &gt; 0 &amp;&amp; long.TryParse(number, out sessionId) &amp;&amp; sessionId &gt;= 0) return true;
+        else {{
+            ([int]$Buffer[16] -shl 8) -bor [int]$Buffer[17]
+        }
+        $size = if ($Buffer[5] -eq 1) {{
+            [int]$Buffer[$offset] -bor ([int]$Buffer[$offset + 1] -shl 8)
+        }
+        else {{
+            ([int]$Buffer[$offset] -shl 8) -bor [int]$Buffer[$offset + 1]
+        }
+        return $size -eq $(if ($Buffer[4] -eq 1) {{
+                52
+            }
+            else {{
+                64
+            }) -and $type -in @(1, 4)
+    }
+    if ($Buffer[0] -ne 77 -or $Buffer[1] -ne 90) {{
+        return $false
+    }
+    $pe = [long][BitConverter]::ToUInt32($Buffer, 60)
+    if ($pe -lt 64 -or $pe -gt 1048576 -or -not (Read-PhpStructure $Stream $pe $Buffer 24 $Stats)) {{
+        return $false
+    }
+    if ([BitConverter]::ToUInt32($Buffer, 0) -ne 0x4550) {{
+        return $false
+    }
+    $sections = [int][BitConverter]::ToUInt16($Buffer, 6); $optional = [int][BitConverter]::ToUInt16($Buffer, 20)
+    if ($sections -lt 1 -or $sections -gt 96 -or $optional -lt 96 -or $optional -gt 512) {{
+        return $false
+    }
+    if (-not (Read-PhpStructure $Stream ($pe + 24) $Buffer ($optional + $sections * 40) $Stats)) {{
+        return $false
+    }
+    $magic = [BitConverter]::ToUInt16($Buffer, 0); $directories = if ($magic -eq 0x10b) {{
+        96
+    }
+    elseif ($magic -eq 0x20b) {{
+        112
+    }
+    else {{
+        0
+    }
+    if (-not $directories -or $optional -lt $directories -or [BitConverter]::ToUInt32($Buffer, 4) -ne 0 -or [BitConverter]::ToUInt32($Buffer, 16) -ne 0) {{
+        return $false
+    }
+    $count = [BitConverter]::ToUInt32($Buffer, $directories - 4)
+    if ($count -gt 16 -or $optional -lt $directories + $count * 8) {{
+        return $false
+    }
+    foreach ($index in @(0, 1, 9)) {{
+        if ($count -gt $index -and ([BitConverter]::ToUInt32($Buffer, $directories + $index * 8) -ne 0 -or [BitConverter]::ToUInt32($Buffer, $directories + $index * 8 + 4) -ne 0)) {{
+            return $false
+        }
+    }
+    $resource = 0L; $resourceSize = 0L; $cli = 0L; $cliSize = 0L
+    if ($count -gt 2) {{
+        $resource = [long][BitConverter]::ToUInt32($Buffer, $directories + 16); $resourceSize = [long][BitConverter]::ToUInt32($Buffer, $directories + 20)
+    }
+    if ($count -gt 14) {{
+        $cli = [long][BitConverter]::ToUInt32($Buffer, $directories + 112); $cliSize = [long][BitConverter]::ToUInt32($Buffer, $directories + 116)
+    }
+    $resourceOffset = -1L; $cliOffset = -1L; $rows = New-Object 'Collections.Generic.List[object]'
+    for ($index = 0; $index -lt $sections; $index++) {{
+        $row = $optional + $index * 40; $size = [long][BitConverter]::ToUInt32($Buffer, $row + 16); $offset = [long][BitConverter]::ToUInt32($Buffer, $row + 20); $rva = [long][BitConverter]::ToUInt32($Buffer, $row + 12); $flags = [BitConverter]::ToUInt32($Buffer, $row + 36)
+        if (($flags -band 0x20000000) -ne 0 -or $offset + $size -gt $Stream.Length) {{
+            return $false
+        }
+        $rows.Add(@($rva, $size, $offset))
+        if ($resource -ne 0 -and $resourceSize -ge 16 -and $resource -ge $rva -and $resource - $rva + $resourceSize -le $size) {{
+            $resourceOffset = $offset + $resource - $rva
+        }
+        if ($cli -ne 0 -and $cliSize -ge 72 -and $cli -ge $rva -and $cli - $rva + $cliSize -le $size) {{
+            $cliOffset = $offset + $cli - $rva
+        }
+    }
+    if ($cli -ne 0) {{
+        if ($cliOffset -lt 0 -or -not (Read-PhpStructure $Stream $cliOffset $Buffer 72 $Stats)) {{
+            return $false
+        }
+        $flags = [BitConverter]::ToUInt32($Buffer, 16); $metadata = [long][BitConverter]::ToUInt32($Buffer, 8); $metadataSize = [long][BitConverter]::ToUInt32($Buffer, 12)
+        if ([BitConverter]::ToUInt32($Buffer, 0) -lt 72 -or ($flags -band 1) -eq 0 -or ($flags -band 0x10) -ne 0 -or [BitConverter]::ToUInt32($Buffer, 20) -ne 0) {{
+            return $false
+        }
+        for ($field = 40; $field -lt 72; $field += 4) {{
+            if ([BitConverter]::ToUInt32($Buffer, $field) -ne 0) {{
+                return $false
             }
         }
-        foreach (string known in new[] {{ @"AppData\Local\Microsoft\Windows\Notifications\WPNPRMRY.tmp", @"AppData\Local\Microsoft\Internet Explorer\CacheStorage\edb.log" })
-            if (userRelative.Equals(known, StringComparison.OrdinalIgnoreCase)) return true;
-        string programData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-        string defender = Path.Combine(programData, @"Microsoft\Windows Defender") + "\\";
-        if (normal.StartsWith(defender, StringComparison.OrdinalIgnoreCase))
-        {{
-            string dataPath = normal.Substring(defender.Length);
-            if (dataPath.Equals(@"Scans\MpDiag.bin", StringComparison.OrdinalIgnoreCase)) return true;
-            Guid identity;
-            if (dataPath.StartsWith("IMpService", StringComparison.OrdinalIgnoreCase) &amp;&amp; dataPath.EndsWith(".lock", StringComparison.OrdinalIgnoreCase) &amp;&amp;
-                Guid.TryParse(dataPath.Substring(10, dataPath.Length - 15), out identity)) return true;
-            const string manager = @"Scans\History\CacheManager\";
-            if (dataPath.StartsWith(manager, StringComparison.OrdinalIgnoreCase))
-            {{
-                string leaf = dataPath.Substring(manager.Length);
-                long sequence;
-                if (leaf.Length &gt; 41 &amp;&amp; leaf[36] == '-' &amp;&amp; leaf.EndsWith(".bin", StringComparison.OrdinalIgnoreCase) &amp;&amp;
-                    Guid.TryParse(leaf.Substring(0, 36), out identity) &amp;&amp; long.TryParse(leaf.Substring(37, leaf.Length - 41), out sequence) &amp;&amp; sequence &gt;= 0) return true;
+        if ($metadataSize -lt 16) {{
+            return $false
+        }
+        foreach ($row in $rows) {{
+            if ($metadata -ge $row[0] -and $metadata - $row[0] + $metadataSize -le $row[1]) {{
+                return (Read-PhpStructure $Stream ($row[2] + $metadata - $row[0]) $Buffer 4 $Stats) -and [BitConverter]::ToUInt32($Buffer, 0) -eq 0x424a5342
             }
         }
-        if (normal.Equals(Path.Combine(programData, @"BigFixScanner\bf-scanner.lock"), StringComparison.OrdinalIgnoreCase)) return true;
-        foreach (string cache in new[] {{ @"AppData\Local\Microsoft\Windows\WebCacheLock.dat", @"AppData\Local\Microsoft\Windows\WebCache\V01.log", @"AppData\Local\Microsoft\Windows\WebCache\V01tmp.log", @"AppData\Local\Microsoft\Windows\WebCache\WebCacheV01.dat", @"AppData\Local\Microsoft\Windows\WebCache\WebCacheV01.jfm" })
-            if (userRelative.Equals(cache, StringComparison.OrdinalIgnoreCase)) return true;
-        if (relative.StartsWith(@"System32\catroot2\", StringComparison.OrdinalIgnoreCase))
-        {{
-            string leaf = Path.GetFileName(relative);
-            if (leaf.EndsWith(".log", StringComparison.OrdinalIgnoreCase) || leaf.EndsWith(".jfm", StringComparison.OrdinalIgnoreCase) || leaf.EndsWith(".edb", StringComparison.OrdinalIgnoreCase) || leaf.Equals("catdb", StringComparison.OrdinalIgnoreCase)) return true;
-        }
-        foreach (string known in new[] {{
-            @"SystemTemp\Velociraptor_Buffer.bin",
-            @"System32\LogFiles\Sum\Current.jfm", @"System32\LogFiles\Sum\Current.mdb", @"System32\LogFiles\Sum\Svc.log", @"System32\LogFiles\Sum\Svctmp.log",
-            @"System32\config\systemprofile\AppData\Local\Microsoft\Windows\WebCacheLock.dat",
-            @"System32\config\systemprofile\AppData\Local\Microsoft\Windows\WebCache\V01.log",
-            @"System32\config\systemprofile\AppData\Local\Microsoft\Windows\WebCache\V01tmp.log",
-            @"System32\config\systemprofile\AppData\Local\Microsoft\Windows\WebCache\WebCacheV01.dat",
-            @"System32\config\systemprofile\AppData\Local\Microsoft\Windows\WebCache\WebCacheV01.jfm",
-            @"System32\config\systemprofile\AppData\Local\DataSharing\Storage\DSS.log",
-            @"System32\config\systemprofile\AppData\Local\DataSharing\Storage\DSTokenDB2.dat",
-            @"System32\config\systemprofile\AppData\Local\DataSharing\Storage\DSTokenDB2.jfm" })
-            if (relative.Equals(known, StringComparison.OrdinalIgnoreCase)) return true;
-        return false;
+        return $false
     }
-
-    private static bool ExpectedSystemFile(string path)
-    {{
-        // Only exact OS paging/registry metadata names are intentionally skipped.
-        // Generic extensions, access denied and sharing violations are NOT ignored.
-        string normal = Normal(path);
-        string name = Path.GetFileName(normal);
-        string parent = Path.GetDirectoryName(normal).TrimEnd('\\');
-        bool volumeRoot = parent.Equals(Path.GetPathRoot(normal).TrimEnd('\\'), StringComparison.OrdinalIgnoreCase);
-        if (volumeRoot &amp;&amp; (name.Equals("pagefile.sys", StringComparison.OrdinalIgnoreCase) ||
-            name.Equals("hiberfil.sys", StringComparison.OrdinalIgnoreCase) ||
-            name.Equals("swapfile.sys", StringComparison.OrdinalIgnoreCase))) return true;
-        string profileRelative = ProfileRelativePath(normal);
-        if (profileRelative.Length != 0)
-        {{
-                foreach (string known in new[] {{ "NTUSER.DAT", "NTUSER.DAT.LOG1", "NTUSER.DAT.LOG2", @"AppData\Local\Microsoft\Windows\UsrClass.dat", @"AppData\Local\Microsoft\Windows\UsrClass.dat.LOG1", @"AppData\Local\Microsoft\Windows\UsrClass.dat.LOG2" })
-                    if (profileRelative.Equals(known, StringComparison.OrdinalIgnoreCase)) return true;
+    return $resourceOffset -ge 0 -and (Read-PhpStructure $Stream $resourceOffset $Buffer 16 $Stats)
+}
+function Test-PhpOversizedCandidate([string]$Path, $Stats, [byte[]]$Buffer) {{
+    $stream = [IO.FileStream]::new($Path, [IO.FileMode]::Open, [IO.FileAccess]::Read, ([IO.FileShare]::ReadWrite -bor [IO.FileShare]::Delete), 1, [IO.FileOptions]::None)
+    try {{
+        $count = $stream.Read($Buffer, 0, 4); $Stats.PrefilterBytes += $count
+        $executable = $count -ge 2 -and $Buffer[0] -eq 77 -and $Buffer[1] -eq 90
+        if ($count -ge 4) {{
+            $executable = $executable -or [BitConverter]::ToString($Buffer, 0, 4) -in @('7F-45-4C-46', 'CE-FA-ED-FE', 'CF-FA-ED-FE', 'FE-ED-FA-CE', 'FE-ED-FA-CF', 'CA-FE-BA-BE', 'CA-FE-BA-BF')
         }
-        string config = Path.Combine(WindowsDirectory, @"System32\config");
-        if (!parent.Equals(config, StringComparison.OrdinalIgnoreCase) &amp;&amp; !parent.Equals(Path.Combine(config, "RegBack"), StringComparison.OrdinalIgnoreCase)) return false;
-        foreach (string hive in new[] {{ "SYSTEM", "SOFTWARE", "SAM", "SECURITY", "DEFAULT", "BBI" })
-            if (name.Equals(hive, StringComparison.OrdinalIgnoreCase) || name.Equals(hive + ".LOG1", StringComparison.OrdinalIgnoreCase) || name.Equals(hive + ".LOG2", StringComparison.OrdinalIgnoreCase)) return true;
-        return false;
-    }
-
-    private static bool IsExecutable(byte[] data, int count)
-    {{
-        if (count &gt;= 2 &amp;&amp; data[0] == 77 &amp;&amp; data[1] == 90) return true;
-        if (count &lt; 4) return false;
-        uint word = (uint)(data[0] | data[1] &lt;&lt; 8 | data[2] &lt;&lt; 16 | data[3] &lt;&lt; 24);
-        return word == 0x464C457F || word == 0xFEEDFACE || word == 0xFEEDFACF ||
-               word == 0xCEFAEDFE || word == 0xCFFAEDFE || word == 0xBEBAFECA;
-    }
-
-    private static bool Contains(string text, string value)
-    {{
-        return text.IndexOf(value, StringComparison.Ordinal) &gt;= 0;
-    }
-
-    private static bool ReadAt(FileStream stream, long offset, byte[] buffer, int count, PhpFilterStats stats)
-    {{
-        if (offset &lt; 0 || count &lt; 0 || count &gt; buffer.Length || offset &gt; stream.Length - count) return false;
-        stream.Position = offset;
-        int total = 0, read;
-        while (total &lt; count &amp;&amp; (read = stream.Read(buffer, total, count - total)) &gt; 0) total += read;
-        stats.StructuralBytes += total;
-        stats.PrefilterBytes += total;
-        return total == count;
-    }
-
-    // A bounded structural proof, independent of pathname/extension. Unknown,
-    // malformed, truncated, mixed/native and executable-section images stay in
-    // YARA. Resource/metadata images must declare NO native code or entrypoint.
-    private static bool KnownNonRuntime(FileStream stream, byte[] buffer, PhpFilterStats stats)
-    {{
-        if (!ReadAt(stream, 0, buffer, 64, stats)) return false;
-        if (buffer[0] == 0x7f &amp;&amp; buffer[1] == 69 &amp;&amp; buffer[2] == 76 &amp;&amp; buffer[3] == 70)
-        {{
-            if ((buffer[4] != 1 &amp;&amp; buffer[4] != 2) || (buffer[5] != 1 &amp;&amp; buffer[5] != 2) || buffer[6] != 1) return false;
-            int type = buffer[5] == 1 ? buffer[16] | buffer[17] &lt;&lt; 8 : buffer[16] &lt;&lt; 8 | buffer[17];
-            int headerOffset = buffer[4] == 1 ? 40 : 52;
-            int headerSize = buffer[5] == 1 ? buffer[headerOffset] | buffer[headerOffset + 1] &lt;&lt; 8 : buffer[headerOffset] &lt;&lt; 8 | buffer[headerOffset + 1];
-            return headerSize == (buffer[4] == 1 ? 52 : 64) &amp;&amp; (type == 1 || type == 4); // object/core, never ET_EXEC/ET_DYN
+        if (-not $executable) {{
+            return $false
         }
-        if (buffer[0] != 77 || buffer[1] != 90) return false;
-        uint pe = BitConverter.ToUInt32(buffer, 60);
-        if (pe &lt; 64 || pe &gt; 1048576 || !ReadAt(stream, pe, buffer, 24, stats)) return false;
-        if (BitConverter.ToUInt32(buffer, 0) != 0x00004550) return false;
-        int sections = BitConverter.ToUInt16(buffer, 6), optionalSize = BitConverter.ToUInt16(buffer, 20);
-        if (sections &lt; 1 || sections &gt; 96 || optionalSize &lt; 96 || optionalSize &gt; 512) return false;
-        if (!ReadAt(stream, pe + 24L, buffer, optionalSize + sections * 40, stats)) return false;
-        int magic = BitConverter.ToUInt16(buffer, 0);
-        int directories = magic == 0x10b ? 96 : magic == 0x20b ? 112 : 0;
-        if (directories == 0 || optionalSize &lt; directories) return false;
-        if (BitConverter.ToUInt32(buffer, 4) != 0 || BitConverter.ToUInt32(buffer, 16) != 0) return false;
-        uint count = BitConverter.ToUInt32(buffer, directories - 4);
-        if (count &gt; 16 || optionalSize &lt; directories + count * 8) return false;
-        // Native exports/imports/TLS are contradictory evidence: retain the file.
-        foreach (int index in NativeDirectoryIndices)
-            if (count &gt; index &amp;&amp; (BitConverter.ToUInt32(buffer, directories + index * 8) != 0 || BitConverter.ToUInt32(buffer, directories + index * 8 + 4) != 0)) return false;
-        uint resource = count &gt; 2 ? BitConverter.ToUInt32(buffer, directories + 16) : 0;
-        uint resourceSize = count &gt; 2 ? BitConverter.ToUInt32(buffer, directories + 20) : 0;
-        uint cli = count &gt; 14 ? BitConverter.ToUInt32(buffer, directories + 112) : 0;
-        uint cliSize = count &gt; 14 ? BitConverter.ToUInt32(buffer, directories + 116) : 0;
-        long resourceOffset = -1, cliOffset = -1;
-        var rvas = new uint[sections]; var sizes = new uint[sections]; var offsets = new uint[sections];
-        for (int index = 0; index &lt; sections; index++)
-        {{
-            int row = optionalSize + index * 40;
-            uint size = BitConverter.ToUInt32(buffer, row + 16), offset = BitConverter.ToUInt32(buffer, row + 20);
-            uint rva = BitConverter.ToUInt32(buffer, row + 12), flags = BitConverter.ToUInt32(buffer, row + 36);
-            if ((flags &amp; 0x20000000U) != 0 || (long)offset + size &gt; stream.Length) return false;
-            rvas[index] = rva; sizes[index] = size; offsets[index] = offset;
-            if (resource != 0 &amp;&amp; resourceSize &gt;= 16 &amp;&amp; resource &gt;= rva &amp;&amp; (long)resource - rva + resourceSize &lt;= size) resourceOffset = offset + (long)resource - rva;
-            if (cli != 0 &amp;&amp; cliSize &gt;= 72 &amp;&amp; cli &gt;= rva &amp;&amp; (long)cli - rva + cliSize &lt;= size) cliOffset = offset + (long)cli - rva;
+        if (Test-PhpKnownNonRuntime $stream $Buffer $Stats) {{
+            $Stats.StructuralSkipped++; return $false
         }
-        if (cli != 0)
-        {{
-            if (cliOffset &lt; 0 || !ReadAt(stream, cliOffset, buffer, 72, stats)) return false;
-            uint flags = BitConverter.ToUInt32(buffer, 16), metadata = BitConverter.ToUInt32(buffer, 8), metadataSize = BitConverter.ToUInt32(buffer, 12);
-            if (BitConverter.ToUInt32(buffer, 0) &lt; 72 || (flags &amp; 1) == 0 || (flags &amp; 0x10) != 0 || BitConverter.ToUInt32(buffer, 20) != 0) return false;
-            // Retain managed/native images, fixups and exported native stubs.
-            for (int field = 40; field &lt; 72; field += 4) if (BitConverter.ToUInt32(buffer, field) != 0) return false;
-            if (metadataSize &lt; 16) return false;
-            for (int index = 0; index &lt; sections; index++)
-                if (metadata &gt;= rvas[index] &amp;&amp; (long)metadata - rvas[index] + metadataSize &lt;= sizes[index])
-                    return ReadAt(stream, offsets[index] + (long)metadata - rvas[index], buffer, 4, stats) &amp;&amp; BitConverter.ToUInt32(buffer, 0) == 0x424a5342;
-            return false;
-        }
-        return resourceOffset &gt;= 0 &amp;&amp; ReadAt(stream, resourceOffset, buffer, 16, stats);
+        return $true
     }
-
-    private static bool CacheDirectory(string normal)
-    {{
-        foreach (string relative in WindowsCacheNames)
-            if (normal.Equals(Path.Combine(WindowsDirectory, relative), StringComparison.OrdinalIgnoreCase)) return true;
-        foreach (string basePath in ProgramFilesRoots)
-            foreach (string product in BigFixServerProducts)
-                if (basePath.Length != 0 &amp;&amp; normal.Equals(Path.Combine(basePath, @"BigFix Enterprise\" + product + @"\wwwrootbes\bfmirror\downloads\sha1"), StringComparison.OrdinalIgnoreCase)) return true;
-        string relativeProfile = ProfileRelativePath(normal);
-        if (relativeProfile.Equals(@"AppData\Local\CrashDumps", StringComparison.OrdinalIgnoreCase)) return true;
-        foreach (string browser in BrowserCachePrefixes)
-        {{
-            if (!relativeProfile.StartsWith(browser, StringComparison.OrdinalIgnoreCase)) continue;
-            string[] parts = relativeProfile.Substring(browser.Length).Split('\\');
-            if (parts.Length == 2 &amp;&amp; (parts[1].Equals("Cache", StringComparison.OrdinalIgnoreCase) || parts[1].Equals("Code Cache", StringComparison.OrdinalIgnoreCase) || parts[1].Equals("GPUCache", StringComparison.OrdinalIgnoreCase))) return true;
-            if (parts.Length == 2 &amp;&amp; parts[0].Equals("Crashpad", StringComparison.OrdinalIgnoreCase) &amp;&amp; parts[1].Equals("reports", StringComparison.OrdinalIgnoreCase)) return true;
-        }
-        const string firefox = @"AppData\Local\Mozilla\Firefox\Profiles\";
-        if (relativeProfile.StartsWith(firefox, StringComparison.OrdinalIgnoreCase))
-        {{
-            string[] parts = relativeProfile.Substring(firefox.Length).Split('\\');
-            if (parts.Length == 2 &amp;&amp; parts[1].Equals("cache2", StringComparison.OrdinalIgnoreCase)) return true;
-        }
-        return false;
+    finally {{
+        $stream.Dispose()
     }
-
-    private static bool DefaultScopeDirectory(string normal)
-    {{
-        normal = Normal(normal).TrimEnd('\\');
-        string volume = Path.GetPathRoot(normal);
-        if (DefaultRelativeDirectories.Contains(normal.Substring(volume.Length))) return true;
-        if (normal.Equals(WindowsDirectory, StringComparison.OrdinalIgnoreCase)) return true;
-        foreach (string basePath in ProgramFilesRoots)
-            if (basePath.Length != 0 &amp;&amp; normal.Equals(Path.Combine(basePath, "WindowsApps"), StringComparison.OrdinalIgnoreCase)) return true;
-        if (CacheDirectory(normal)) return true;
-        // Only immediate personal media folders: never all Users, AppData,
-        // Documents, Downloads, Scoop apps or Herd's PHP binaries.
-        string relativeProfile = ProfileRelativePath(normal);
-        string profiles = Path.Combine(volume, "Users") + "\\";
-        if (relativeProfile.Length == 0 &amp;&amp; normal.StartsWith(profiles, StringComparison.OrdinalIgnoreCase))
-        {{
-            string remainder = normal.Substring(profiles.Length);
-            int separator = remainder.IndexOf('\\');
-            if (separator &gt;= 0) relativeProfile = remainder.Substring(separator + 1);
-        }
-        foreach (string media in PersonalMediaNames)
-            if (relativeProfile.Equals(media, StringComparison.OrdinalIgnoreCase)) return true;
-        return relativeProfile.Equals(@"scoop\cache", StringComparison.OrdinalIgnoreCase);
+}
+function Write-PhpCandidates {{
+    param([string[]]$Roots, [string]$ExcludedOutput, [string]$ListPath, [long]$MaxFiles, [long]$MaxFileBytes, [long]$MaxCandidateBytes, [int]$MaxSeconds, [bool]$GentleDisk, [bool]$IncludeBuildText, [bool]$IncludeBroaderLocations, [bool]$IncludeNonstandardNames, $CustomExclusions)
+    $stats = [ordered]@{{}
+    foreach ($key in @('Files', 'Directories', 'Candidates', 'CandidateBytes', 'PrefilterBytes', 'HeaderFiltered', 'SizeSkipped', 'LinksSkipped', 'CloudSkipped', 'Errors', 'VanishedSkipped', 'ExpectedSkipped', 'StructuralSkipped', 'StructuralBytes', 'ExcludedDirectories', 'DataFilesSkipped', 'NameSkipped', 'CustomExcludedTrees', 'CustomDirectDirectories', 'CustomExcludedFiles')) {{
+        $stats[$key] = 0L
     }
-
-    private static bool DefaultScopeFile(string path)
-    {{
-        return DataExtensions.Contains(Path.GetExtension(path));
-    }
-
-    private static bool PossiblePhp(FileStream stream, byte[] buffer, PhpFilterStats stats, bool includeBuildText)
-    {{
-        int count = stream.Read(buffer, 0, 4);
-        stats.PrefilterBytes += count;
-        if (IsExecutable(buffer, count))
-        {{
-            if (KnownNonRuntime(stream, buffer, stats)) {{ stats.StructuralSkipped++; return false; }
-            return true;
+    $stats.Seconds = 0.0; $stats.BudgetReason = ''; $stats.BackgroundMode = $false; $stats.SearchPacing = $GentleDisk
+    $stats.ErrorSamples = New-Object 'Collections.Generic.List[string]'; $stats.SizeSkippedSamples = New-Object 'Collections.Generic.List[string]'
+    $watch = [Diagnostics.Stopwatch]::StartNew(); $encoding = [Text.UTF8Encoding]::new($false, $true); $buffer = New-Object byte[] 65536
+    $seen = New-Object 'Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+    $skip = New-Object 'Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+    $privateRoot = (ConvertTo-PhpNormalPath ([IO.Path]::GetFullPath($ExcludedOutput))).TrimEnd('\'); [void]$skip.Add($privateRoot)
+    for ($ancestor = $privateRoot; $ancestor; $ancestor = [IO.Path]::GetDirectoryName($ancestor)) {{
+        if ([IO.Path]::GetFileName($ancestor) -ieq 'YARA_PHP') {{
+            [void]$skip.Add($ancestor); [void]$skip.Add((Join-Path ([IO.Path]::GetDirectoryName($ancestor)) '__BESData')); break
         }
-        // Runtime-only mode needs just the header; avoid reading/decoding small text files.
-        if (!includeBuildText || stream.Length &gt;= 65536) return false;
-        int read;
-        while (count &lt; 65536 &amp;&amp; (read = stream.Read(buffer, count, 65536 - count)) &gt; 0)
-        {{
-            count += read;
-            stats.PrefilterBytes += read;
-        }
-        string text = Encoding.ASCII.GetString(buffer, 0, count);
-        return (Contains(text, "version=\"") &amp;&amp; Contains(text, "php_cli_binary=") &amp;&amp; Contains(text, "--php-binary")) ||
-               (Contains(text, "#define PHP_VERSION \"") &amp;&amp; Contains(text, "#define PHP_MAJOR_VERSION"));
     }
-
-    public static PhpFilterStats WriteCandidates(string[] roots, string excludedOutput,
-        string listPath, long maxFiles, long maxFileBytes, long maxCandidateBytes, int maxSeconds, bool gentleDisk = false,
-        bool includeBuildText = false, bool includeBroaderLocations = false, bool includeNonstandardNames = false,
-        PhpDirectoryExclusions customExclusions = null)
-    {{
-        var stats = new PhpFilterStats();
-        // Current-process background mode lowers CPU, disk-I/O and memory
-        // scheduling priorities; it changes no persistent host policy.
-        if (!gentleDisk) SetPriorityClass(Process.GetCurrentProcess().Handle, 0x00200000);
-        stats.BackgroundMode = gentleDisk &amp;&amp; SetPriorityClass(Process.GetCurrentProcess().Handle, 0x00100000);
-        var watch = Stopwatch.StartNew();
-        var seen = new HashSet&lt;string&gt;(StringComparer.OrdinalIgnoreCase);
-        var skip = new HashSet&lt;string&gt;(StringComparer.OrdinalIgnoreCase);
-        string privateRoot = Normal(Path.GetFullPath(excludedOutput)).TrimEnd('\\');
-        skip.Add(privateRoot);
-        if (Path.GetFileName(privateRoot).Equals("YARA_PHP", StringComparison.OrdinalIgnoreCase))
-            skip.Add(Path.Combine(Path.GetDirectoryName(privateRoot), "__BESData"));
-        var buffer = new byte[65536];
-        var encoding = new UTF8Encoding(false, true);
-        using (var writer = new StreamWriter(listPath, false, encoding))
-        {{
-            Action&lt;FileInfo&gt; consider = file =&gt;
-            {{
-                if (stats.BudgetReason.Length != 0) return;
-                if (watch.Elapsed.TotalSeconds &gt;= maxSeconds || stats.Files &gt;= maxFiles)
-                {{
-                    stats.BudgetReason = watch.Elapsed.TotalSeconds &gt;= maxSeconds ? "search_time_limit" : "file_limit";
-                    return;
+    $ordered = New-Object 'Collections.Generic.List[string]'; $volumes = New-Object 'Collections.Generic.List[string]'
+    $explicit = New-Object 'Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+    foreach ($supplied in $Roots) {{
+        $full = (ConvertTo-PhpNormalPath (ConvertTo-PhpExtendedPath $supplied)).TrimEnd('\'); if ($full -ieq [IO.Path]::GetPathRoot($full).TrimEnd('\')) {{
+            $volumes.Add($full + '\')
+        }
+        else {{
+            [void]$explicit.Add($full)
+        }
+    }
+    foreach ($likely in @('PHP', 'xampp', 'wamp64', 'wamp', 'inetpub', 'www', 'web', 'websites', 'Apache24', 'Apps', 'Applications', 'ProgramData\chocolatey', 'Program Files', 'Program Files (x86)', 'Users', 'Tools', 'Portable', 'Code', 'Dev', 'ProgramData')) {{
+        foreach ($volume in $volumes) {{
+            $path = Join-Path $volume $likely; if ([IO.Directory]::Exists($path)) {{
+                $ordered.Add($path)
+            }
+        }
+    }
+    $ordered.AddRange($Roots)
+    $deferred = New-Object 'Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+    foreach ($volume in $volumes) {{
+        foreach ($relative in @('Program Files\WindowsApps', 'Program Files (x86)\WindowsApps', 'Windows')) {{
+            $path = Join-Path $volume $relative; if ([IO.Directory]::Exists($path) -and $deferred.Add($path)) {{
+                $ordered.Add($path)
+            }
+        }
+    }
+    $writer = [IO.StreamWriter]::new($ListPath, $false, $encoding); $listBytes = 0L; $nextOwnerCheck = 0.0
+    try {{
+        foreach ($supplied in $ordered) {{
+            if ($stats.BudgetReason) {{
+                break
+            }
+            $root = ConvertTo-PhpExtendedPath $supplied; $rootNormal = (ConvertTo-PhpNormalPath $root).TrimEnd('\')
+            $stack = New-Object 'Collections.Generic.Stack[string]'; $stack.Push($root)
+            while ($stack.Count -and -not $stats.BudgetReason) {{
+                if ($MaxSeconds -gt 0 -and $watch.Elapsed.TotalSeconds -ge $MaxSeconds) {{
+                    $stats.BudgetReason = 'search_time_limit'; break
                 }
-                stats.Files++;
-                try
-                {{
-                    bool buildName = file.Name.Equals("php-config", StringComparison.OrdinalIgnoreCase) || file.Name.Equals("php_version.h", StringComparison.OrdinalIgnoreCase);
-                    if (!includeNonstandardNames &amp;&amp; !StandardRuntimeName(file.Name) &amp;&amp; !(includeBuildText &amp;&amp; buildName)) {{ stats.NameSkipped++; return; }
-                    if (!includeBuildText &amp;&amp; buildName) {{ stats.NameSkipped++; return; }
-                    // Name-only rejection avoids file attributes and header I/O.
-                    if (!(includeBuildText &amp;&amp; buildName) &amp;&amp; NonRuntimeExtensions.Contains(Path.GetExtension(file.Name))) {{ stats.DataFilesSkipped++; return; }
-                    int attributes = (int)file.Attributes;
-                    if ((attributes &amp; CloudMask) != 0) {{ stats.CloudSkipped++; return; }
-                    // File symlinks can target remote paths. Treat all file reparse
-                    // points as outside scope, including deduplicated-file tags.
-                    if ((attributes &amp; (int)FileAttributes.ReparsePoint) != 0) {{ stats.LinksSkipped++; return; }
-                    if (!includeBroaderLocations &amp;&amp; DefaultScopeFile(file.FullName)) {{ stats.DataFilesSkipped++; return; }
-                    if (ExpectedSystemFile(file.FullName)) {{ stats.ExpectedSkipped++; return; }
-                    using (var stream = new FileStream(file.FullName, FileMode.Open, FileAccess.Read,
-                        FileShare.ReadWrite | FileShare.Delete, 1, FileOptions.None))
-                    {{
-                        if (!PossiblePhp(stream, buffer, stats, includeBuildText)) {{ stats.HeaderFiltered++; return; }
-                        // Only a plausible runtime candidate skipped by size
-                        // makes coverage incomplete. Header/structure reads are bounded.
-                        if (stream.Length &gt;= maxFileBytes)
-                        {{
-                            stats.SizeSkipped++;
-                            if (stats.SizeSkippedSamples.Count &lt; 20)
-                            {{
-                                string sample = Normal(file.FullName).Replace("\r", "\\r").Replace("\n", "\\n").Replace("\t", "\\t");
-                                if (sample.Length &gt; 800)
-                                {{
-                                    int length = char.IsHighSurrogate(sample[799]) ? 799 : 800;
-                                    sample = sample.Substring(0, length) + "...[path truncated]";
+                if ($watch.Elapsed.TotalSeconds -ge $nextOwnerCheck) {{
+                    if (Get-Command Assert-PhpSupervisor -ErrorAction SilentlyContinue) {{
+                        Assert-PhpSupervisor
+                    }; $nextOwnerCheck = $watch.Elapsed.TotalSeconds + 1
+                }
+                $directory = $stack.Pop(); $normal = (ConvertTo-PhpNormalPath $directory).TrimEnd('\')
+                $isFile = [IO.File]::Exists($directory)
+                if (-not $isFile -and $deferred.Contains($normal) -and $normal -ine $rootNormal) {{
+                    continue
+                }
+                if (-not $seen.Add($normal)) {{
+                    continue
+                }
+                $parentNormal = if ($isFile) {{
+                    [IO.Path]::GetDirectoryName($normal)
+                }
+                else {{
+                    $normal
+                }
+                $customMode = Get-PhpExclusionMode $parentNormal $CustomExclusions
+                if ($customMode -eq 2) {{
+                    $stats.CustomExcludedTrees++; continue
+                }
+                if (Test-PhpPermanentDirectory $parentNormal) {{
+                    $stats.ExcludedDirectories++; continue
+                }
+                if ($isFile -and $customMode -ne 0) {{
+                    $stats.CustomExcludedFiles++; continue
+                }
+                if (-not $isFile -and ($skip.Contains($normal) -or (-not $IncludeBroaderLocations -and -not $explicit.Contains($normal) -and (Test-PhpDefaultDirectory $normal)))) {{
+                    $stats.ExcludedDirectories++; continue
+                }
+                if ($customMode -eq 1) {{
+                    $stats.CustomDirectDirectories++
+                }
+                try {{
+                    if ($isFile) {{
+                        $entries = @([IO.FileInfo]::new($directory)).GetEnumerator()
+                    }
+                    else {{
+                        $stats.Directories++; if ($MaxFiles -gt 0 -and $stats.Directories -gt $MaxFiles) {{
+                            $stats.BudgetReason = 'directory_budget'; break
+                        }
+                        $current = [IO.DirectoryInfo]::new($directory); $attr = [int]$current.Attributes
+                        if (($attr -band 0x441000) -ne 0) {{
+                            $stats.CloudSkipped++; continue
+                        }
+                        if (($attr -band 0x400) -ne 0) {{
+                            $stats.LinksSkipped++; continue
+                        }
+                        $entries = $current.EnumerateFileSystemInfos().GetEnumerator()
+                    }
+                    try {{
+                        while ($entries.MoveNext()) {{
+                            $entry = $entries.Current
+                            if ($stats.BudgetReason) {{
+                                break
+                            }
+                            if ($MaxSeconds -gt 0 -and $watch.Elapsed.TotalSeconds -ge $MaxSeconds) {{
+                                $stats.BudgetReason = 'search_time_limit'; break
+                            }
+                            if ($watch.Elapsed.TotalSeconds -ge $nextOwnerCheck) {{
+                                if (Get-Command Assert-PhpSupervisor -ErrorAction SilentlyContinue) {{
+                                    Assert-PhpSupervisor
+                                }; $nextOwnerCheck = $watch.Elapsed.TotalSeconds + 1
+                            }
+                            $attr = [int]$entry.Attributes
+                            if (($attr -band 16) -ne 0) {{
+                                if (($attr -band 0x400) -ne 0) {{
+                                    $stats.LinksSkipped++
                                 }
-                                stats.SizeSkippedSamples.Add(sample + " | " + stream.Length + " bytes | possible runtime; size limit");
+                                elseif (($attr -band 0x441000) -ne 0) {{
+                                    $stats.CloudSkipped++
+                                }
+                                elseif ($MaxFiles -gt 0 -and $stack.Count -ge $MaxFiles) {{
+                                    $stats.BudgetReason = 'directory_budget'; break
+                                }
+                                else {{
+                                    $stack.Push($entry.FullName)
+                                }
+                                continue
                             }
-                            return;
-                        }
-                        if (stats.CandidateBytes + stream.Length &gt; maxCandidateBytes)
-                        {{
-                            stats.BudgetReason = "candidate_byte_budget";
-                            return;
-                        }
-                        if (file.FullName.IndexOfAny(new[] {{'\r', '\n'}) &gt;= 0) {{ RecordError(stats, "path", file.FullName, new ArgumentException()); return; }
-                        // Test strict UTF-8 encoding before publishing a scan-list row.
-                        encoding.GetByteCount(file.FullName);
-                        writer.WriteLine(file.FullName);
-                        stats.Candidates++;
-                        stats.CandidateBytes += stream.Length;
-                    }
-                }
-                catch (IOException error) {{ RecordError(stats, "read", file.FullName, error); }
-                catch (UnauthorizedAccessException error) {{ RecordError(stats, "read", file.FullName, error); }
-                catch (System.Security.SecurityException error) {{ RecordError(stats, "read", file.FullName, error); }
-                catch (EncoderFallbackException error) {{ RecordError(stats, "encode_path", file.FullName, error); }
-            };
-
-            // Cover likely app/bundle locations across EVERY fixed drive before
-            // a large OS tree can consume the shared search budget. The global
-            // seen-directory set prevents a second pass through these locations.
-            var orderedRoots = new List&lt;string&gt;();
-            var volumeRoots = new List&lt;string&gt;();
-            var explicitRoots = new HashSet&lt;string&gt;(StringComparer.OrdinalIgnoreCase);
-            foreach (string suppliedRoot in roots)
-            {{
-                string full = Normal(Extended(suppliedRoot)).TrimEnd('\\');
-                string volumeRoot = Path.GetPathRoot(full).TrimEnd('\\');
-                if (!full.Equals(volumeRoot, StringComparison.OrdinalIgnoreCase)) {{ explicitRoots.Add(full); continue; }
-                volumeRoots.Add(full + "\\");
-            }
-            foreach (string likely in new[] {{ "PHP", "xampp", "wamp64", "wamp", "inetpub", "www", "web", "websites", "Apache24", "Apps", "Applications", @"ProgramData\chocolatey", "Program Files", "Program Files (x86)", "Users", "Tools", "Portable", "Code", "Dev", "ProgramData" })
-            {{
-                foreach (string volume in volumeRoots)
-                {{
-                    string candidate = Path.Combine(volume, likely);
-                    if (Directory.Exists(candidate)) orderedRoots.Add(candidate);
-                }
-            }
-            orderedRoots.AddRange(roots);
-            var deferred = new HashSet&lt;string&gt;(StringComparer.OrdinalIgnoreCase);
-            foreach (string volume in volumeRoots)
-                foreach (string relative in new[] {{ @"Program Files\WindowsApps", @"Program Files (x86)\WindowsApps", "Windows" })
-                {{
-                    string path = Path.Combine(volume, relative).TrimEnd('\\');
-                    if (Directory.Exists(path) &amp;&amp; deferred.Add(path)) orderedRoots.Add(path);
-                }
-            foreach (string suppliedRoot in orderedRoots)
-            {{
-                if (stats.BudgetReason.Length != 0) break;
-                string root = Extended(suppliedRoot);
-                string volume = Path.GetPathRoot(Normal(root));
-                if (File.Exists(root))
-                {{
-                    int rootMode = customExclusions == null ? 0 : customExclusions.Mode(Path.GetDirectoryName(root));
-                    if (rootMode == 0) consider(new FileInfo(root)); else stats.CustomExcludedFiles++;
-                    continue;
-                }
-                if (!Directory.Exists(root)) {{ RecordError(stats, "root", root, new DirectoryNotFoundException()); continue; }
-                var stack = new Stack&lt;string&gt;();
-                stack.Push(root);
-                while (stack.Count &gt; 0 &amp;&amp; stats.BudgetReason.Length == 0)
-                {{
-                    if (watch.Elapsed.TotalSeconds &gt;= maxSeconds) {{ stats.BudgetReason = "search_time_limit"; break; }
-                    string directory = stack.Pop();
-                    string normalized = Normal(directory).TrimEnd('\\');
-                    if (deferred.Contains(normalized) &amp;&amp; !normalized.Equals(Normal(root).TrimEnd('\\'), StringComparison.OrdinalIgnoreCase)) continue;
-                    if (!seen.Add(normalized)) continue;
-                    int customMode = customExclusions == null ? 0 : customExclusions.Mode(normalized);
-                    if (customMode == 2) {{ stats.CustomExcludedTrees++; continue; }
-                    if (customMode == 1) stats.CustomDirectDirectories++;
-                    // Explicit non-volume roots can intentionally point inside a
-                    // default exclusion. Fixed-drive discovery still prunes it.
-                    bool explicitRoot = explicitRoots.Contains(normalized);
-                    if (skip.Contains(normalized) || (!includeBroaderLocations &amp;&amp; !explicitRoot &amp;&amp; DefaultScopeDirectory(normalized)))
-                    {{ stats.ExcludedDirectories++; continue; }
-                    stats.Directories++;
-                    if (stats.Directories &gt; maxFiles) {{ stats.BudgetReason = "directory_budget"; break; }
-                    try
-                    {{
-                        var current = new DirectoryInfo(directory);
-                        if (((int)current.Attributes &amp; CloudMask) != 0) {{ stats.CloudSkipped++; continue; }
-                        if ((current.Attributes &amp; FileAttributes.ReparsePoint) != 0) {{ stats.LinksSkipped++; continue; }
-                        foreach (FileSystemInfo entry in current.EnumerateFileSystemInfos())
-                        {{
-                            if (stats.BudgetReason.Length != 0) break;
-                            if (watch.Elapsed.TotalSeconds &gt;= maxSeconds) {{ stats.BudgetReason = "search_time_limit"; break; }
-                            if ((entry.Attributes &amp; FileAttributes.Directory) != 0)
-                            {{
-                                if ((entry.Attributes &amp; FileAttributes.ReparsePoint) != 0) stats.LinksSkipped++;
-                                else if (((int)entry.Attributes &amp; CloudMask) != 0) stats.CloudSkipped++;
-                                else if (stack.Count &gt;= maxFiles) {{ stats.BudgetReason = "directory_budget"; break; }
-                                else stack.Push(entry.FullName);
+                            if ($customMode -eq 1) {{
+                                $stats.CustomExcludedFiles++; continue
                             }
-                            else if (customMode == 1) stats.CustomExcludedFiles++;
-                            else consider((FileInfo)entry);
+                            if ($MaxFiles -gt 0 -and $stats.Files -ge $MaxFiles) {{
+                                $stats.BudgetReason = 'file_limit'; break
+                            }
+                            $stats.Files++
+                            try {{
+                                $build = $entry.Name -ieq 'php-config' -or $entry.Name -ieq 'php_version.h'
+                                $standard = ($script:PhpRuntimeName.IsMatch($entry.Name) -and ($entry.Extension -eq '' -or $entry.Extension -iin @('.exe', '.dll', '.so') -or $entry.Extension -imatch '^\.[0-9][a-z0-9_-]*$')) -or $entry.Name -imatch '^php[0-9]+(?:ts|nts)?phpdbg\.dll$'
+                                if ((-not $IncludeNonstandardNames -and -not $standard -and -not ($IncludeBuildText -and $build)) -or (-not $IncludeBuildText -and $build)) {{
+                                    $stats.NameSkipped++; continue
+                                }
+                                if (-not ($IncludeBuildText -and $build) -and $script:PhpNonRuntimeExtensions.Contains($entry.Extension)) {{
+                                    $stats.DataFilesSkipped++; continue
+                                }
+                                if (($attr -band 0x441000) -ne 0) {{
+                                    $stats.CloudSkipped++; continue
+                                }
+                                if (($attr -band 0x400) -ne 0) {{
+                                    $stats.LinksSkipped++; continue
+                                }
+                                if (-not $IncludeBroaderLocations -and $script:PhpDataExtensions.Contains($entry.Extension)) {{
+                                    $stats.DataFilesSkipped++; continue
+                                }
+                                if ($script:PhpSystemFileNames.Contains($entry.Name) -and (Test-PhpExpectedSystemFile $entry.FullName)) {{
+                                    $stats.ExpectedSkipped++; continue
+                                }
+                                $length = $entry.Length
+                                if ($length -eq 0) {{
+                                    $stats.HeaderFiltered++; continue
+                                }
+                                if ($length -ge $MaxFileBytes) {{
+                                    if (Test-PhpOversizedCandidate $entry.FullName $stats $buffer) {{
+                                        $stats.SizeSkipped++; if ($stats.SizeSkippedSamples.Count -lt 20) {{
+                                            $sample = (ConvertTo-PhpNormalPath $entry.FullName).Replace("`r", '\r').Replace("`n", '\n').Replace("`t", '\t'); if ($sample.Length -gt 800) {{
+                                                $sample = $sample.Substring(0, 799) + '...[path truncated]'
+                                            }; $stats.SizeSkippedSamples.Add($sample + ' | ' + $length + ' bytes | possible runtime; size limit')
+                                        }
+                                    }
+                                    else {{
+                                        $stats.HeaderFiltered++
+                                    }
+                                    continue
+                                }
+                                if ($MaxCandidateBytes -gt 0 -and $stats.CandidateBytes + $length -gt $MaxCandidateBytes) {{
+                                    $stats.BudgetReason = 'candidate_byte_budget'; break
+                                }
+                                if ($entry.FullName -match '[\r\n]') {{
+                                    throw [ArgumentException]::new('Line break in path')
+                                }
+                                $rowBytes = $encoding.GetByteCount($entry.FullName) + 2
+                                if ($listBytes + $rowBytes -gt 134217728) {{
+                                    $stats.BudgetReason = 'candidate_list_limit'; break
+                                }
+                                $writer.WriteLine($entry.FullName); $listBytes += $rowBytes; $stats.Candidates++; $stats.CandidateBytes += $length
+                                if ($GentleDisk -and $stats.Candidates % 128 -eq 0) {{
+                                    Start-Sleep -Milliseconds 10
+                                }
+                            }
+                            catch {{
+                                Add-PhpDiscoveryError $stats 'read' $entry.FullName $_.Exception
+                            }
                         }
                     }
-                    catch (IOException error) {{ RecordError(stats, "list", directory, error); }
-                    catch (UnauthorizedAccessException error) {{ RecordError(stats, "list", directory, error); }
-                    catch (System.Security.SecurityException error) {{ RecordError(stats, "list", directory, error); }
+                    finally {{
+                        if ($entries -is [IDisposable]) {{
+                            $entries.Dispose()
+                        }
+                    }
+                }
+                catch {{
+                    Add-PhpDiscoveryError $stats $(if ($normal -eq $rootNormal) {{
+                            'root'
+                        }
+                        else {{
+                            'list'
+                        }) $directory $_.Exception
                 }
             }
         }
-        stats.Seconds = watch.Elapsed.TotalSeconds;
-        return stats;
     }
+    finally {{
+        $writer.Dispose()
+    }
+    $stats.Seconds = $watch.Elapsed.TotalSeconds
+    return [pscustomobject]$stats
 }
-END_PHP_YARA_c9e87f8e00d7edc6
-delete "{parameter "work"}/PhpCandidateFilter.cs"
-move __createfile "{parameter "work"}/PhpCandidateFilter.cs"
+END_PHP_HYBRID_3b73039afd515d7e
+delete "{parameter "work"}/candidate-files.ps1"
+move __createfile "{parameter "work"}/candidate-files.ps1"
 delete __createfile
-createfile until END_BACKGROUND_ea80d237385717f0
+createfile until END_PHP_HYBRID_2644d41dea0fd981
 #Requires -Version 5.1
 # Launch mode copies verified input out of __Download and waits only for admission.
-# Supervisor mode owns its worker job, heartbeat, deadline and temporary cleanup.
+# Supervisor mode owns its worker process, heartbeat, deadline and temporary cleanup.
 [CmdletBinding()]
 param(
     [string]$ConfigFile,
     [string]$Engine, [string]$EngineSha256, [string]$Rules, [string]$OutputDirectory,
     [string]$Archive, [string]$ArchiveSha256, [string[]]$Roots,
-    [long]$MaxFiles=5000000, [long]$MaxFileMB=512, [long]$CandidateGB=30,
-    [int]$EnumerationSeconds=600, [int]$ScanSeconds=600, [int]$CpuLimit=10,
-    [int]$GentleDisk=0, [int]$IncludeBuildText=0, [int]$IncludeBroaderLocations=0,
-    [int]$IncludeNonstandardNames=0, [string]$ExcludeDirectoriesHex='x'
+    [long]$MaxFiles = 0, [long]$MaxFileMB = 512, [long]$CandidateGB = 0,
+    [int]$EnumerationSeconds = 0, [int]$ScanSeconds = 0, [int]$CpuLimit = 0, [int]$YaraThreads = 2,
+    [int]$GentleDisk = 0, [int]$IncludeBuildText = 0, [int]$IncludeBroaderLocations = 0,
+    [int]$IncludeNonstandardNames = 1, [string]$ExcludeDirectoriesHex = 'x'
 )
 Set-StrictMode -Version Latest
-$ErrorActionPreference='Stop'
-$utf8=New-Object Text.UTF8Encoding($false)
+$ErrorActionPreference = 'Stop'
+$utf8 = New-Object Text.UTF8Encoding($false)
 function Assert-SafePath([string]$Path) {{
-    $current=[IO.Path]::GetFullPath($Path)
-    while($current) {{
-        if([IO.File]::Exists($current) -or [IO.Directory]::Exists($current)) {{
-            if(([IO.File]::GetAttributes($current) -band [IO.FileAttributes]::ReparsePoint) -ne 0) {{ throw 'Reparse path rejected' }
+    $current = [IO.Path]::GetFullPath($Path)
+    while ($current) {{
+        if ([IO.File]::Exists($current) -or [IO.Directory]::Exists($current)) {{
+            if (([IO.File]::GetAttributes($current) -band [IO.FileAttributes]::ReparsePoint) -ne 0) {{
+                throw 'Reparse path rejected'
+            }
         }
-        $current=[IO.Path]::GetDirectoryName($current)
+        $current = [IO.Path]::GetDirectoryName($current)
     }
 }
-function Write-Atomic([string]$Path,[string]$Text) {{
-    for($attempt=0;$attempt -lt 20;$attempt++) {{
-        Assert-SafePath $Path; Assert-SafePath ($Path+'.new')
+function Write-Atomic([string]$Path, [string]$Text) {{
+    for ($attempt = 0; $attempt -lt 20; $attempt++) {{
+        Assert-SafePath $Path; Assert-SafePath ($Path + '.new')
         try {{
-            [IO.File]::WriteAllText($Path+'.new',$Text,$utf8)
-            if([IO.File]::Exists($Path)) {{ [IO.File]::Replace($Path+'.new',$Path,[NullString]::Value) }
-            else {{ [IO.File]::Move($Path+'.new',$Path) }
+            [IO.File]::WriteAllText($Path + '.new', $Text, $utf8)
+            if ([IO.File]::Exists($Path)) {{
+                [IO.File]::Replace($Path + '.new', $Path, [NullString]::Value)
+            }
+            else {{
+                [IO.File]::Move($Path + '.new', $Path)
+            }
             return
         }
-        catch [IO.IOException] {{ if($attempt -eq 19) {{ throw }; Start-Sleep -Milliseconds 100 }
+        catch [IO.IOException] {{
+            if ($attempt -eq 19) {{
+                throw
+            }; Start-Sleep -Milliseconds 100
+        }
     }
 }
 function New-Child([string[]]$Arguments) {{
-    foreach($argument in $Arguments) {{ if($argument.Contains('"') -or $argument.EndsWith('\')) {{ throw 'Unsupported argument quoting' } }
-    $info=New-Object Diagnostics.ProcessStartInfo
-    $info.FileName=Join-Path $PSHOME 'powershell.exe'
-    $info.Arguments=($Arguments | ForEach-Object {{ '"'+$_+'"' }) -join ' '
-    $info.UseShellExecute=$false; $info.CreateNoWindow=$true
+    foreach ($argument in $Arguments) {{
+        if ($argument.Contains('"') -or $argument.EndsWith('\')) {{
+            throw 'Unsupported argument quoting'
+        }
+    }
+    $info = New-Object Diagnostics.ProcessStartInfo
+    $info.FileName = Join-Path $PSHOME 'powershell.exe'
+    $info.Arguments = ($Arguments | ForEach-Object {{ '"' + $_ + '"' }) -join ' '
+    $info.UseShellExecute = $false; $info.CreateNoWindow = $true
     # Windows holds the current directory open: never make the disposable work
     # directory the supervisor's CWD, or its final recursive removal can fail.
-    $info.WorkingDirectory=[IO.Path]::GetDirectoryName($work)
-    $info.RedirectStandardOutput=$true; $info.RedirectStandardError=$true
-    $process=[Diagnostics.Process]::Start($info)
-    $null=$process.StandardOutput.BaseStream.CopyToAsync([IO.Stream]::Null)
-    $null=$process.StandardError.BaseStream.CopyToAsync([IO.Stream]::Null)
+    $info.WorkingDirectory = [IO.Path]::GetDirectoryName($work)
+    $info.RedirectStandardOutput = $true; $info.RedirectStandardError = $true
+    $process = [Diagnostics.Process]::Start($info)
+    $null = $process.StandardOutput.BaseStream.CopyToAsync([IO.Stream]::Null)
+    $null = $process.StandardError.BaseStream.CopyToAsync([IO.Stream]::Null)
     return $process
 }
-$work=[IO.Path]::GetFullPath($PSScriptRoot)
+$work = [IO.Path]::GetFullPath($PSScriptRoot)
 Assert-SafePath $work
-if(-not $ConfigFile) {{
-    $OutputDirectory=[IO.Path]::GetFullPath($OutputDirectory); Assert-SafePath $OutputDirectory
-    if([IO.Path]::GetDirectoryName($work) -ne $OutputDirectory -or [IO.Path]::GetFileName($work) -notmatch '^work-[0-9]+-[0-9]+-[0-9]+$') {{ throw 'Invalid attempt workspace' }
-    $configuration=@{{}
-    foreach($key in $PSBoundParameters.Keys) {{ $configuration[$key]=$PSBoundParameters[$key] }
-    if($Archive) {{
-        $staged=Join-Path $work 'engine.zip'; Assert-SafePath $staged
-        [IO.File]::Copy($Archive,$staged,$false)
-        if((Get-FileHash -LiteralPath $staged -Algorithm SHA256).Hash.ToLowerInvariant() -ne $ArchiveSha256) {{ throw 'Staged archive hash mismatch' }
-        $configuration.Archive=$staged
+. (Join-Path $work 'process-control.ps1')
+if (-not $ConfigFile) {{
+    $OutputDirectory = [IO.Path]::GetFullPath($OutputDirectory); Assert-SafePath $OutputDirectory
+    if ([IO.Path]::GetDirectoryName($work) -ne $OutputDirectory -or [IO.Path]::GetFileName($work) -notmatch '^work-[0-9]+-[0-9]+-[0-9]+$') {{
+        throw 'Invalid attempt workspace'
     }
-    $ConfigFile=Join-Path $work 'background-config.json'
-    Write-Atomic $ConfigFile (($configuration | ConvertTo-Json -Depth 4)+"`n")
-    $launchArguments=@('-NoProfile','-ExecutionPolicy','Bypass','-File',$PSCommandPath,'-ConfigFile',$ConfigFile)
-    foreach($value in $launchArguments) {{ if($value.Contains('"') -or $value.EndsWith('\')) {{ throw 'Unsupported launch argument' } }
-    $quotedArguments=($launchArguments | ForEach-Object {{ '"'+$_+'"' }) -join ' '
+    $configuration = @{{}
+    foreach ($key in $PSBoundParameters.Keys) {{
+        $configuration[$key] = $PSBoundParameters[$key]
+    }
+    if ($Archive) {{
+        $staged = Join-Path $work 'engine.zip'; Assert-SafePath $staged
+        [IO.File]::Copy($Archive, $staged, $false)
+        if ((Get-FileHash -LiteralPath $staged -Algorithm SHA256).Hash.ToLowerInvariant() -ne $ArchiveSha256) {{
+            throw 'Staged archive hash mismatch'
+        }
+        $configuration.Archive = $staged
+    }
+    $ConfigFile = Join-Path $work 'background-config.json'
+    Write-Atomic $ConfigFile (($configuration | ConvertTo-Json -Depth 4) + "`n")
+    $launchArguments = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $PSCommandPath, '-ConfigFile', $ConfigFile)
+    foreach ($value in $launchArguments) {{
+        if ($value.Contains('"') -or $value.EndsWith('\')) {{
+            throw 'Unsupported launch argument'
+        }
+    }
+    $quotedArguments = ($launchArguments | ForEach-Object {{ '"' + $_ + '"' }) -join ' '
     # A separate hidden window avoids inheriting BigFix's action output handles.
-    $supervisor=Start-Process -FilePath (Join-Path $PSHOME 'powershell.exe') -ArgumentList $quotedArguments -WorkingDirectory $OutputDirectory -WindowStyle Hidden -PassThru
-    $deadline=[DateTime]::UtcNow.AddSeconds(25)
-    $ready=Join-Path $work 'launch.ready'
-    while(-not [IO.File]::Exists($ready)) {{
-        if($supervisor.HasExited) {{ $code=$supervisor.ExitCode; $supervisor.Dispose(); [IO.Directory]::Delete($work,$true); if($code -eq 0) {{ exit 2 }; exit $code }
-        if([DateTime]::UtcNow -gt $deadline) {{ throw 'Background admission timed out; check scan-state.txt' }
+    $supervisor = Start-Process -FilePath (Join-Path $PSHOME 'powershell.exe') -ArgumentList $quotedArguments -WorkingDirectory $OutputDirectory -WindowStyle Hidden -PassThru
+    $deadline = [DateTime]::UtcNow.AddSeconds(25)
+    $ready = Join-Path $work 'launch.ready'
+    while (-not [IO.File]::Exists($ready)) {{
+        if ($supervisor.HasExited) {{
+            $code = $supervisor.ExitCode; $supervisor.Dispose(); Remove-PhpAttemptDirectory $work $OutputDirectory; if ($code -eq 0) {{
+                exit 2
+            }; exit $code
+        }
+        if ([DateTime]::UtcNow -gt $deadline) {{
+            throw 'Background admission timed out; check scan-state.txt'
+        }
         Start-Sleep -Milliseconds 100
     }
-    $admission=[IO.File]::ReadAllText($ready).Trim()
-    [IO.File]::WriteAllText((Join-Path $work 'launch.accepted'),"accepted`n",$utf8)
+    $admission = [IO.File]::ReadAllText($ready).Trim()
+    [IO.File]::WriteAllText((Join-Path $work 'launch.accepted'), "accepted`n", $utf8)
     # Do not synchronously dispose redirected streams while their asynchronous
     # drain is active. The short-lived launcher exits and closes its own handles.
-    if($admission -ne 'RUNNING') {{ exit 2 }
+    if ($admission -ne 'RUNNING') {{
+        exit 2
+    }
     exit 0
 }
 Assert-SafePath $ConfigFile
-if([IO.Path]::GetFullPath($ConfigFile) -ne (Join-Path $work 'background-config.json') -or (Get-Item -LiteralPath $ConfigFile).Length -gt 16384) {{ throw 'Invalid background configuration' }
-$settings=ConvertFrom-Json ([IO.File]::ReadAllText($ConfigFile,$utf8))
-$OutputDirectory=[IO.Path]::GetFullPath($settings.OutputDirectory)
+if ([IO.Path]::GetFullPath($ConfigFile) -ne (Join-Path $work 'background-config.json') -or (Get-Item -LiteralPath $ConfigFile).Length -gt 16384) {{
+    throw 'Invalid background configuration'
+}
+$settings = ConvertFrom-Json ([IO.File]::ReadAllText($ConfigFile, $utf8))
+$OutputDirectory = [IO.Path]::GetFullPath($settings.OutputDirectory)
 Assert-SafePath $OutputDirectory
-if([IO.Path]::GetDirectoryName($work) -ne $OutputDirectory -or [IO.Path]::GetFileName($work) -notmatch '^work-[0-9]+-[0-9]+-[0-9]+$') {{ throw 'Invalid attempt workspace' }
-$guardPath=Join-Path $OutputDirectory 'background.lock'; Assert-SafePath $guardPath
-$guard=$null
-try {{ $guard=[IO.File]::Open($guardPath,[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None) }
-catch [IO.IOException] {{ exit 75 }
-$child=$null; $job=$null; $admitted=$false; $finalState='FAILED'; $exitCode=2
-$started=[DateTime]::UtcNow.ToString('r'); $runId=[IO.Path]::GetFileName($work)
+if ([IO.Path]::GetDirectoryName($work) -ne $OutputDirectory -or [IO.Path]::GetFileName($work) -notmatch '^work-[0-9]+-[0-9]+-[0-9]+$') {{
+    throw 'Invalid attempt workspace'
+}
+$guardPath = Join-Path $OutputDirectory 'background.lock'; Assert-SafePath $guardPath
+$guard = $null
+try {{
+    $guard = [IO.File]::Open($guardPath, [IO.FileMode]::OpenOrCreate, [IO.FileAccess]::ReadWrite, [IO.FileShare]::None)
+}
+catch [IO.IOException] {{
+    exit 75
+}
+$child = $null; $attemptStart = [DateTime]::UtcNow; $admitted = $false; $finalState = 'FAILED'; $exitCode = 2
+$started = [DateTime]::UtcNow.ToString('r'); $runId = [IO.Path]::GetFileName($work)
 function Write-State([string]$State) {{
     Write-Atomic (Join-Path $OutputDirectory 'scan-state.txt') ("STATE_FORMAT=1`nRUN_ID=$runId`nSTATE=$State`nSTARTED=$started`nUPDATED=$([DateTime]::UtcNow.ToString('r'))`n")
 }
 try {{
-    Add-Type -Path (Join-Path $work 'background-job.cs')
-    $arguments=New-Object 'Collections.Generic.List[string]'
-    foreach($value in @('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $work 'scan-windows.ps1'))) {{ $arguments.Add($value) }
-    foreach($property in $settings.PSObject.Properties) {{
-        $arguments.Add('-'+$property.Name)
-        foreach($value in @($property.Value)) {{ $arguments.Add([string]$value) }
+    $arguments = New-Object 'Collections.Generic.List[string]'
+    foreach ($value in @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', (Join-Path $work 'scan-windows.ps1'))) {{
+        $arguments.Add($value)
     }
-    $env:PHP_BACKGROUND_RUN_ID=$runId
-    $child=New-Child $arguments.ToArray()
-    try {{ $job=New-Object PhpBackgroundJob($child) } catch {{ if(-not $child.HasExited) {{ $child.Kill() }; throw }
-    $admissionDeadline=[DateTime]::UtcNow.AddSeconds(20)
-    while(-not [IO.File]::Exists((Join-Path $work 'attempt.admitted'))) {{
-        if($child.HasExited) {{ throw "Worker admission failed (exit $($child.ExitCode))" }
-        if([DateTime]::UtcNow -gt $admissionDeadline) {{ throw 'Worker admission timed out' }
+    foreach ($property in $settings.PSObject.Properties) {{
+        $arguments.Add('-' + $property.Name)
+        foreach ($value in @($property.Value)) {{
+            $arguments.Add([string]$value)
+        }
+    }
+    $env:PHP_BACKGROUND_RUN_ID = $runId
+    $env:PHP_BACKGROUND_SUPERVISOR = [string]$PID + ':' + [Diagnostics.Process]::GetCurrentProcess().StartTime.ToUniversalTime().Ticks
+    $child = New-Child $arguments.ToArray()
+    $admissionDeadline = [DateTime]::UtcNow.AddSeconds(20)
+    while (-not [IO.File]::Exists((Join-Path $work 'attempt.admitted'))) {{
+        if ($child.HasExited) {{
+            throw "Worker admission failed (exit $($child.ExitCode))"
+        }
+        if ([DateTime]::UtcNow -gt $admissionDeadline) {{
+            throw 'Worker admission timed out'
+        }
         Start-Sleep -Milliseconds 100
     }
-    $admitted=$true; Write-State 'RUNNING'
-    [IO.File]::WriteAllText((Join-Path $work 'launch.ready'),"RUNNING`n",$utf8)
-    $search=if($settings.PSObject.Properties.Name -contains 'EnumerationSeconds') {{ [int]$settings.EnumerationSeconds } else {{600}
-    $scan=if($settings.PSObject.Properties.Name -contains 'ScanSeconds') {{ [int]$settings.ScanSeconds } else {{600}
-    $deadline=[DateTime]::UtcNow.AddSeconds($search+$scan+120); $heartbeat=[DateTime]::UtcNow
-    while(-not $child.WaitForExit(200)) {{
-        if([DateTime]::UtcNow -gt $deadline) {{ throw 'Background scan exceeded its total deadline' }
-        if([DateTime]::UtcNow -ge $heartbeat) {{ Write-State 'RUNNING'; $heartbeat=[DateTime]::UtcNow.AddSeconds(10) }
+    $admitted = $true; Write-State 'RUNNING'
+    [IO.File]::WriteAllText((Join-Path $work 'launch.ready'), "RUNNING`n", $utf8)
+    $search = if ($settings.PSObject.Properties.Name -contains 'EnumerationSeconds') {{
+        [int]$settings.EnumerationSeconds
     }
-    $exitCode=$child.ExitCode
-    $summaryPath=Join-Path $OutputDirectory 'summary.txt'; Assert-SafePath $summaryPath
-    $freshResults=[IO.File]::Exists($summaryPath) -and (Get-Item -LiteralPath $summaryPath).Length -le 131072 -and
-        ([IO.File]::ReadAllLines($summaryPath) -contains ('RUN_ID='+$runId))
-    if($freshResults -and $exitCode -eq 0) {{ $finalState='COMPLETED' } elseif($freshResults -and $exitCode -eq 10) {{ $finalState='PARTIAL' }
+    else {{
+        600
+    }
+    $scan = if ($settings.PSObject.Properties.Name -contains 'ScanSeconds') {{
+        [int]$settings.ScanSeconds
+    }
+    else {{
+        600
+    }
+    $deadline = [DateTime]::UtcNow.AddSeconds($search + $scan + 120); $heartbeat = [DateTime]::UtcNow
+    while (-not $child.WaitForExit(200)) {{
+        if ($search -gt 0 -and $scan -gt 0 -and [DateTime]::UtcNow -gt $deadline) {{
+            throw 'Background scan exceeded its total deadline'
+        }
+        if ([DateTime]::UtcNow -ge $heartbeat) {{
+            Write-State 'RUNNING'; $heartbeat = [DateTime]::UtcNow.AddSeconds(10)
+        }
+    }
+    $exitCode = $child.ExitCode
+    $summaryPath = Join-Path $OutputDirectory 'summary.txt'; Assert-SafePath $summaryPath
+    $freshResults = [IO.File]::Exists($summaryPath) -and (Get-Item -LiteralPath $summaryPath).Length -le 131072 -and
+    ([IO.File]::ReadAllLines($summaryPath) -contains ('RUN_ID=' + $runId))
+    if ($freshResults -and $exitCode -eq 0) {{
+        $finalState = 'COMPLETED'
+    }
+    elseif ($freshResults -and $exitCode -eq 10) {{
+        $finalState = 'PARTIAL'
+    }
 }
-catch {{ $exitCode=2 }
+catch {{
+    $exitCode = 2
+}
 finally {{
-    if($job) {{ $job.Dispose() }
-    if($child) {{
-        if(-not $child.HasExited -and -not $child.WaitForExit(5000)) {{ throw 'Worker did not stop; preserving its workspace' }
+    if ($child -and -not $child.HasExited) {{
+        $child.Kill()
+    }
+    Stop-PhpOwnedEngine $work $settings.Engine $attemptStart
+    if ($child) {{
+        if (-not $child.HasExited -and -not $child.WaitForExit(5000)) {{
+            throw 'Worker did not stop; preserving its workspace'
+        }
         $child.Dispose()
     }
-    if($admitted) {{ Write-State $finalState }
-    $deadline=[DateTime]::UtcNow.AddSeconds(25)
-    while([IO.File]::Exists((Join-Path $work 'launch.ready')) -and -not [IO.File]::Exists((Join-Path $work 'launch.accepted')) -and [DateTime]::UtcNow -lt $deadline) {{ Start-Sleep -Milliseconds 100 }
+    if ($admitted) {{
+        Write-State $finalState
+    }
+    $deadline = [DateTime]::UtcNow.AddSeconds(25)
+    while ([IO.File]::Exists((Join-Path $work 'launch.ready')) -and -not [IO.File]::Exists((Join-Path $work 'launch.accepted')) -and [DateTime]::UtcNow -lt $deadline) {{
+        Start-Sleep -Milliseconds 100
+    }
     # No persistent result or log is included: this is the exact current work-* only.
     Assert-SafePath $work
-    [IO.Directory]::Delete($work,$true)
+    Remove-PhpAttemptDirectory $work $OutputDirectory
     $guard.Dispose()
 }
 exit $exitCode
-END_BACKGROUND_ea80d237385717f0
+END_PHP_HYBRID_2644d41dea0fd981
 delete "{parameter "work"}/background-windows.ps1"
 move __createfile "{parameter "work"}/background-windows.ps1"
-continue if {sha256 of file "background-windows.ps1" of folder (parameter "work") = "ea80d237385717f0044c54388b0f99abd3d836ddacaeef1e4577b68e0f9abccf"}
+continue if {sha256 of file "background-windows.ps1" of folder (parameter "work") = "ad74f88549b29792976c869ebd718dcf70549e4b4b82d4558fa14602838d1582"}
 delete __createfile
-createfile until END_BACKGROUND_5d4ef2679f448d50
-using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-
-// Closing the supervisor's job terminates only its worker and descendants.
-// Handles are non-inheritable; a crashed supervisor cannot leave a YARA child.
-public sealed class PhpBackgroundJob : IDisposable
-{{
-    private IntPtr handle;
-    [StructLayout(LayoutKind.Sequential)] private struct BasicLimits {{
-        public long ProcessTime, JobTime; public uint Flags;
-        public UIntPtr MinWorkingSet, MaxWorkingSet;
-        public uint ActiveProcesses; public UIntPtr Affinity;
-        public uint PriorityClass, SchedulingClass;
+createfile until END_PHP_HYBRID_94fd1bd991a1c035
+#Requires -Version 5.1
+# Direct System.Diagnostics.Process supervision; no compiled helper or scheduled task.
+# The worker observes its owner's identity; the owner terminates only the engine
+# under this attempt's unique workspace, never processes selected by name alone.
+function Assert-PhpSupervisor {{
+    if (-not $env:PHP_BACKGROUND_SUPERVISOR) {{
+        return
     }
-    [StructLayout(LayoutKind.Sequential)] private struct IoCounters {{
-        public ulong ReadOperations, WriteOperations, OtherOperations;
-        public ulong ReadBytes, WriteBytes, OtherBytes;
+    $identity = $env:PHP_BACKGROUND_SUPERVISOR.Split(':')
+    if ($identity.Count -ne 2) {{
+        throw 'Invalid supervisor identity'
     }
-    [StructLayout(LayoutKind.Sequential)] private struct ExtendedLimits {{
-        public BasicLimits Basic; public IoCounters Io;
-        public UIntPtr ProcessMemory, JobMemory, PeakProcessMemory, PeakJobMemory;
-    }
-    [DllImport("kernel32.dll", CharSet=CharSet.Unicode, SetLastError=true)] private static extern IntPtr CreateJobObject(IntPtr attributes, string name);
-    [DllImport("kernel32.dll", SetLastError=true)] private static extern bool SetInformationJobObject(IntPtr job, int kind, ref ExtendedLimits value, uint size);
-    [DllImport("kernel32.dll", SetLastError=true)] private static extern bool AssignProcessToJobObject(IntPtr job, IntPtr process);
-    [DllImport("kernel32.dll")] private static extern bool CloseHandle(IntPtr value);
-    public PhpBackgroundJob(Process worker) {{
-        handle=CreateJobObject(IntPtr.Zero, null);
-        if(handle==IntPtr.Zero) throw new Win32Exception();
-        var limits=new ExtendedLimits(); limits.Basic.Flags=0x2000;
-        if(!SetInformationJobObject(handle,9,ref limits,(uint)Marshal.SizeOf(limits)) || !AssignProcessToJobObject(handle,worker.Handle)) {{
-            int error=Marshal.GetLastWin32Error(); Dispose(); throw new Win32Exception(error);
+    $owner = $null
+    try {{
+        $owner = [Diagnostics.Process]::GetProcessById([int]$identity[0])
+        if ($owner.StartTime.ToUniversalTime().Ticks -ne [long]$identity[1] -or $owner.HasExited) {{
+            throw 'Background supervisor stopped'
         }
     }
-    public void Dispose() {{ if(handle!=IntPtr.Zero) {{ CloseHandle(handle); handle=IntPtr.Zero; } }
+    catch {{
+        throw 'Background supervisor stopped; scan interrupted'
+    }
+    finally {{
+        if ($owner) {{
+            $owner.Dispose()
+        }
+    }
 }
-END_BACKGROUND_5d4ef2679f448d50
-delete "{parameter "work"}/background-job.cs"
-move __createfile "{parameter "work"}/background-job.cs"
-continue if {sha256 of file "background-job.cs" of folder (parameter "work") = "5d4ef2679f448d50002804696e3b0f107dce1c438bbd6ef12fdb7931ceed1874"}
-waithidden "{pathname of native system folder}/WindowsPowerShell/v1.0/powershell.exe" -NoProfile -ExecutionPolicy Bypass -File "{parameter "work"}/background-windows.ps1" -Engine "{parameter "work"}/yr.exe" -EngineSha256 e2e431175174158fc74c8709896c6d4a6667592bbb65a8132dea624ba125d76f -Rules "{parameter "work"}/php-detect.yar" -OutputDirectory "{parameter "output"}" -Archive "{pathname of download file "yara-x-v1.22.0-x86_64-pc-windows-msvc.zip"}" -ArchiveSha256 eac36a58699b94d3732a7fe1d8453fe89e0077bb18ac2c99b4c2ee102a431f2e -ExcludeDirectoriesHex "{parameter "PHPExcludeDirectoriesHex"}" -EnumerationSeconds {parameter "PHPEnumerationSeconds"} -ScanSeconds {parameter "PHPScanSeconds"} -MaxFiles {parameter "PHPMaxFiles"} -CandidateGB {parameter "PHPCandidateGB"} -MaxFileMB {parameter "PHPMaxFileMB"} -CpuLimit {parameter "PHPCpuLimit"} -GentleDisk {parameter "PHPGentleDisk"} -IncludeBuildText {parameter "PHPIncludeBuildText"} -IncludeBroaderLocations {parameter "PHPIncludeBroaderLocations"} -IncludeNonstandardNames {parameter "PHPIncludeNonstandardNames"}
+function Stop-PhpOwnedEngine([string]$WorkPath, [string]$EnginePath, [datetime]$NotBefore) {{
+    $root = [IO.Path]::GetFullPath($WorkPath).TrimEnd('\')
+    $expected = [IO.Path]::GetFullPath($EnginePath)
+    if (-not $expected.StartsWith($root + '\', [StringComparison]::OrdinalIgnoreCase) -or [IO.Path]::GetFileName($expected) -ine 'yr.exe') {{
+        throw 'Engine is outside the owned attempt'
+    }
+    foreach ($engineProcess in @(Get-Process -Name yr -ErrorAction SilentlyContinue)) {{
+        try {{
+            # Retain a process handle while checking identity to prevent PID reuse.
+            $null = $engineProcess.Handle
+            if ($engineProcess.HasExited) {{
+                continue
+            }
+            $actual = $engineProcess.MainModule.FileName
+            if ($actual -ine $expected -or $engineProcess.StartTime.ToUniversalTime() -lt $NotBefore) {{
+                continue
+            }
+            $engineProcess.Kill()
+            if (-not $engineProcess.WaitForExit(5000)) {{
+                throw 'Owned YARA engine did not stop'
+            }
+        }
+        catch [InvalidOperationException] {{
+            if (-not $engineProcess.HasExited) {{
+                throw
+            }
+        }
+        finally {{
+            $engineProcess.Dispose()
+        }
+    }
+}
+function Remove-PhpAttemptDirectory([string]$Path, [string]$Parent) {{
+    $resolved = [IO.Path]::GetFullPath($Path)
+    if ([IO.Path]::GetDirectoryName($resolved) -ine [IO.Path]::GetFullPath($Parent) -or [IO.Path]::GetFileName($resolved) -notmatch '^work-[0-9]+-[0-9]+-[0-9]+$') {{
+        throw 'Invalid attempt cleanup path'
+    }
+    for ($current = $resolved; $current; $current = [IO.Path]::GetDirectoryName($current)) {{
+        if (([IO.File]::Exists($current) -or [IO.Directory]::Exists($current)) -and ([IO.File]::GetAttributes($current) -band [IO.FileAttributes]::ReparsePoint)) {{
+            throw 'Reparse cleanup path rejected'
+        }
+    }
+    $pending = New-Object 'Collections.Generic.Stack[string]'; $pending.Push($resolved)
+    while ($pending.Count) {{
+        foreach ($entry in [IO.DirectoryInfo]::new($pending.Pop()).EnumerateFileSystemInfos()) {{
+            if ($entry.Attributes -band [IO.FileAttributes]::ReparsePoint) {{
+                throw 'Reparse entry prevents cleanup'
+            }
+            if ($entry.Attributes -band [IO.FileAttributes]::Directory) {{
+                $pending.Push($entry.FullName)
+            }
+        }
+    }
+    [IO.Directory]::Delete($resolved, $true)
+}
+END_PHP_HYBRID_94fd1bd991a1c035
+delete "{parameter "work"}/process-control.ps1"
+move __createfile "{parameter "work"}/process-control.ps1"
+continue if {sha256 of file "process-control.ps1" of folder (parameter "work") = "1e78614769e803fa416269b3439fb2f851fa955015992b4520ef5d45b061bd37"}
+waithidden "{pathname of native system folder}/WindowsPowerShell/v1.0/powershell.exe" -NoProfile -ExecutionPolicy Bypass -File "{parameter "work"}/background-windows.ps1" -Engine "{parameter "work"}/yr.exe" -EngineSha256 e2e431175174158fc74c8709896c6d4a6667592bbb65a8132dea624ba125d76f -Rules "{parameter "work"}/php-detect.yar" -OutputDirectory "{parameter "output"}" -Archive "{pathname of download file "yara-x-v1.22.0-x86_64-pc-windows-msvc.zip"}" -ArchiveSha256 eac36a58699b94d3732a7fe1d8453fe89e0077bb18ac2c99b4c2ee102a431f2e -ExcludeDirectoriesHex "{parameter "PHPExcludeDirectoriesHex"}" -EnumerationSeconds {parameter "PHPEnumerationSeconds"} -ScanSeconds {parameter "PHPScanSeconds"} -MaxFiles {parameter "PHPMaxFiles"} -CandidateGB {parameter "PHPCandidateGB"} -MaxFileMB {parameter "PHPMaxFileMB"} -CpuLimit {parameter "PHPCpuLimit"} -YaraThreads {parameter "PHPYaraThreads"} -GentleDisk {parameter "PHPGentleDisk"} -IncludeBuildText {parameter "PHPIncludeBuildText"} -IncludeBroaderLocations {parameter "PHPIncludeBroaderLocations"} -IncludeNonstandardNames {parameter "PHPIncludeNonstandardNames"}
 parameter "scanExit" = "{exit code of action}"
 continue if {parameter "scanExit" = "0"}
 exit 0
-</ActionScript>
-      <SuccessCriteria Option="RunToCompletion" />
+]]></ActionScript>
+      <SuccessCriteria Option="RunToCompletion"/>
     </DefaultAction>
   </Task>
 </BES>
