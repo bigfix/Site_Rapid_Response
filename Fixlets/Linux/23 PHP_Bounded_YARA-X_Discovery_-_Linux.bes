@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <BES xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="BES.xsd">
   <Task>
-    <Title>PHP YARA Vulnerability Scanner v4 – CVE-2026-109618 and CVE-2026-109619 (Linux)</Title>
-    <Description>&lt;style type="text/css"&gt;
+    <Title>DEPRECATED - PHP YARA Vulnerability Scanner v4 – CVE-2026-109618 and CVE-2026-109619 (Linux)</Title>
+    <Description>&lt;div style="border:1px solid #b36b00;background:#fff4df;padding:12px;margin:8px 0;"&gt;&lt;strong&gt;Deprecated in the Rapid Response site.&lt;/strong&gt; This copy is scheduled for removal from this site. The maintained scanners and matching Results Analysis for CVE-2026-109618 and CVE-2026-109619 are available in &lt;a href="https://github.com/jeffschafer/Bigfix-PHP-Vulnerability-Scanner-Content-CVE-2026-109618-CVE-2026-109619"&gt;the maintained PHP BigFix scanner repository&lt;/a&gt;. Import the maintained .bes files into your custom site for future updates.&lt;/div&gt;&lt;style type="text/css"&gt;
 .phpScan {font-family:Segoe UI,Tahoma,Arial,sans-serif;font-size:13px;line-height:1.45;color:#243447;max-width:1000px;margin:8px 12px 20px;}
 .phpScan h2 {font-size:20px;color:#183953;margin:0 0 5px;}
 .phpScan h3 {font-size:15px;color:#183953;margin:20px 0 8px;padding-bottom:5px;border-bottom:2px solid #dbe5ed;}
