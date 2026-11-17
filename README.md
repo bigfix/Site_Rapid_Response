@@ -2,7 +2,15 @@
 
 beta site for rapid response BigFix content.
 
-## Enhanced PHP vulnerability scanner
+## YARA-X Discovery Scanner
+
+The [YARA-X Scanner](docs/YARA-X.md) adds configurable runtime discovery and a compact companion Analysis for multiple embeddable libraries and runtime engines that may be bundled in multiple coexisting versions across different applications and paths.  Zero-day vulnerabilities have driven a need to detect these embedded components and compare them against a frequently-changing list of vulnerabilities and to gauge risk based on their exposure and usage.
+
+At this time a common set of Definitions, Scan Actions, and Analysis Results are helpful in describing the versions and installation paths for PHP, Apache, Node, and Java.  More products are likely to be added over time.  The Analysis does not provide CVE data for specific versions or distinguish which are most recent, these scans are only a first step in gauging risk.
+
+The consolidated scans and results deprecate the PHP scanner described below, but the original Fixlets, Tasks, and Analysis remain available for use for now.
+
+## Enhanced PHP vulnerability scanner (deprecated)
 
 The [Windows/Linux PHP scanner](docs/PHP-Scanner.md) adds
 configurable runtime discovery and a compact companion Analysis. The original
