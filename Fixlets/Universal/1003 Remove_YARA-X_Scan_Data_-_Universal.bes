@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BES xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="BES.xsd">
+	<Task>
+		<Title>Remove YARA-X Scan Data - Universal</Title>
+		<Description><![CDATA[<P>Deletes the whole YARA engine folder, <CODE>__BESData/__Global/__MitigationToolkit/yara</CODE>, and everything under it: the <CODE>bin</CODE> folder holding the yr engine, the <CODE>signatures</CODE> folder holding the deployed rule files, the <CODE>results</CODE> folder holding the scan output the analysis reads, and the <CODE>work</CODE> folder holding the scan scripts and the scan.running marker.</P><P>Use it to reclaim the disk, to retire the content from a computer, or to force a clean rebuild. Nothing else under <CODE>__MitigationToolkit</CODE> is touched, so other scan engines deployed beside it are left alone.</P><P>After this runs: &quot;Deploy YARA-X Signatures - Universal&quot; becomes relevant again, because the version marker is gone; the &quot;Scan with YARA-X Signatures&quot; tasks stop being relevant, because no signature file is present; and the analysis &quot;YARA-X Scan Results - Universal&quot; stops reporting this computer, because the results file is gone. Taking the deploy task and then a scan task restores everything.</P><P>Do not run this while a scan is in progress. The scan runs in the background from the <CODE>work</CODE> folder and keeps the engine open, so on Windows the delete can fail on the locked yr.exe, and on any platform a scan that survives the delete writes its results into a folder that no longer belongs to anything. Check the &quot;Scan with YARA-X Signatures&quot; task for this computer first: while a scan is running that task is not relevant.</P>]]></Description>
+		<Relevance><![CDATA[not in proxy agent context]]></Relevance>
+		<Relevance><![CDATA[exists folders "yara" of folders "__MitigationToolkit" of folders "__Global" of data folders of client]]></Relevance>
+		<Category></Category>
+		<Source>Internal</Source>
+		<SourceID>jgstew</SourceID>
+		<SourceReleaseDate>2026-11-17</SourceReleaseDate>
+		<SourceSeverity></SourceSeverity>
+		<CVENames></CVENames>
+		<SANSID></SANSID>
+		<MIMEField>
+			<Name>x-fixlet-modification-time</Name>
+			<Value>Tue, 17 Nov 2026 00:00:00 +0000</Value>
+		</MIMEField>
+		<Domain>BESC</Domain>
+		<DefaultAction ID="Action1">
+			<Description>
+				<PreLink>Click </PreLink>
+				<Link>here</Link>
+				<PostLink> to delete the YARA engine folder and all of its contents.</PostLink>
+			</Description>
+			<ActionScript MIMEType="application/x-Fixlet-Windows-Shell"><![CDATA[
+// Delete the YARA engine folder and everything under it: bin, signatures,
+// results and work. Only the yara folder is removed - __MitigationToolkit
+// itself stays, so other scan engines deployed beside it are untouched.
+
+// One path separator per platform: relevance does not translate them.
+parameter "sep" = "{if (windows of operating system) then "\" else "/"}"
+parameter "engine_folder" = "{pathname of data folders of client}{parameter "sep"}__Global{parameter "sep"}__MitigationToolkit{parameter "sep"}yara"
+
+// folder delete is recursive. The task's relevance requires the folder to
+// exist, so this does not run against a missing path.
+folder delete "{parameter "engine_folder"}"
+]]></ActionScript>
+			<SuccessCriteria Option="OriginalRelevance"></SuccessCriteria>
+		</DefaultAction>
+	</Task>
+</BES>
