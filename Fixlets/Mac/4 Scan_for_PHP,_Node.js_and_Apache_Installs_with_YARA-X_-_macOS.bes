@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <BES xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="BES.xsd">
-	<Task>
-		<Title>Scan for PHP, Node.js and Apache Installs with YARA-X - macOS</Title>
-		<Description><![CDATA[<P>Scans this computer for PHP installs, both package-managed and one-off (XAMPP, MAMP, Laragon, zips unpacked to a folder, static builds such as FrankenPHP), and for Node.js, both standalone (node, distro libnode) and embedded in other software (Electron apps, single-executable applications, vercel/pkg builds), and for Apache HTTP Server (httpd) and its mod_http2 module, and records the version of each. It uses <A href="https://github.com/VirusTotal/yara-x">YARA-X</A> with the rules from <A href="https://github.com/jgstew/tools/tree/master/YARA">jgstew/tools YARA</A>, all of them in one pass; the version is read from strings compiled into the binaries, so nothing is run.</P><P>Results: one line per product found in a file, &quot;path&lt;TAB&gt;product&lt;TAB&gt;version&quot;, where product is php, node, electron, apache or mod_http2 (an Electron framework gets a node and an electron line; the mod_http2 version is a candidate read from a bare version string; &quot;unknown&quot; for files such as PHP extensions or Node addons that carry no version), in __BESData/__Global/Logs/yara_results_runtimes.text. Activate the analysis &quot;PHP, Node.js and Apache Installs from YARA-X Scan - Universal&quot; to report them. The task becomes relevant again when the results are more than a day old.</P><P>Runs as root. The BigFix agent needs Full Disk Access (MDM PPPC profile) to read protected folders; without it they are skipped. The read-only system volume, cloud-drive folders, files of 512 MB or more and non-executable file types are skipped.</P><P>The scan runs in the background (started with run, so the agent stays free for other actions) from __BESData/__Global/yara_runtime_scan and reads the whole disk, which can take 10-30 minutes or more. The action completes when the scan starts; the results file appears when it finishes, and its console output goes to __BESData/__Global/Logs/yara_scan_runtimes.log. While a scan is running the task is not relevant, so a second one is not started.</P>]]></Description>
-		<Relevance><![CDATA[mac of operating system]]></Relevance>
-		<Relevance><![CDATA[version of operating system >= "10.12"]]></Relevance>
-		<Relevance><![CDATA[not in proxy agent context]]></Relevance>
-		<Relevance><![CDATA[not exists files whose(name of it as lowercase starts with "yara_results_runtimes.text" AND (now - modification time of it) < 1*day ) of folders "Logs" of folders "__Global" of data folders of client]]></Relevance>
-		<Relevance><![CDATA[not exists files whose(name of it = "scan.running" AND (now - modification time of it) < 12*hour) of folders "yara_runtime_scan" of folders "__Global" of data folders of client]]></Relevance>
-		<Category></Category>
-		<DownloadSize>9476144</DownloadSize>
-		<Source>Internal</Source>
-		<SourceID>jgstew</SourceID>
-		<SourceReleaseDate>2026-11-13</SourceReleaseDate>
-		<SourceSeverity></SourceSeverity>
-		<CVENames></CVENames>
-		<SANSID></SANSID>
-		<MIMEField>
-			<Name>x-fixlet-modification-time</Name>
-			<Value>Fri, 13 Nov 2026 00:50:52 +0000</Value>
-		</MIMEField>
-		<Domain>BESC</Domain>
-		<DefaultAction ID="Action1">
-			<Description>
-				<PreLink>Click </PreLink>
-				<Link>here</Link>
-				<PostLink> to scan for PHP, Node.js and Apache installs.</PostLink>
-			</Description>
-			<ActionScript MIMEType="application/x-Fixlet-Windows-Shell"><![CDATA[
+  <Task>
+    <Title>Scan for PHP, Node.js and Apache Installs with YARA-X - macOS (deprecated)</Title>
+    <Description><![CDATA[<P>Scans this computer for PHP installs, both package-managed and one-off (XAMPP, MAMP, Laragon, zips unpacked to a folder, static builds such as FrankenPHP), and for Node.js, both standalone (node, distro libnode) and embedded in other software (Electron apps, single-executable applications, vercel/pkg builds), and for Apache HTTP Server (httpd) and its mod_http2 module, and records the version of each. It uses <A href="https://github.com/VirusTotal/yara-x">YARA-X</A> with the rules from <A href="https://github.com/jgstew/tools/tree/master/YARA">jgstew/tools YARA</A>, all of them in one pass; the version is read from strings compiled into the binaries, so nothing is run.</P><P>Results: one line per product found in a file, &quot;path&lt;TAB&gt;product&lt;TAB&gt;version&quot;, where product is php, node, electron, apache or mod_http2 (an Electron framework gets a node and an electron line; the mod_http2 version is a candidate read from a bare version string; &quot;unknown&quot; for files such as PHP extensions or Node addons that carry no version), in __BESData/__Global/Logs/yara_results_runtimes.text. Activate the analysis &quot;PHP, Node.js and Apache Installs from YARA-X Scan - Universal&quot; to report them. The task becomes relevant again when the results are more than a day old.</P><P>Runs as root. The BigFix agent needs Full Disk Access (MDM PPPC profile) to read protected folders; without it they are skipped. The read-only system volume, cloud-drive folders, files of 512 MB or more and non-executable file types are skipped.</P><P>The scan runs in the background (started with run, so the agent stays free for other actions) from __BESData/__Global/yara_runtime_scan and reads the whole disk, which can take 10-30 minutes or more. The action completes when the scan starts; the results file appears when it finishes, and its console output goes to __BESData/__Global/Logs/yara_scan_runtimes.log. While a scan is running the task is not relevant, so a second one is not started.</P>]]></Description>
+    <Relevance><![CDATA[mac of operating system]]></Relevance>
+    <Relevance><![CDATA[version of operating system >= "10.12"]]></Relevance>
+    <Relevance><![CDATA[not in proxy agent context]]></Relevance>
+    <Relevance><![CDATA[not exists files whose(name of it as lowercase starts with "yara_results_runtimes.text" AND (now - modification time of it) < 1*day ) of folders "Logs" of folders "__Global" of data folders of client]]></Relevance>
+    <Relevance><![CDATA[not exists files whose(name of it = "scan.running" AND (now - modification time of it) < 12*hour) of folders "yara_runtime_scan" of folders "__Global" of data folders of client]]></Relevance>
+    <Category></Category>
+    <DownloadSize>9476144</DownloadSize>
+    <Source>Internal</Source>
+    <SourceID>jgstew</SourceID>
+    <SourceReleaseDate>2026-11-13</SourceReleaseDate>
+    <SourceSeverity></SourceSeverity>
+    <CVENames></CVENames>
+    <SANSID></SANSID>
+    <MIMEField>
+      <Name>x-fixlet-modification-time</Name>
+      <Value>Fri, 13 Nov 2026 00:50:52 +0000</Value>
+    </MIMEField>
+    <Domain>BESC</Domain>
+    <DefaultAction ID="Action1">
+      <Description>
+        <PreLink>Click </PreLink>
+        <Link>here</Link>
+        <PostLink> to scan for PHP, Node.js and Apache installs.</PostLink>
+      </Description>
+      <ActionScript MIMEType="application/x-Fixlet-Windows-Shell"><![CDATA[
 // Scan for PHP, Node.js and Apache installs and their versions with YARA-X - macOS
 // Generated by YARA/make_bigfix_content.py from bash/yara_x_scan_macos.sh in
 // https://github.com/jgstew/tools - change the script there and regenerate.
@@ -981,7 +981,7 @@ copy __createfile "{parameter "temp_folder"}/scan.running"
 // here and the client runs other actions. The results show up when it finishes.
 run /bin/bash "{parameter "temp_folder"}/run_scan.sh"
 ]]></ActionScript>
-			<SuccessCriteria Option="RunToCompletion"></SuccessCriteria>
-		</DefaultAction>
-	</Task>
+      <SuccessCriteria Option="RunToCompletion"></SuccessCriteria>
+    </DefaultAction>
+  </Task>
 </BES>

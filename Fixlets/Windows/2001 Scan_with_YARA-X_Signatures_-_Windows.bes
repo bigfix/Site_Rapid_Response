@@ -1,0 +1,1410 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BES xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="BES.xsd">
+	<Task>
+		<Title>Scan with YARA-X Signatures - Windows</Title>
+		<Description><![CDATA[<P>Scans this computer for whatever software the deployed signatures detect, both package-managed and one-off installs, and records the version of each. It uses <A href="https://github.com/VirusTotal/yara-x">YARA-X</A> with every rule file in the YARA engine signatures directory, <CODE>__BESData/__Global/__MitigationToolkit/yara/signatures</CODE>, in one pass; the version is read from strings compiled into the binaries, so nothing is run. Run &quot;Deploy YARA-X Signatures - Universal&quot; first: this task is not relevant until at least one signature file is present.</P><P>Each signature file is loaded into its own YARA namespace, named after the file without its extension (<CODE>example_detect.yar</CODE> becomes namespace <CODE>example_detect</CODE>), so a rule identifier only has to be unique inside one signature file instead of across the whole set. Two signature files whose names would give the same namespace are an error and no scan runs.</P><P>Results: one line per product found in a file, &quot;signature&lt;TAB&gt;path&lt;TAB&gt;product&lt;TAB&gt;version&quot;, where signature is the signature file (namespace) the matching rule is defined in and product is a short label taken from the matching rule's name - the text before its first underscore, lowercased - so which products appear depends on which signatures are deployed (one file can give more than one line when several rules match it; a match whose rule carries no readable version string is reported as &quot;unknown&quot;), in __BESData/__Global/__MitigationToolkit/yara/results/yara_results_runtimes.text. Beside it, yara_results_signatures.text holds &quot;signature&lt;TAB&gt;count&quot;, one line for every signature that was loaded, including signatures that matched nothing, so an empty result can be told apart from a signature that was never deployed. The analysis &quot;YARA-X Scan Results - Universal&quot; reads both files; activate it to report the matches. The task does not judge how old the previous results are: it stays relevant wherever signatures are present and no scan is running, so the rescan interval is whatever the action's schedule makes it (take it as a reapplying or scheduled action and set the interval there).</P><P>Runs as SYSTEM with 64-bit PowerShell and scans every local fixed drive; network, removable and optical drives, online-only cloud files, WinSxS and similar system folders, files of 512 MB or more and non-executable file types are skipped.</P><P>The scan runs in the background (started with run, so the agent stays free for other actions) from __BESData/__Global/__MitigationToolkit/yara/work and reads the whole disk, which can take 10-30 minutes or more. The yr.exe engine is kept in the sibling bin folder and reused by later scans. The action completes when the scan starts; the results file appears when it finishes, and its console output goes to __BESData/__Global/__MitigationToolkit/yara/results/yara_scan_runtimes.log. While a scan is running the task is not relevant, so a second one is not started.</P>]]></Description>
+		<Relevance><![CDATA[windows of operating system]]></Relevance>
+		<Relevance><![CDATA[x64 of operating system]]></Relevance>
+		<Relevance><![CDATA[version of operating system >= "10.0"]]></Relevance>
+		<Relevance><![CDATA[exists (it as string as version) whose(it >= "5.1") of values "PowerShellVersion" of keys "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PowerShell\3\PowerShellEngine" of native registry]]></Relevance>
+		<Relevance><![CDATA[not in proxy agent context]]></Relevance>
+		<Relevance><![CDATA[exists files whose(name of it as lowercase ends with ".yar" OR name of it as lowercase ends with ".yara") of folders "signatures" of folders "yara" of folders "__MitigationToolkit" of folders "__Global" of data folders of client]]></Relevance>
+		<Relevance><![CDATA[not exists files whose(name of it = "scan.running" AND (now - modification time of it) < 12*hour) of folders "work" of folders "yara" of folders "__MitigationToolkit" of folders "__Global" of data folders of client]]></Relevance>
+		<Category></Category>
+		<DownloadSize>9081400</DownloadSize>
+		<Source>Internal</Source>
+		<SourceID>jgstew</SourceID>
+		<SourceReleaseDate>2026-11-17</SourceReleaseDate>
+		<SourceSeverity></SourceSeverity>
+		<CVENames></CVENames>
+		<SANSID></SANSID>
+		<MIMEField>
+			<Name>x-fixlet-modification-time</Name>
+			<Value>Tue, 17 Nov 2026 00:00:00 +0000</Value>
+		</MIMEField>
+		<Domain>BESC</Domain>
+		<DefaultAction ID="Action1">
+			<Description>
+				<PreLink>Click </PreLink>
+				<Link>here</Link>
+				<PostLink> to scan for the software the deployed signatures detect.</PostLink>
+			</Description>
+			<ActionScript MIMEType="application/x-Fixlet-Windows-Shell"><![CDATA[
+// Scan for the software the deployed signatures detect, and its versions, with YARA-X - Windows
+// Generated by YARA/make_bigfix_content.py from powershell/yara_x_scan_windows.ps1 in
+// https://github.com/jgstew/tools - change the script there and regenerate.
+
+// yr (YARA-X CLI) release archive for this OS/CPU; the script still checks its SHA256
+begin prefetch block
+	add prefetch item name=yara-x-v1.22.0-x86_64-pc-windows-msvc.zip sha1=344da50ce1693edd32b92c7d32eaf26d99c97f17 size=9081400 url=https://github.com/VirusTotal/yara-x/releases/download/v1.22.0/yara-x-v1.22.0-x86_64-pc-windows-msvc.zip sha256=eac36a58699b94d3732a7fe1d8453fe89e0077bb18ac2c99b4c2ee102a431f2e
+end prefetch block
+
+// The YARA engine layout under the client data folder (the __BESData folder),
+// created by "Deploy YARA-X Signatures - Universal":
+//   bin         yr.exe, kept between scans
+//   signatures  the .yar rule files this scan uses
+//   results     the scan output read by the analysis
+//   work        this scan's scripts, archive and scan.running marker
+parameter "engine_folder" = "{pathname of data folders of client}\__Global\__MitigationToolkit\yara"
+parameter "bin_folder" = "{parameter "engine_folder"}\bin"
+parameter "signatures_folder" = "{parameter "engine_folder"}\signatures"
+parameter "results_folder" = "{parameter "engine_folder"}\results"
+// The scan runs in the background from here, not __Download: the client clears
+// __Download when the action ends, and the scan outlives the action
+parameter "temp_folder" = "{parameter "engine_folder"}\work"
+parameter "results_file" = "yara_results_runtimes.text"
+// Per-signature match counts beside the summary; both names are read by the
+// analysis "YARA-X Scan Results - Universal" and must not change
+parameter "signatures_file" = "yara_results_signatures.text"
+
+// The deploy task creates bin and results; recreated here only if they are missing
+// so a scan still runs after someone cleans the folder out
+if {not exists folders "bin" of folders "yara" of folders "__MitigationToolkit" of folders "__Global" of data folders of client}
+	folder create "{parameter "bin_folder"}"
+endif
+if {not exists folders "results" of folders "yara" of folders "__MitigationToolkit" of folders "__Global" of data folders of client}
+	folder create "{parameter "results_folder"}"
+endif
+folder delete "{parameter "temp_folder"}"
+folder create "{parameter "temp_folder"}"
+copy "__Download\{name of file whose(name of it starts with "yara-x-v") of folder "__Download" of client folder of current site}" "{parameter "temp_folder"}\{name of file whose(name of it starts with "yara-x-v") of folder "__Download" of client folder of current site}"
+
+// The scan script; every left curly brace in it is doubled, BigFix's escape for relevance substitution
+delete __createfile
+createfile until _END_OF_SCRIPT_
+<#
+.SYNOPSIS
+    Self-contained YARA-X scan for Windows that finds the software its signature files match, and its versions.
+
+.DESCRIPTION
+    Windows counterpart of bash/yara_x_scan_macos.sh:
+      1. downloads the YARA-X CLI (yr.exe) release
+      2. verifies the SHA256 of the download against a pinned value
+      3. unpacks it into -BinDir (default: a temporary folder removed on exit)
+      4. scans the target (recursively) with every YARA rule file in -RulesPath,
+         which is a .yar/.yara file or a directory of them (searched
+         recursively), so every deployed signature runs in one scan. Each
+         rule file is loaded into its own yr namespace, named after the file
+         without its extension (php_detect.yar -> namespace php_detect), so a
+         rule identifier only has to be unique inside one file. Two rule files
+         that would give the same namespace are a usage error.
+      5. writes results + a log to OutputDir; for text format:
+           yara_results_<host>_<time>.raw.text  full yr output (rules, meta, strings)
+           yara_results_<host>_<time>.text      "signature<TAB>path<TAB>product<TAB>version",
+                                                one line per product in a file
+           yara_results_signatures_<host>_<time>.text
+                                                "signature<TAB>count": one line
+                                                per loaded signature, including
+                                                signatures that matched nothing
+         signature is the namespace, i.e. the rule file the matched rule is
+         defined in. It is resolved from the rule identifier by reading the
+         rule files (see Get-RuleSignatureMap), not from yr output.
+         product is a short label taken from the matching rule's name: the text
+         before its first underscore, lowercased (Example_Runtime_Version ->
+         example), so which products appear follows whichever signatures are
+         deployed. Apache_HTTP2_* is the one exception the script hard-codes
+         and is reported as mod_http2. One file can give more than one line
+         when several of its rules match. A match whose rule carries no
+         readable version string is listed as "unknown".
+         json / ndjson write a single yara_results_<host>_<time>.json / .ndjson
+         and no summary or signature-count file.
+
+    This script carries no YARA rules of its own: -RulesPath is required and
+    the rule files live outside it (in BigFix, deployed to the engine
+    signatures directory by "Deploy YARA-X Signatures - Universal"). The rule
+    files that come from YARA/ are YARA/php/php_detect.yar,
+    YARA/node/node_detect.yar and YARA/apache/apache_detect.yar (each with the
+    header check from YARA/is_executable.yar). The deploy task also ships rule
+    files from elsewhere, such as java_detect.yar, which are maintained with
+    that task rather than in YARA/. ConvertTo-VersionSummary is a hand-kept port of
+    YARA/versions.awk: change both together. The rest of the script is edited
+    here. YARA/make_bigfix_content.py embeds the whole script in the BigFix
+    task, so regenerate it after any change.
+
+    With no -Path, every local fixed drive (DriveType 3) is scanned. Network,
+    removable and optical drives are skipped. Note that some USB disks and
+    mounted VHDs report themselves as fixed and are scanned too.
+
+    Junctions and directory symlinks are not followed (avoids loops and scanning
+    the same files twice). File symlinks list with no size and are skipped like
+    empty files (their target is scanned where it lives); other file-level
+    reparse points are scanned: they can be real local files (deduplicated
+    volumes, hydrated OneDrive files).
+
+    Run as Administrator for a full scan; otherwise protected folders are logged
+    as unreadable and skipped.
+
+    yr.exe is x64 only (YARA-X ships no Windows ARM64 build); on Windows on ARM
+    it runs under x64 emulation.
+
+    Skipped by default (each skip is reported while running; files over the size
+    cap are listed in the log). A skipped folder that contains the target is not
+    skipped, and none of the skips apply when the target is a single file. To
+    scan just one skipped folder, target it (e.g. -Path C:\Windows\WinSxS);
+    -NoSkips turns off all of these skips except empty files, cloud
+    placeholders and this script's own folders.
+      - Files of MaxMB (512) MB or more: PHP builds are ~20-40 MB, the largest
+        known (FrankenPHP, static PHP in Go) ~180 MB, node.exe 8.x-25.x
+        22-91 MB, Electron frameworks 125-350 MB (macOS); this cuts
+        pagefile.sys, VM disks, WSL/Docker .vhdx, media. Use -MaxMB 0 to
+        include.
+      - Images, media, archives, installers, documents, fonts, web/source/text
+        files, C headers, debug symbols (.pdb), event logs, databases,
+        component manifests, BigFix Fixlet files (.fxf) and virtual disks: the
+        rules only match executables (by header). Files with no extension, .exe,
+        .dll, .so, .o are kept.
+      - Empty files.
+      - Cloud placeholders (OneDrive Files On-Demand, Dropbox, iCloud, etc.):
+        files and folders with the Offline, RecallOnOpen or RecallOnDataAccess
+        attribute are only online, and reading them would download them.
+      - System folders that can't hold a PHP, Node.js or Apache install, on every
+        scanned drive:
+          \Windows\WinSxS               component store: Microsoft side-by-side
+                                        components only, mostly hard links to
+                                        System32 (double scan), 100k+ files
+          \Windows\SoftwareDistribution Windows Update download cache
+          \Windows\servicing            component servicing store: manifests,
+                                        100k+ files on a server
+          \Windows\assembly, \Windows\Microsoft.NET  .NET framework and
+                                        native-image caches
+          \ProgramData\Microsoft\Windows Defender  antivirus definitions
+          \Users\*\AppData\Local\BigFix\Enterprise Console  BigFix Console
+                                        cache (can be many GB)
+          \$Recycle.Bin                 deleted files, not installs
+          \System Volume Information    restore points/shadow copy data, not
+                                        readable even as Administrator
+          \pagefile.sys, \hiberfil.sys, \swapfile.sys  locked by the OS
+        The rest of C:\Windows is scanned on purpose: old PHP setup guides told
+        people to copy php5ts.dll / php.ini into C:\Windows\System32.
+      - This script's own output and temp folders (old results contain matched
+        strings).
+    Nothing where PHP, Node.js or Apache is plausible is skipped: C:\xampp,
+    C:\wamp*, C:\laragon, C:\php*, C:\Apache24, C:\tools (Chocolatey),
+    Program Files, Program Files (x86) (IIS PHP Manager / Web PI),
+    ProgramData, user profiles (nvm, Electron apps in AppData\Local\Programs).
+
+    The scan runs at BelowNormal priority (this PowerShell process and yr.exe)
+    and yr uses 1 thread (-Threads 2 for faster scans), so a full scan doesn't take over the
+    machine. It's meant to run unattended; in an interactive session the
+    priority stays lowered until that PowerShell window is closed.
+
+    Exit codes: 0 = scan ran, no matches; 1 = scan ran, matches found;
+                2 = usage error; 3 = download/verify/unpack error; 4 = scan error
+
+    Release: https://github.com/VirusTotal/yara-x/releases/tag/v1.22.0
+    Related: https://github.com/jgstew/tools/tree/master/YARA
+             https://github.com/jgstew/tools/blob/master/bash/yara_x_scan_macos.sh
+
+.PARAMETER Path
+    One or more files or folders to scan. Default: all local fixed drives.
+    With powershell.exe -File, list several targets separated by spaces
+    (-Path C:\apps D:\web), not commas: -File passes "A,B" as one path.
+
+.PARAMETER RulesPath
+    Required. A .yar/.yara rule file, or a directory searched recursively for
+    them. Each file becomes one yr namespace named after the file without its
+    extension (php_detect.yar -> php_detect), and every summary line names the
+    namespace it came from, so rule identifiers only have to be unique within a
+    file. Two files that would give the same namespace, and (on Windows only) a
+    file whose base name is a single character, are usage errors (exit code 2).
+
+.PARAMETER BinDir
+    Folder to unpack yr.exe into, kept after the scan so later scans reuse it.
+    Default: a 'bin' folder in the temporary work directory, removed with it.
+
+.PARAMETER OutputDir
+    Folder to write results into. Default: .\yara_results
+
+.PARAMETER Format
+    yr output format: text, json or ndjson. Default: text
+
+.PARAMETER KeepArchive
+    Keep the downloaded yr release zip in OutputDir, to reuse later with
+    -YaraXArchive <OutputDir> (its SHA256 is checked again).
+
+.PARAMETER YaraXArchive
+    Use a local yr release zip instead of downloading: the file, or a folder
+    holding it under its release name (e.g. a BigFix prefetch folder). Its
+    SHA256 is still checked.
+
+.PARAMETER MaxMB
+    Skip files of MaxMB MB or larger; 0 = no limit. Default: 512, or 0 with -NoSkips
+
+.PARAMETER Threads
+    Number of yr scan threads. Default: 1 (2 finishes sooner, at about twice the peak CPU)
+
+.PARAMETER ExcludePath
+    Folders to skip, comma-separated (-ExcludePath D:\backup,E:\media). A
+    folder that contains the target is not skipped.
+
+.PARAMETER NoSkips
+    Turn off the default skips listed above: system folders, non-executable
+    file types and the size cap (unless -MaxMB is given). Empty files and
+    online-only cloud files are still skipped. -ExcludePath still applies.
+    To scan just one skipped folder, target it with -Path instead.
+
+.PARAMETER Help
+    Show this help.
+
+.PARAMETER ExtraArgs
+    Catch-all for arguments after -Path: those that are not options are more
+    targets; an unknown option is a usage error (exit code 2).
+
+.EXAMPLE
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\yara_x_scan_windows.ps1
+
+    Scan all local fixed drives, writing results to .\yara_results.
+
+.EXAMPLE
+    .\yara_x_scan_windows.ps1 -Path C:\apps, D:\web -OutputDir C:\Temp\yara -KeepArchive
+
+.EXAMPLE
+    .\yara_x_scan_windows.ps1 -Format ndjson -MaxMB 0
+
+.NOTES
+    Works with Windows PowerShell 5.1 and PowerShell 7+.
+    To download:
+      Invoke-WebRequest -UseBasicParsing -OutFile yara_x_scan_windows.ps1 https://raw.githubusercontent.com/jgstew/tools/master/powershell/yara_x_scan_windows.ps1
+#>
+# Status lines go to the console via Write-Host (the information stream since
+# PS 5.0, so 6> can redirect them) and keep stdout free for callers.
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Console status output')]
+[CmdletBinding()]
+param(
+    [Parameter(Position = 0)]
+    [string[]]$Path,
+
+    [string]$OutputDir = (Join-Path -Path (Get-Location).ProviderPath -ChildPath 'yara_results'),
+
+    # Required: a .yar/.yara file, or a directory searched recursively for them.
+    # Each file is loaded into its own namespace, named after the file.
+    [string]$RulesPath,
+
+    # Where yr.exe is unpacked. Default: a 'bin' folder in the temporary work
+    # directory, removed with it. Give a lasting folder to reuse the engine.
+    [string]$BinDir,
+
+    # Validated in the script body (not ValidateSet/[int]) so bad values exit with code 2
+    [string]$Format = 'text',
+
+    [switch]$KeepArchive,
+
+    [string]$YaraXArchive,
+
+    # Omitted = 512, or 0 with -NoSkips (see Invoke-Main)
+    [string]$MaxMB,
+
+    [string]$Threads = '1',
+
+    [string[]]$ExcludePath,
+
+    [switch]$NoSkips,
+
+    [switch]$Help,
+
+    # More targets, or unknown options (exit code 2 instead of a binding error)
+    [Parameter(ValueFromRemainingArguments = $true, DontShow = $true)]
+    [string[]]$ExtraArgs
+)
+
+Set-StrictMode -Version 3.0
+$ErrorActionPreference = 'Stop'
+
+$YaraXVersion = '1.22.0'
+$YaraXAsset   = "yara-x-v$YaraXVersion-x86_64-pc-windows-msvc.zip"
+$YaraXUrl     = "https://github.com/VirusTotal/yara-x/releases/download/v$YaraXVersion/$YaraXAsset"
+# GitHub-computed asset digest for v1.22.0 (releases API, assets[].digest)
+$YaraXSha256  = 'eac36a58699b94d3732a7fe1d8453fe89e0077bb18ac2c99b4c2ee102a431f2e'
+
+# Same base list as NONBINARY_EXTS in bash/yara_x_scan_macos.sh: extensions of files
+# that can't start with an executable header. The last two lines are Windows-only: debug
+# symbols, installers/cabinets, import libraries, event logs, ESE databases;
+# then (measured on a server: none of these held an executable) component and
+# policy manifests, BigFix Fixlet files, VS extensions, app resources, crash
+# dumps, WebAssembly and virtual disks.
+$NonBinaryExtensions = @(
+    'jpg', 'jpeg', 'png', 'gif', 'heic', 'tif', 'tiff', 'bmp', 'webp', 'ico', 'icns', 'svg', 'svgz',
+    'mov', 'mp4', 'm4v', 'avi', 'mkv', 'mp3', 'm4a', 'aac', 'wav', 'aiff', 'caf', 'flac',  # codespell:ignore caf
+    'pdf', 'zip', 'gz', 'tgz', 'xz', 'bz2', 'zst', '7z', 'rar', 'dmg', 'pkg', 'xip', 'iso', 'jar', 'whl',
+    'docx', 'xlsx', 'pptx', 'doc', 'xls', 'ppt', 'pages', 'numbers', 'key',
+    'txt', 'md', 'rst', 'json', 'js', 'mjs', 'cjs', 'ts', 'tsx', 'jsx', 'map', 'css', 'scss', 'html', 'htm',
+    'xml', 'plist', 'strings', 'nib', 'car', 'py', 'pyc', 'rb', 'php', 'java', 'class', 'go', 'rs',
+    'c', 'cc', 'cpp', 'h', 'hpp', 'm', 'swift', 'yml', 'yaml', 'toml', 'ini', 'csv', 'tsv', 'log',
+    'sqlite', 'db', 'sqlite-wal', 'sqlite-shm', 'ttf', 'otf', 'woff', 'woff2', 'mo', 'po', 'lock', 'sum',
+    'pdb', 'cab', 'msi', 'msp', 'nupkg', 'lib', 'cat', 'etl', 'evtx', 'edb', 'chm',
+    'manifest', 'mum', 'mfl', 'adml', 'admx', 'fxf', 'vsix', 'pak', 'data', 'ttc', 'dmp', 'wasm', 'vhd', 'vhdx'
+)
+
+# System folders / files skipped on every scanned drive (see help for why)
+# Program Files\WindowsApps stays in scope: MSIX/Store packages are installed software.
+$SystemSkipDirs  = @('Windows\WinSxS', 'Windows\SoftwareDistribution', 'Windows\servicing', 'Windows\assembly',
+                     'Windows\Microsoft.NET', 'ProgramData\Microsoft\Windows Defender', '$Recycle.Bin',
+                     'System Volume Information')
+# Skipped in every user profile on a scanned drive (see help)
+$ProfileSkipDirs = @('AppData\Local\BigFix\Enterprise Console')
+$SystemSkipFiles = @('pagefile.sys', 'hiberfil.sys', 'swapfile.sys')
+
+# FILE_ATTRIBUTE_OFFLINE | FILE_ATTRIBUTE_RECALL_ON_OPEN | FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS.
+# Numeric because .NET Framework's FileAttributes enum has no names for the last two.
+$CloudAttributeMask = 0x1000 -bor 0x40000 -bor 0x400000
+
+
+$Utf8NoBom = New-Object -TypeName System.Text.UTF8Encoding -ArgumentList $false
+
+function Write-ScanLog
+{{
+    param([Parameter(Mandatory = $true)][string]$Message)
+    Write-Host ('[{{0}] {{1}' -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss'), $Message)
+}
+
+function Write-UsageError
+{{
+    # Plain message on stderr, without the error-record noise of Write-Error
+    param([Parameter(Mandatory = $true)][string]$Message)
+    [Console]::Error.WriteLine("ERROR: $Message")
+}
+
+function Test-IsWindowsHost
+{{
+    return [System.Environment]::OSVersion.Platform -eq [System.PlatformID]::Win32NT
+}
+
+function Test-IsAdministrator
+{{
+    $principal = New-Object -TypeName System.Security.Principal.WindowsPrincipal -ArgumentList ([System.Security.Principal.WindowsIdentity]::GetCurrent())
+    return $principal.IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator)
+}
+
+function Get-FixedDriveRoot
+{{
+    # DriveType Fixed = Win32_LogicalDisk DriveType 3; skips network, removable, optical
+    foreach ($drive in [System.IO.DriveInfo]::GetDrives())
+    {{
+        if ($drive.DriveType -eq [System.IO.DriveType]::Fixed -and $drive.IsReady)
+        {{
+            $drive.RootDirectory.FullName
+        }
+    }
+}
+
+function Test-PathWithin
+{{
+    # True when $Child is $Parent or somewhere below it (case-insensitive, like NTFS)
+    param([string]$Child, [string]$Parent)
+    $c = $Child.TrimEnd('\', '/')
+    $p = $Parent.TrimEnd('\', '/')
+    if ($c.Equals($p, [System.StringComparison]::OrdinalIgnoreCase)) {{ return $true }
+    return $c.StartsWith($p + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase)
+}
+
+function Get-YaraX
+{{
+    # Downloads (or copies -ArchivePath), verifies and unpacks yr.exe into
+    # $BinDir (default: $WorkDir\bin); returns its path. With -KeepDir, the
+    # verified archive is also copied there. Throws on any failure (the caller
+    # maps that to exit code 3).
+    param(
+        [Parameter(Mandatory = $true)][string]$WorkDir,
+        [string]$ArchivePath,
+        [string]$KeepDir,
+        [string]$BinDir
+    )
+
+    $zipPath = Join-Path -Path $WorkDir -ChildPath $YaraXAsset
+
+    if ($ArchivePath)
+    {{
+        # A folder holding the zip under its release name (BigFix prefetch), or the zip itself
+        if (Test-Path -LiteralPath $ArchivePath -PathType Container)
+        {{
+            $ArchivePath = Join-Path -Path $ArchivePath -ChildPath $YaraXAsset
+        }
+        if (-not (Test-Path -LiteralPath $ArchivePath -PathType Leaf))
+        {{
+            throw "yr archive not found: $ArchivePath"
+        }
+        Write-ScanLog "Using local archive $ArchivePath"
+        Copy-Item -LiteralPath $ArchivePath -Destination $zipPath -Force
+    }
+    else
+    {{
+        # Windows PowerShell 5.1 may default to TLS 1.0/1.1, which GitHub refuses
+        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor [System.Net.SecurityProtocolType]::Tls12
+
+        Write-ScanLog "Downloading $YaraXUrl"
+        $oldProgress = $ProgressPreference
+        $ProgressPreference = 'SilentlyContinue'  # the progress bar makes 5.1 downloads very slow
+        try
+        {{
+            for ($attempt = 1; $attempt -le 3; $attempt++)
+            {{
+                try
+                {{
+                    Invoke-WebRequest -Uri $YaraXUrl -OutFile $zipPath -UseBasicParsing -TimeoutSec 120
+                    break
+                }
+                catch
+                {{
+                    if ($attempt -eq 3) {{ throw "download failed: $($_.Exception.Message)" }
+                    Write-ScanLog "Download attempt $attempt failed ($($_.Exception.Message)), retrying"
+                    Start-Sleep -Seconds (2 * $attempt)
+                }
+            }
+        }
+        finally
+        {{
+            $ProgressPreference = $oldProgress
+        }
+    }
+
+    $actual = (Get-FileHash -LiteralPath $zipPath -Algorithm SHA256).Hash.ToLowerInvariant()
+    if ($actual -ne $YaraXSha256)
+    {{
+        throw "SHA256 mismatch for $YaraXAsset`n  expected: $YaraXSha256`n  actual:   $actual"
+    }
+    Write-ScanLog "SHA256 verified: $actual"
+
+    if ($KeepDir)
+    {{
+        # A failed copy only costs a download next time, so it doesn't stop the scan
+        try
+        {{
+            Copy-Item -LiteralPath $zipPath -Destination $KeepDir -Force
+            Write-ScanLog "Kept $(Join-Path -Path $KeepDir -ChildPath $YaraXAsset) (reuse with -YaraXArchive $KeepDir)"
+        }
+        catch
+        {{
+            Write-ScanLog "WARNING: could not keep the archive in ${{KeepDir}: $($_.Exception.Message)"
+        }
+    }
+
+    $binDir = if ($BinDir) {{ $BinDir } else {{ Join-Path -Path $WorkDir -ChildPath 'bin' }
+    if (-not (Test-Path -LiteralPath $binDir -PathType Container))
+    {{
+        $null = New-Item -Path $binDir -ItemType Directory -Force
+    }
+    try
+    {{
+        Expand-Archive -LiteralPath $zipPath -DestinationPath $binDir -Force
+    }
+    catch
+    {{
+        throw "failed to unpack ${{YaraXAsset}: $($_.Exception.Message)"
+    }
+    $yr = Join-Path -Path $binDir -ChildPath 'yr.exe'
+    if (-not (Test-Path -LiteralPath $yr -PathType Leaf))
+    {{
+        throw 'yr.exe not found in archive'
+    }
+    return $yr
+}
+
+function Invoke-NativeToFile
+{{
+    # Runs $FilePath with $Arguments; stdout bytes go to $StdoutPath unchanged
+    # (no PowerShell re-encoding, so non-ASCII paths survive), stderr is returned.
+    param(
+        [Parameter(Mandatory = $true)][string]$FilePath,
+        [Parameter(Mandatory = $true)][string[]]$Arguments,
+        [Parameter(Mandatory = $true)][string]$StdoutPath
+    )
+
+    # ProcessStartInfo.ArgumentList is .NET Core only, so build a quoted string.
+    # Our arguments are file paths and flags: no embedded quotes or trailing '\'.
+    $psi = New-Object -TypeName System.Diagnostics.ProcessStartInfo
+    $psi.FileName = $FilePath
+    $psi.Arguments = ($Arguments | ForEach-Object {{ if ($_ -match '[\s"]') {{ '"' + $_ + '"' } else {{ $_ } }) -join ' '
+    $psi.UseShellExecute = $false
+    $psi.CreateNoWindow = $true
+    $psi.RedirectStandardOutput = $true
+    $psi.RedirectStandardError = $true
+    $psi.StandardErrorEncoding = $Utf8NoBom
+
+    $process = [System.Diagnostics.Process]::Start($psi)
+    # Background scan: keep the machine responsive. Best effort; yr runs either way.
+    try {{ $process.PriorityClass = [System.Diagnostics.ProcessPriorityClass]::BelowNormal } catch {{ $null = $_ }
+    # Read stderr asynchronously so neither pipe can fill up and block yr
+    $stderrTask = $process.StandardError.ReadToEndAsync()
+    $out = [System.IO.File]::Create($StdoutPath)
+    try
+    {{
+        $process.StandardOutput.BaseStream.CopyTo($out)
+    }
+    finally
+    {{
+        $out.Dispose()
+    }
+    $process.WaitForExit()
+    return [pscustomobject]@{{
+        ExitCode = $process.ExitCode
+        Stderr   = $stderrTask.Result
+    }
+}
+
+function ConvertTo-ExtendedPath
+{{
+    # C:\x -> \\?\C:\x, \\server\share -> \\?\UNC\server\share. The prefix turns off
+    # Win32 path parsing: no MAX_PATH (260) limit, even with LongPathsEnabled=0
+    # and on .NET Framework, and trailing dots/spaces in names are kept.
+    param([Parameter(Mandatory = $true)][string]$Path)
+    if ($Path.StartsWith('\\?\')) {{ return $Path }
+    if ($Path.StartsWith('\\')) {{ return '\\?\UNC\' + $Path.Substring(2) }
+    return '\\?\' + $Path
+}
+
+function Get-ScanFile
+{{
+    <#
+    Walks $Root with an explicit stack (fast, and one unreadable folder doesn't
+    stop the walk) and writes the files to scan to $ListWriter, one per line.
+    Returns counters for the skips.
+
+    A folder that fails with "not found" / "path too long" before any entry was
+    read (path over 260 chars, or a name ending in '.' or ' ') is listed again
+    with the \\?\ prefix; everything below it keeps the prefix, which yr
+    accepts, so those paths appear as \\?\C:\... in the results.
+    #>
+    param(
+        [Parameter(Mandatory = $true)][string]$Root,
+        [Parameter(Mandatory = $true)][System.IO.TextWriter]$ListWriter,
+        [Parameter(Mandatory = $true)][System.IO.TextWriter]$LogWriter,
+        [System.Collections.Generic.HashSet[string]]$SkipDirs,
+        [System.Collections.Generic.HashSet[string]]$SkipRootFiles,
+        [System.Collections.Generic.HashSet[string]]$SkipExtensions,
+        [long]$MaxBytes = 0,
+        [bool]$SkipCloud = $true
+    )
+
+    $stats = [pscustomobject]@{{ Listed = 0L; SizeSkipped = 0L; ExtSkipped = 0L; EmptySkipped = 0L; CloudSkipped = 0L; LinksSkipped = 0L; Errors = 0L }
+    $dirAttr = [int][System.IO.FileAttributes]::Directory
+    $reparseAttr = [int][System.IO.FileAttributes]::ReparsePoint
+
+    # Windows only: retry a folder that "doesn't exist" or is "too long" with the
+    # \\?\ prefix (see Get-ScanFile help); never on other OSes or twice
+    $canExtend = [System.IO.Path]::DirectorySeparatorChar -eq '\'
+
+    $stack = New-Object -TypeName 'System.Collections.Generic.Stack[string]'
+    $stack.Push($Root)
+    while ($stack.Count -gt 0)
+    {{
+        $dir = $stack.Pop()
+        $isDriveRoot = $dir -eq [System.IO.Path]::GetPathRoot($dir)
+        $attempt = $dir
+        $seen = 0
+        while ($null -ne $attempt)
+        {{
+            $retry = $null
+            try
+            {{
+                $dirInfo = New-Object -TypeName System.IO.DirectoryInfo -ArgumentList $attempt
+                # Lazy enumeration: Attributes and Length come from the directory
+                # listing itself, no extra per-file system call
+                foreach ($entry in $dirInfo.EnumerateFileSystemInfos())
+                {{
+                    $seen++
+                    $attr = [int]$entry.Attributes
+                    if ($attr -band $dirAttr)
+                    {{
+                        if ($null -ne $SkipDirs -and $SkipDirs.Contains($entry.FullName)) {{ continue }
+                        # Junctions, directory symlinks and volume mount points have a
+                        # LinkType; other reparse folders (OneDrive) are real folders.
+                        # LinkType is a PowerShell extended property (5.0+); if it is
+                        # missing, treat every reparse folder as a link to be safe.
+                        if ($attr -band $reparseAttr)
+                        {{
+                            $linkType = $entry.PSObject.Properties['LinkType']
+                            if ($null -eq $linkType -or $linkType.Value)
+                            {{
+                                $stats.LinksSkipped++
+                                continue
+                            }
+                        }
+                        if ($SkipCloud -and ($attr -band $CloudAttributeMask))
+                        {{
+                            $stats.CloudSkipped++
+                            continue
+                        }
+                        $stack.Push($entry.FullName)
+                        continue
+                    }
+
+                    if ($SkipCloud -and ($attr -band $CloudAttributeMask))
+                    {{
+                        $stats.CloudSkipped++
+                        continue
+                    }
+                    if ($isDriveRoot -and $null -ne $SkipRootFiles -and $SkipRootFiles.Contains($entry.Name)) {{ continue }
+                    if ($null -ne $SkipExtensions)
+                    {{
+                        $ext = $entry.Extension
+                        if ($ext.Length -gt 1 -and $SkipExtensions.Contains($ext.Substring(1)))
+                        {{
+                            $stats.ExtSkipped++
+                            continue
+                        }
+                    }
+                    if ($entry.Length -eq 0)
+                    {{
+                        $stats.EmptySkipped++
+                        continue
+                    }
+                    if ($MaxBytes -gt 0 -and $entry.Length -ge $MaxBytes)
+                    {{
+                        $LogWriter.WriteLine("skipped (>= $($MaxBytes / 1MB) MB): $($entry.FullName)")
+                        $stats.SizeSkipped++
+                        continue
+                    }
+                    $ListWriter.WriteLine($entry.FullName)
+                    $stats.Listed++
+                }
+            }
+            catch
+            {{
+                $cause = $_.Exception.GetBaseException()
+                if ($canExtend -and $seen -eq 0 -and -not $attempt.StartsWith('\\?\') -and
+                    ($cause -is [System.IO.DirectoryNotFoundException] -or $cause -is [System.IO.PathTooLongException]))
+                {{
+                    $retry = ConvertTo-ExtendedPath -Path $attempt
+                }
+                else
+                {{
+                    # Access denied, folder removed during the walk, ...
+                    # Files listed before the error are kept.
+                    $LogWriter.WriteLine("error listing ${{attempt}: $($_.Exception.Message)")
+                    $stats.Errors++
+                }
+            }
+            $attempt = $retry
+        }
+    }
+    return $stats
+}
+
+function Get-SignatureFile
+{{
+    <#
+    The signature (rule) files under $RulesPath - the file itself, or every
+    .yar/.yara file in the directory, searched recursively - as objects with a
+    Namespace and a Path, sorted by full path (ordinal, case-insensitive like
+    NTFS) so the namespace list, the order of the yr arguments and the "first
+    file wins" tie-break in Get-RuleSignatureMap are the same on every run.
+
+    The namespace is the file's base name without its extension
+    (php_detect.yar -> php_detect). Two files with the same namespace would be
+    compiled into one namespace by yr, which is what the namespaces are there
+    to prevent, so that throws; the caller maps it to exit code 2.
+
+    yr parses each rules argument as [NAMESPACE:]RULES_PATH and splits on the
+    FIRST colon, so "php_detect:C:\...\php_detect.yar" keeps the drive letter
+    in the path. On Windows yr reads a one-character prefix as a drive letter
+    instead of a namespace, so a one-character namespace cannot be expressed
+    and throws as well.
+    #>
+    param([Parameter(Mandatory = $true)][string]$RulesPath)
+
+    $paths = @()
+    if (Test-Path -LiteralPath $RulesPath -PathType Container)
+    {{
+        $paths = @(Get-ChildItem -LiteralPath $RulesPath -Recurse -File -ErrorAction SilentlyContinue |
+            Where-Object {{ $_.Extension -in @('.yar', '.yara') } | ForEach-Object {{ $_.FullName })
+    }
+    else
+    {{
+        $paths = @($RulesPath)
+    }
+    $sorted = [string[]]$paths
+    [System.Array]::Sort($sorted, [System.StringComparer]::OrdinalIgnoreCase)
+
+    $signatures = New-Object -TypeName 'System.Collections.Generic.List[object]'
+    # Namespaces are compared exactly: yr keeps php_detect and PHP_Detect apart
+    $firstPath = New-Object -TypeName 'System.Collections.Generic.Dictionary[string,string]' -ArgumentList ([System.StringComparer]::Ordinal)
+    foreach ($p in $sorted)
+    {{
+        $ns = [System.IO.Path]::GetFileNameWithoutExtension($p)
+        if ($ns.Length -le 1)
+        {{
+            throw "rule file name '$([System.IO.Path]::GetFileName($p))' is too short for a namespace: on Windows yr reads a one-character namespace as a drive letter (rename the file)"
+        }
+        if ($firstPath.ContainsKey($ns))
+        {{
+            throw "two rule files give the same namespace '$ns': $($firstPath[$ns]) and $p (rename one of them)"
+        }
+        $firstPath[$ns] = $p
+        $signatures.Add([pscustomobject]@{{ Namespace = $ns; Path = $p })
+    }
+    # One object per file; callers wrap the call in @() so 0 and 1 file work too
+    return $signatures.ToArray()
+}
+
+function Get-RuleSignatureMap
+{{
+    <#
+    Maps every rule identifier defined by $Signature (from Get-SignatureFile) to
+    the namespace of the file that defines it, by reading the rule files: a
+    "rule NAME" line, at any indent, with YARA's private/global modifiers
+    allowed in front in either order: rule, private rule, global rule,
+    global private rule and private global rule are all recognised.
+
+    Reading the rule sources is deterministic and testable. yr's
+    --print-namespace is deliberately not used: its exact output layout next to
+    --print-meta / --print-strings is not specified, so parsing it would be a
+    guess.
+
+    yr allows the same identifier once per namespace, so an identifier defined
+    in several files is ambiguous: that is logged as a warning and attributed
+    to the first file in sorted order rather than failing the scan.
+    #>
+    param(
+        [AllowNull()][AllowEmptyCollection()][object[]]$Signature,
+        [System.IO.TextWriter]$LogWriter
+    )
+
+    $ruleLine = [regex]'^[ \t]*(?:(?:private|global)[ \t]+)*rule[ \t]+(?<name>[A-Za-z_][A-Za-z0-9_]*)'
+    $map = New-Object -TypeName 'System.Collections.Generic.Dictionary[string,string]' -ArgumentList ([System.StringComparer]::Ordinal)
+    $definedIn = New-Object -TypeName 'System.Collections.Generic.Dictionary[string,string]' -ArgumentList ([System.StringComparer]::Ordinal)
+    foreach ($sig in $Signature)
+    {{
+        foreach ($line in [System.IO.File]::ReadAllLines($sig.Path))
+        {{
+            $m = $ruleLine.Match($line)
+            if (-not $m.Success) {{ continue }
+            $name = $m.Groups['name'].Value
+            if ($map.ContainsKey($name))
+            {{
+                $message = "WARNING: rule $name is defined in both $($definedIn[$name]) and $($sig.Path); its matches are attributed to $($map[$name])"
+                Write-ScanLog $message
+                if ($null -ne $LogWriter) {{ $LogWriter.WriteLine($message) }
+                continue
+            }
+            $map[$name] = $sig.Namespace
+            $definedIn[$name] = $sig.Path
+        }
+    }
+    return $map
+}
+
+function ConvertTo-SignatureCount
+{{
+    <#
+    "signature<TAB>count" lines sorted by signature name: how many
+    ConvertTo-VersionSummary lines each signature produced. Every loaded
+    namespace is listed, so a signature that matched nothing shows as 0 and the
+    file always names the whole rule set the scan ran with.
+    #>
+    param(
+        [AllowNull()][AllowEmptyCollection()][string[]]$SummaryLine,
+        [AllowNull()][AllowEmptyCollection()][string[]]$Namespace
+    )
+
+    $counts = New-Object -TypeName 'System.Collections.Generic.Dictionary[string,int]' -ArgumentList ([System.StringComparer]::Ordinal)
+    foreach ($ns in $Namespace) {{ $counts[$ns] = 0 }
+    foreach ($line in $SummaryLine)
+    {{
+        $tab = $line.IndexOf("`t")
+        if ($tab -lt 0) {{ continue }
+        $sig = $line.Substring(0, $tab)
+        # An identifier that was not in the map lands here as "unknown", so the
+        # counts still add up to the number of summary lines
+        if ($counts.ContainsKey($sig)) {{ $counts[$sig] = $counts[$sig] + 1 }
+        else {{ $counts[$sig] = 1 }
+    }
+    $names = [string[]]@($counts.Keys)
+    [System.Array]::Sort($names, [System.StringComparer]::Ordinal)
+    return , [string[]]@($names | ForEach-Object {{ "$_`t$($counts[$_])" })
+}
+
+function ConvertTo-VersionSummary
+{{
+    <#
+    PowerShell port of YARA/versions.awk - keep in sync.
+    Reads `yr scan --print-meta --print-strings` text output and returns sorted,
+    unique "signature<TAB>path<TAB>product<TAB>version" lines, one per product
+    found in a file. product comes from the matched rule's name (see below), so
+    it follows whichever signatures are deployed.
+    signature is the namespace - the rule file the matched rule is defined in.
+    If yr printed the identifier namespace-qualified that namespace is used;
+    otherwise the bare identifier is looked up in $SignatureMap (from
+    Get-RuleSignatureMap). An identifier that is in neither is reported as
+    "unknown".
+    The other three fields are unchanged: the version is read from the rule's
+    matched strings - $ver, $pv or $_module_ver - or from $rel (a release URL)
+    when none of those matched; $electron also emits its own electron line.
+    Matched files with no version string get "unknown".
+    #>
+    param(
+        [Parameter(Mandatory = $true)][string]$RawPath,
+        $SignatureMap
+    )
+
+    # rule line: "<RULE> <path>", or with --print-meta "<RULE> [k="v",...] <path>".
+    # The meta pattern skips quoted values, so a ']' inside a description is fine.
+    #
+    # "ns" is an optional namespace prefix on the identifier. Now that the rule
+    # files are loaded one per namespace, yr may print the identifier qualified
+    # ("php_detect:PHP_Runtime_Version") rather than bare, and which shape it
+    # uses next to --print-meta/--print-strings could not be verified here. Both
+    # are accepted on purpose - DO NOT delete this as dead code: if yr qualifies
+    # the names and this stops matching, every scan silently reports nothing
+    # found, which looks exactly like a clean machine.
+    # Only the identifier token can carry the prefix; the path is matched
+    # separately and never stripped, so a "C:\..." path keeps its colon.
+    #
+    # "id" is the bare identifier: it is looked up in $SignatureMap and its own
+    # prefix gives the product, so it is taken after the namespace is stripped.
+    # It is any YARA identifier, not a fixed list of products, so a signature
+    # file added to the signatures directory is summarised without a change
+    # here. The identifier cannot start with a digit, so the string lines below
+    # ("0xOFFSET:...") never match it; stdout holds nothing else, because yr
+    # writes its per-file errors to stderr and the caller sends those to the log.
+    $ruleLine = [regex]'^(?:(?<ns>[A-Za-z_][A-Za-z0-9_]*):)?(?<id>[A-Za-z_][A-Za-z0-9_]*) (?:\[(?:"(?:[^"\\]|\\.)*"|[^\]"])*\] )?(?<path>.*)$'
+    # string line: "0xOFFSET:LENGTH:$id: <matched text>"
+    $stringLine = [regex]':\$(?<id>ver|pv|rel|electron|_module_ver): '
+    $version = [regex]'[0-9]+\.[0-9]+\.[0-9]+[0-9A-Za-z.+~_-]*'
+
+    $results = New-Object -TypeName 'System.Collections.Generic.HashSet[string]' -ArgumentList ([System.StringComparer]::Ordinal)
+    # "signature<TAB>path<TAB>product" keys: matched, versioned, and $rel versions per key
+    $seen = New-Object -TypeName 'System.Collections.Generic.List[string]'
+    $versioned = New-Object -TypeName 'System.Collections.Generic.HashSet[string]' -ArgumentList ([System.StringComparer]::Ordinal)
+    $relVersions = New-Object -TypeName 'System.Collections.Generic.List[string]'
+    $file = $null
+    $product = $null
+    $signature = $null
+
+    $reader = New-Object -TypeName System.IO.StreamReader -ArgumentList $RawPath, $Utf8NoBom
+    try
+    {{
+        while ($null -ne ($line = $reader.ReadLine()))
+        {{
+            $m = $ruleLine.Match($line)
+            if ($m.Success)
+            {{
+                $file = $m.Groups['path'].Value
+                $ruleId = $m.Groups['id'].Value
+                # The product is the rule name up to its first underscore,
+                # lowercased: PHP_Runtime_Version -> php,
+                # Java_Version_And_Vendor_Detector -> java. An identifier with
+                # no underscore, or one that starts with it, is used whole.
+                # One special case, kept from the fixed product list this
+                # replaced: Apache_HTTP2_* is the mod_http2 module, not the
+                # Apache server (Apache_HTTPD_Version stays apache).
+                $cut = $ruleId.IndexOf('_')
+                $product = if ($cut -gt 0) {{ $ruleId.Substring(0, $cut).ToLowerInvariant() } else {{ $ruleId.ToLowerInvariant() }
+                if ($ruleId.StartsWith('Apache_HTTP2_', [System.StringComparison]::Ordinal)) {{ $product = 'mod_http2' }
+                # Which signature file defined this rule. A namespace printed by
+                # yr is authoritative; for a bare identifier, fall back to the
+                # map built from the rule sources. "unknown" only if the rule
+                # sources and the compiled rules have drifted apart.
+                $signature = 'unknown'
+                if ($m.Groups['ns'].Success)
+                {{
+                    $signature = $m.Groups['ns'].Value
+                }
+                elseif ($null -ne $SignatureMap -and $SignatureMap.ContainsKey($ruleId))
+                {{
+                    $signature = $SignatureMap[$ruleId]
+                }
+                $seen.Add("$signature`t$file`t$product")
+                continue
+            }
+            $s = $stringLine.Match($line)
+            if ($null -ne $file -and $s.Success)
+            {{
+                # UTF-16 matches ($pv) are printed with escaped NULs: 8\x00.\x002\x00...
+                $text = $line.Replace('\x00', '')
+                $space = $text.IndexOf(' ')
+                $text = $text.Substring($space + 1)
+                $v = $version.Match($text)
+                if (-not $v.Success) {{ continue }
+                switch ($s.Groups['id'].Value)
+                {{
+                    'electron' {{ [void]$results.Add("$signature`t$file`telectron`t$($v.Value)") }
+                    'rel' {{ $relVersions.Add("$signature`t$file`t$product`t$($v.Value)") }
+                    default
+                    {{
+                        [void]$results.Add("$signature`t$file`t$product`t$($v.Value)")
+                        [void]$versioned.Add("$signature`t$file`t$product")
+                    }
+                }
+            }
+        }
+    }
+    finally
+    {{
+        $reader.Dispose()
+    }
+    foreach ($r in $relVersions)
+    {{
+        $key = $r.Substring(0, $r.LastIndexOf("`t"))
+        if (-not $versioned.Contains($key)) {{ [void]$results.Add($r) }
+    }
+    foreach ($key in $seen)
+    {{
+        if ($versioned.Contains($key)) {{ continue }
+        $prefix = "$key`t"
+        $fromRel = $false
+        foreach ($r in $relVersions) {{ if ($r.StartsWith($prefix, [System.StringComparison]::Ordinal)) {{ $fromRel = $true; break } }
+        if (-not $fromRel) {{ [void]$results.Add("$key`tunknown") }
+    }
+    $sorted = [string[]]@($results)
+    [System.Array]::Sort($sorted, [System.StringComparer]::Ordinal)
+    return , $sorted
+}
+
+function Invoke-Main
+{{
+    # Takes the script's parameters explicitly (dot-sourced tests call it the
+    # same way) and returns the exit code
+    param(
+        [string[]]$Path,
+        [string]$OutputDir,
+        [string]$RulesPath,
+        [string]$BinDir,
+        [string]$Format,
+        [switch]$KeepArchive,
+        [string]$YaraXArchive,
+        [string]$MaxMB,
+        [string]$Threads = '1',
+        [string[]]$ExcludePath,
+        [switch]$NoSkips,
+        [switch]$Help,
+        [string[]]$ExtraArgs
+    )
+
+    if ($Help)
+    {{
+        Get-Help -Name $PSCommandPath -Full | Out-String | Write-Host
+        return 0
+    }
+
+    # ---- options --------------------------------------------------------------
+    # powershell.exe -File can't pass arrays ("-Path A,B" arrives as one string),
+    # so extra arguments that aren't options are more targets: -Path A B
+    $allPaths = @($Path | Where-Object {{ $_ })
+    $extra = @($ExtraArgs | Where-Object {{ $_ })
+    foreach ($extraArg in $extra)
+    {{
+        if ($extraArg.StartsWith('-'))
+        {{
+            Write-UsageError "Unknown argument: $extraArg (see -Help)"
+            return 2
+        }
+        $allPaths += $extraArg
+    }
+    $Format = $Format.ToLowerInvariant()
+    if ($Format -notin @('text', 'json', 'ndjson'))
+    {{
+        Write-UsageError "Invalid -Format '$Format' (use text, json or ndjson)."
+        return 2
+    }
+    # -NoSkips lifts the size cap too, unless -MaxMB is given
+    if (-not $PSBoundParameters.ContainsKey('MaxMB')) {{ $MaxMB = if ($NoSkips) {{ '0' } else {{ '512' } }
+    if ($MaxMB -notmatch '^[0-9]{{1,7}$')
+    {{
+        Write-UsageError "Invalid -MaxMB '$MaxMB' (whole number of MB, 0 = no limit)."
+        return 2
+    }
+    $maxBytes = [long]$MaxMB * 1MB
+    if ($Threads -notmatch '^[0-9]{{1,3}$' -or [int]$Threads -lt 1)
+    {{
+        Write-UsageError "Invalid -Threads '$Threads' (number of threads, 1 or more)."
+        return 2
+    }
+
+    if (-not (Test-IsWindowsHost))
+    {{
+        Write-UsageError 'This script is for Windows only (see bash/ for macOS and Linux).'
+        return 2
+    }
+
+    # ---- rules ----------------------------------------------------------------
+    # The rules are deployed separately, so a missing or empty set is a usage
+    # error: scanning every file with no rules would waste hours and find nothing.
+    if (-not $RulesPath)
+    {{
+        Write-UsageError 'No -RulesPath given (a .yar/.yara file, or a directory of them).'
+        return 2
+    }
+    if (-not (Test-Path -LiteralPath $RulesPath))
+    {{
+        Write-UsageError "-RulesPath does not exist: $RulesPath"
+        return 2
+    }
+    $RulesPath = (Resolve-Path -LiteralPath $RulesPath).ProviderPath
+    # One namespace per rule file, named after the file: a rule identifier only
+    # has to be unique inside its own file, and every match can be attributed
+    # back to the file it came from
+    try
+    {{
+        $signatures = @(Get-SignatureFile -RulesPath $RulesPath)
+    }
+    catch
+    {{
+        Write-UsageError $_.Exception.Message
+        return 2
+    }
+    if ($signatures.Count -eq 0)
+    {{
+        Write-UsageError "No .yar/.yara rule files in -RulesPath: $RulesPath"
+        return 2
+    }
+
+    $targets = @()
+    if ($allPaths.Count -gt 0)
+    {{
+        foreach ($p in $allPaths)
+        {{
+            if (-not (Test-Path -LiteralPath $p))
+            {{
+                Write-UsageError "Target path does not exist: $p"
+                return 2
+            }
+            # Full provider path; trailing separator kept only on a drive root
+            $full = (Resolve-Path -LiteralPath $p).ProviderPath
+            if ($full -ne [System.IO.Path]::GetPathRoot($full)) {{ $full = $full.TrimEnd('\', '/') }
+            $targets += $full
+        }
+    }
+    else
+    {{
+        $targets = @(Get-FixedDriveRoot)
+        if ($targets.Count -eq 0)
+        {{
+            Write-UsageError 'No local fixed drives found.'
+            return 2
+        }
+    }
+
+    # ---- output files ---------------------------------------------------------
+    if (-not (Test-Path -LiteralPath $OutputDir -PathType Container))
+    {{
+        $null = New-Item -Path $OutputDir -ItemType Directory -Force
+    }
+    $OutputDir = (Resolve-Path -LiteralPath $OutputDir).ProviderPath
+    $hostName = [System.Environment]::MachineName
+    $timestamp = Get-Date -Format 'yyyyMMdd_HHmmss'
+    $resultBase = Join-Path -Path $OutputDir -ChildPath "yara_results_${{hostName}_$timestamp"
+    $summaryFile = $null
+    $signatureFile = $null
+    if ($Format -eq 'text')
+    {{
+        $resultFile = "$resultBase.raw.text"
+        $summaryFile = "$resultBase.text"
+        # Same host/timestamp convention as the summary. "signatures" sits
+        # before the host name so the two files stay apart under a
+        # yara_results_*.text wildcard whatever the host is called.
+        $signatureFile = Join-Path -Path $OutputDir -ChildPath "yara_results_signatures_${{hostName}_$timestamp.text"
+    }
+    else
+    {{
+        $resultFile = "$resultBase.$Format"
+    }
+    $logFile = Join-Path -Path $OutputDir -ChildPath "yara_scan_${{hostName}_$timestamp.log"
+
+    $workDir = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath ('yara_x_scan_' + [guid]::NewGuid().ToString('N'))
+    $null = New-Item -Path $workDir -ItemType Directory -Force
+    $logWriter = New-Object -TypeName System.IO.StreamWriter -ArgumentList $logFile, $false, $Utf8NoBom
+    try
+    {{
+        # ---- download, verify, unpack -------------------------------------------
+        try
+        {{
+            $keepDir = $null
+            if ($KeepArchive -and $YaraXArchive)
+            {{
+                Write-ScanLog "Not keeping the archive (-KeepArchive): it is already local at $YaraXArchive"
+            }
+            elseif ($KeepArchive)
+            {{
+                $keepDir = $OutputDir
+            }
+            $yr = Get-YaraX -WorkDir $workDir -ArchivePath $YaraXArchive -KeepDir $keepDir -BinDir $BinDir
+            $yrVersion = (& $yr --version 2>&1 | Out-String).Trim()
+            if ($LASTEXITCODE -ne 0) {{ throw "yr --version failed: $yrVersion" }
+            Write-ScanLog "Unpacked $yrVersion"
+        }
+        catch
+        {{
+            Write-ScanLog "ERROR: $($_.Exception.Message)"
+            return 3
+        }
+
+        # One NAMESPACE:PATH argument per rule file; yr scan takes any number of
+        # them before the target. Logged so the log says which rules produced
+        # the results.
+        $ruleArgs = @($signatures | ForEach-Object {{ $_.Namespace + ':' + $_.Path })
+        $namespaceList = ($signatures | ForEach-Object {{ $_.Namespace }) -join ', '
+        Write-ScanLog "Rules: $($signatures.Count) signature file(s) from $RulesPath, one namespace each: $namespaceList"
+        # Rule identifier -> namespace, read from the rule files themselves, so
+        # every summary line can name the signature it came from
+        $signatureMap = Get-RuleSignatureMap -Signature $signatures -LogWriter $logWriter
+        Write-ScanLog "Rule identifiers attributed to a signature: $($signatureMap.Count)"
+
+        # ---- build list of files to scan ------------------------------------------
+        # Unattended background scan: the file walk (this process) runs at
+        # BelowNormal like yr.exe (see Invoke-NativeToFile). Best effort.
+        try {{ [System.Diagnostics.Process]::GetCurrentProcess().PriorityClass = [System.Diagnostics.ProcessPriorityClass]::BelowNormal } catch {{ $null = $_ }
+        if (-not (Test-IsAdministrator))
+        {{
+            Write-Warning 'Not running as Administrator - protected folders will be skipped (see log)'
+        }
+
+        $skipExt = $null
+        if (-not $NoSkips)
+        {{
+            $skipExt = New-Object -TypeName 'System.Collections.Generic.HashSet[string]' -ArgumentList ([string[]]$NonBinaryExtensions), ([System.StringComparer]::OrdinalIgnoreCase)
+            Write-ScanLog 'Skipping non-executable file types (use -NoSkips to include)'
+        }
+        # Always, even with -NoSkips: reading online-only files would download them
+        Write-ScanLog 'Skipping online-only cloud files'
+        if ($maxBytes -gt 0)
+        {{
+            Write-ScanLog "Skipping files of $MaxMB MB or more (use -MaxMB 0 to include)"
+        }
+        if (-not $NoSkips)
+        {{
+            Write-ScanLog "Skipping system folders: $($SystemSkipDirs -join ', '), Users\*\$($ProfileSkipDirs -join ', Users\*\') (target one with -Path, or -NoSkips, to include)"
+        }
+        # powershell.exe -File passes "A,B" as one string, so split on commas here
+        $excludeDirs = @()
+        foreach ($x in @($ExcludePath | Where-Object {{ $_ } | ForEach-Object {{ $_ -split ',' } | ForEach-Object {{ $_.Trim() } | Where-Object {{ $_ }))
+        {{
+            if (-not (Test-Path -LiteralPath $x -PathType Container))
+            {{
+                Write-ScanLog "WARNING: -ExcludePath folder not found, ignored: $x"
+                continue
+            }
+            $excludeDirs += (Resolve-Path -LiteralPath $x).ProviderPath.TrimEnd('\', '/')
+        }
+
+        $scanList = Join-Path -Path $workDir -ChildPath 'scan_list.txt'
+        $listWriter = New-Object -TypeName System.IO.StreamWriter -ArgumentList $scanList, $false, $Utf8NoBom
+        $listWriter.NewLine = "`n"
+        $totals = @{{ Listed = 0L; SizeSkipped = 0L; ExtSkipped = 0L; EmptySkipped = 0L; CloudSkipped = 0L; LinksSkipped = 0L; Errors = 0L }
+        try
+        {{
+            foreach ($target in $targets)
+            {{
+                # An explicitly named file is always scanned
+                if (Test-Path -LiteralPath $target -PathType Leaf)
+                {{
+                    $listWriter.WriteLine($target)
+                    $totals.Listed++
+                    continue
+                }
+
+                # Never scan our own output (old results contain matched strings) or temp folder
+                $skipDirs = New-Object -TypeName 'System.Collections.Generic.HashSet[string]' -ArgumentList ([System.StringComparer]::OrdinalIgnoreCase)
+                foreach ($d in @($OutputDir, $workDir.TrimEnd('\', '/')))
+                {{
+                    if (-not (Test-PathWithin -Child $target -Parent $d)) {{ [void]$skipDirs.Add($d) }
+                }
+                foreach ($d in $excludeDirs)
+                {{
+                    if (Test-PathWithin -Child $target -Parent $d) {{ Write-ScanLog "Not skipping $d (-ExcludePath): it contains $target" }
+                    else {{ [void]$skipDirs.Add($d); Write-ScanLog "Skipping $d (-ExcludePath)" }
+                }
+                $skipRootFiles = $null
+                if (-not $NoSkips)
+                {{
+                    $root = [System.IO.Path]::GetPathRoot($target)
+                    $systemDirs = @($SystemSkipDirs | ForEach-Object {{ Join-Path -Path $root -ChildPath $_ })
+                    foreach ($userProfile in @(Get-ChildItem -LiteralPath (Join-Path -Path $root -ChildPath 'Users') -Directory -Force -ErrorAction SilentlyContinue))
+                    {{
+                        $systemDirs += @($ProfileSkipDirs | ForEach-Object {{ Join-Path -Path $userProfile.FullName -ChildPath $_ })
+                    }
+                    foreach ($d in $systemDirs)
+                    {{
+                        # A skip whose folder contains the target is turned off
+                        if (-not (Test-PathWithin -Child $target -Parent $d)) {{ [void]$skipDirs.Add($d) }
+                    }
+                    $skipRootFiles = New-Object -TypeName 'System.Collections.Generic.HashSet[string]' -ArgumentList ([string[]]$SystemSkipFiles), ([System.StringComparer]::OrdinalIgnoreCase)
+                }
+
+                Write-ScanLog "Listing files under $target"
+                $stats = Get-ScanFile -Root $target -ListWriter $listWriter -LogWriter $logWriter `
+                    -SkipDirs $skipDirs -SkipRootFiles $skipRootFiles -SkipExtensions $skipExt `
+                    -MaxBytes $maxBytes -SkipCloud $true
+                foreach ($k in @($totals.Keys)) {{ $totals[$k] += $stats.$k }
+            }
+        }
+        finally
+        {{
+            $listWriter.Dispose()
+        }
+
+        if ($totals.Errors -gt 0) {{ Write-ScanLog "$($totals.Errors) folder(s) could not be listed (see $logFile)" }
+        if ($totals.LinksSkipped -gt 0) {{ Write-ScanLog "Did not follow $($totals.LinksSkipped) junction(s)/symlink(s)" }
+        if ($totals.CloudSkipped -gt 0) {{ Write-ScanLog "Skipped $($totals.CloudSkipped) online-only cloud file(s)/folder(s)" }
+        if ($totals.SizeSkipped -gt 0) {{ Write-ScanLog "Skipped $($totals.SizeSkipped) file(s) of $MaxMB MB or more (listed in $logFile)" }
+        if ($null -ne $skipExt) {{ Write-ScanLog "Skipped $($totals.ExtSkipped) non-executable file type(s)" }
+        if ($totals.EmptySkipped -gt 0) {{ Write-ScanLog "Skipped $($totals.EmptySkipped) empty file(s)" }
+        Write-ScanLog "Found $($totals.Listed) file(s) to scan"
+
+        # ---- scan -----------------------------------------------------------------
+        Write-ScanLog "Scanning with $Threads thread(s) at low priority..."
+        Write-ScanLog "Results: $resultFile"
+        try
+        {{
+            $scan = Invoke-NativeToFile -FilePath $yr -StdoutPath $resultFile -Arguments (@(
+                'scan', '--scan-list', '--print-meta', '--print-strings', '--threads', $Threads,
+                '--output-format', $Format) + $ruleArgs + @($scanList))
+        }
+        catch
+        {{
+            Write-ScanLog "ERROR: could not run yr: $($_.Exception.Message)"
+            return 4
+        }
+        # yr reports per-file errors (e.g. access denied, locked files) on stderr,
+        # still scans the rest and exits 0; non-zero means the scan itself failed
+        if ($scan.Stderr) {{ $logWriter.Write($scan.Stderr) }
+        if ($scan.ExitCode -ne 0)
+        {{
+            Write-ScanLog "ERROR: yr exited with code $($scan.ExitCode) (see $logFile)"
+            return 4
+        }
+
+        if ($null -ne $summaryFile)
+        {{
+            $lines = ConvertTo-VersionSummary -RawPath $resultFile -SignatureMap $signatureMap
+            [System.IO.File]::WriteAllLines($summaryFile, $lines, $Utf8NoBom)
+            Write-ScanLog "Versions: $summaryFile ($($lines.Count) line(s))"
+            # Every loaded signature, including the ones that matched nothing
+            $counts = ConvertTo-SignatureCount -SummaryLine $lines -Namespace @($signatures | ForEach-Object {{ $_.Namespace })
+            [System.IO.File]::WriteAllLines($signatureFile, $counts, $Utf8NoBom)
+            Write-ScanLog "Signature counts: $signatureFile ($($counts.Count) signature(s))"
+        }
+
+        # Any output in text/ndjson mode means at least one match; json always prints an object
+        if ($Format -eq 'json')
+        {{
+            $matched = [bool](Select-String -LiteralPath $resultFile -Pattern '"rule"' -SimpleMatch -Quiet)
+        }
+        else
+        {{
+            $matched = (Get-Item -LiteralPath $resultFile).Length -gt 0
+        }
+        if ($matched)
+        {{
+            Write-ScanLog "MATCHES FOUND - see $resultFile"
+            return 1
+        }
+        Write-ScanLog 'No matches.'
+        return 0
+    }
+    finally
+    {{
+        $logWriter.Dispose()
+        $logItem = Get-Item -LiteralPath $logFile -ErrorAction SilentlyContinue
+        if ($null -ne $logItem)
+        {{
+            if ($logItem.Length -eq 0)
+            {{
+                Remove-Item -LiteralPath $logFile -Force
+            }
+            else
+            {{
+                $lineCount = @(Get-Content -LiteralPath $logFile).Count
+                Write-ScanLog "$lineCount skip/warning/error line(s) in $logFile"
+            }
+        }
+        Remove-Item -LiteralPath $workDir -Recurse -Force -ErrorAction SilentlyContinue
+    }
+}
+
+# Dot-sourcing (". .\yara_x_scan_windows.ps1") only loads the functions, for testing
+if ($MyInvocation.InvocationName -ne '.')
+{{
+    $mainArgs = @{{
+        Path               = $Path
+        OutputDir          = $OutputDir
+        RulesPath          = $RulesPath
+        BinDir             = $BinDir
+        Format             = $Format
+        KeepArchive        = $KeepArchive
+        YaraXArchive       = $YaraXArchive
+        MaxMB              = $MaxMB
+        Threads            = $Threads
+        ExcludePath        = $ExcludePath
+        NoSkips            = $NoSkips
+        Help               = $Help
+        ExtraArgs          = $ExtraArgs
+    }
+    # Pass -MaxMB on only when given, so Invoke-Main can tell "omitted" from "-MaxMB ''"
+    if (-not $PSBoundParameters.ContainsKey('MaxMB')) {{ $mainArgs.Remove('MaxMB') }
+    exit (Invoke-Main @mainArgs)
+}
+_END_OF_SCRIPT_
+copy __createfile "{parameter "temp_folder"}\yara_x_scan_windows.ps1"
+
+// The wrapper that runs it and copies the results to the destination folder
+delete __createfile
+createfile until _END_OF_SCRIPT_
+# Started by the BigFix task with "run": runs the scan in the background, then
+# publishes the per-signature counts and the summary into the engine results
+# folder. scan.running marks a scan in progress (the task is not relevant while
+# it exists).
+$T = '{parameter "temp_folder"}'
+$D = '{parameter "results_folder"}'
+$B = '{parameter "bin_folder"}'
+$R = '{parameter "signatures_folder"}'
+$running = Join-Path -Path $T -ChildPath 'scan.running'
+$console = Join-Path -Path $T -ChildPath 'scan_console.log'
+New-Item -ItemType File -Force -Path $running | Out-Null
+# A separate 64-bit powershell.exe: the scan script ends with "exit"
+& "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -NonInteractive -ExecutionPolicy Bypass -File (Join-Path -Path $T -ChildPath 'yara_x_scan_windows.ps1') -YaraXArchive $T -BinDir $B -RulesPath $R -OutputDir (Join-Path -Path $T -ChildPath 'results') *>&1 | Out-File -FilePath $console -Encoding utf8
+$rc = $LASTEXITCODE
+"scan exit code: $rc (0 = nothing found, 1 = found, 2 = bad arguments or no rules, 3-4 = error)" | Out-File -FilePath $console -Encoding utf8 -Append
+if (-not (Test-Path -LiteralPath $D)) {{ New-Item -ItemType Directory -Force -Path $D | Out-Null }
+# Only a finished scan replaces the results; written under a temp name first so
+# the analysis never reads a partial file
+if ($rc -eq 0 -or $rc -eq 1)
+{{
+    $resultsDir = Join-Path -Path $T -ChildPath 'results'
+    # The per-signature counts go first: a reader that sees a fresh summary
+    # then always sees counts that are at least as new
+    $signatures = Get-ChildItem -LiteralPath $resultsDir -Filter 'yara_results_signatures_*.text' -ErrorAction SilentlyContinue |
+        Select-Object -First 1
+    if ($signatures)
+    {{
+        $tmp = Join-Path -Path $D -ChildPath '.{parameter "signatures_file"}.tmp'
+        Copy-Item -LiteralPath $signatures.FullName -Destination $tmp -Force
+        Move-Item -LiteralPath $tmp -Destination (Join-Path -Path $D -ChildPath '{parameter "signatures_file"}') -Force
+    }
+    # The counts file matches the same wildcard, so exclude it by name here
+    $summary = Get-ChildItem -LiteralPath $resultsDir -Filter 'yara_results_*.text' |
+        Where-Object {{ -not $_.Name.EndsWith('.raw.text') -and -not $_.Name.StartsWith('yara_results_signatures_') } |
+        Select-Object -First 1
+    if ($summary)
+    {{
+        $tmp = Join-Path -Path $D -ChildPath '.{parameter "results_file"}.tmp'
+        Copy-Item -LiteralPath $summary.FullName -Destination $tmp -Force
+        Move-Item -LiteralPath $tmp -Destination (Join-Path -Path $D -ChildPath '{parameter "results_file"}') -Force
+    }
+}
+Copy-Item -LiteralPath $console -Destination (Join-Path -Path $D -ChildPath 'yara_scan_runtimes.log') -Force
+# The archive is prefetched again by every run; yr.exe stays in the bin folder
+Remove-Item -Path (Join-Path -Path $T -ChildPath 'yara-x-v*') -Force -ErrorAction SilentlyContinue
+Remove-Item -LiteralPath $running -Force -ErrorAction SilentlyContinue
+_END_OF_SCRIPT_
+copy __createfile "{parameter "temp_folder"}\run_scan.ps1"
+
+// Mark the scan as running before it starts, so the task isn't relevant again
+// in the meantime (the wrapper removes the marker when the scan ends)
+delete __createfile
+createfile until _END_OF_SCRIPT_
+started by action {id of action}
+_END_OF_SCRIPT_
+copy __createfile "{parameter "temp_folder"}\scan.running"
+
+// Start the scan without waiting (it can take 10-30+ minutes): the action ends
+// here and the client runs other actions. The results show up when it finishes.
+action uses wow64 redirection {not x64 of operating system}
+
+override run
+hidden=true
+run "{pathname of system folder}\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "{parameter "temp_folder"}\run_scan.ps1"
+]]></ActionScript>
+			<SuccessCriteria Option="RunToCompletion"></SuccessCriteria>
+		</DefaultAction>
+	</Task>
+</BES>
