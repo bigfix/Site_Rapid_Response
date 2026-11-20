@@ -22,7 +22,7 @@ repos:
   # bes-schema-validate also covers the site's own site.xml, siteConfig.xml,
   # Fixlets/digest.xml and Signatures/*.xml (since v1.12.0), and .ojo dashboards.
   - repo: https://github.com/jgstew/pre-commit-bigfix
-    rev: e2be9a8e47a2e9862c1f34a63b9a9467d6e79516  # frozen: v1.13.0
+    rev: 70a4266e5e82387e18f784a19b076aa597b1cb61  # frozen: v2.5.0
     hooks:
       # ---- MANDATORY CHECKS FOR BES REPO SITE:
       # (bes-siterepo-validate-layout is also mandatory; it is at the end.)
